@@ -25,6 +25,7 @@ require __DIR__ . '/config/db.php';
 require __DIR__ . '/validation.php';
 require __DIR__ . '/auth/session.php';
 require __DIR__ . '/services/ShopService.php';
+require __DIR__ . '/services/ProductImageService.php';
 require __DIR__ . '/services/ProductService.php';
 require __DIR__ . '/services/OrderService.php';
 require __DIR__ . '/services/ChatService.php';
@@ -33,7 +34,7 @@ if (PHP_SAPI !== 'cli') {
     header('X-Content-Type-Options: nosniff');
     header('X-Frame-Options: DENY');
     header('Referrer-Policy: same-origin');
-    header("Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'");
+    header("Content-Security-Policy: default-src 'self'; img-src 'self' data: blob:; style-src 'self'; script-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'");
     header('Cache-Control: no-store');
     ini_set('display_errors', '0');
     set_exception_handler(function (Throwable $e): void {

@@ -1,0 +1,721 @@
+{
+  "scope": "local product photos branch; not Angsila",
+  "suites": [
+    {
+      "source": "test-results.json",
+      "executed_at": "2026-10-30T19:26:48+00:00",
+      "passed": 54,
+      "failed": 0,
+      "results": [
+        {
+          "test": "money uses exact integer cents",
+          "status": "PASS"
+        },
+        {
+          "test": "explicit table slots resolve and bound text is unchanged",
+          "status": "PASS"
+        },
+        {
+          "test": "unknown table slots are rejected",
+          "status": "PASS"
+        },
+        {
+          "test": "reject negative and excessive decimal precision",
+          "status": "PASS"
+        },
+        {
+          "test": "pickup and delivery state machines differ",
+          "status": "PASS"
+        },
+        {
+          "test": "passwords stored as hashes",
+          "status": "PASS"
+        },
+        {
+          "test": "one shop per owner updates existing shop",
+          "status": "PASS"
+        },
+        {
+          "test": "product CREATE and READ",
+          "status": "PASS"
+        },
+        {
+          "test": "legacy product metadata remains optional",
+          "status": "PASS"
+        },
+        {
+          "test": "database CHECK rejects zero garment measurement",
+          "status": "PASS"
+        },
+        {
+          "test": "image foreign key rejects orphan record",
+          "status": "PASS"
+        },
+        {
+          "test": "invalid negative product price rejected",
+          "status": "PASS"
+        },
+        {
+          "test": "duplicate sizes rejected",
+          "status": "PASS"
+        },
+        {
+          "test": "foreign owner product UPDATE rejected",
+          "status": "PASS"
+        },
+        {
+          "test": "foreign owner product DELETE rejected",
+          "status": "PASS"
+        },
+        {
+          "test": "owner product UPDATE persists",
+          "status": "PASS"
+        },
+        {
+          "test": "unused product physical DELETE works",
+          "status": "PASS"
+        },
+        {
+          "test": "foreign key rejects orphan variant",
+          "status": "PASS"
+        },
+        {
+          "test": "DB CHECK rejects actual zero quantity insert",
+          "status": "PASS"
+        },
+        {
+          "test": "pickup order deducts stock and uses server total",
+          "status": "PASS"
+        },
+        {
+          "test": "retry same key returns same order without extra stock deduction",
+          "status": "PASS"
+        },
+        {
+          "test": "same key different request rejected",
+          "status": "PASS"
+        },
+        {
+          "test": "mixed shop order rejected with no records",
+          "status": "PASS"
+        },
+        {
+          "test": "insufficient stock rolls back order",
+          "status": "PASS"
+        },
+        {
+          "test": "own shop purchase rejected",
+          "status": "PASS"
+        },
+        {
+          "test": "stale stock edit rejected after checkout",
+          "status": "PASS"
+        },
+        {
+          "test": "buyer and seller may read order; stranger may not",
+          "status": "PASS"
+        },
+        {
+          "test": "buyer may not change seller status",
+          "status": "PASS"
+        },
+        {
+          "test": "other seller may not change status",
+          "status": "PASS"
+        },
+        {
+          "test": "invalid status jump rejected",
+          "status": "PASS"
+        },
+        {
+          "test": "correct pickup sequence records status audit",
+          "status": "PASS"
+        },
+        {
+          "test": "completed order cannot be cancelled",
+          "status": "PASS"
+        },
+        {
+          "test": "referenced product hard delete rejected",
+          "status": "PASS"
+        },
+        {
+          "test": "product snapshots survive name and price edits",
+          "status": "PASS"
+        },
+        {
+          "test": "delivery fee calculated server-side",
+          "status": "PASS"
+        },
+        {
+          "test": "delivery cannot move to pickup status",
+          "status": "PASS"
+        },
+        {
+          "test": "cancellation returns stock exactly once",
+          "status": "PASS"
+        },
+        {
+          "test": "deactivated product cannot be ordered",
+          "status": "PASS"
+        },
+        {
+          "test": "deactivated shop cannot receive orders",
+          "status": "PASS"
+        },
+        {
+          "test": "concurrent buyers cannot oversell last item",
+          "status": "PASS"
+        },
+        {
+          "test": "concurrent duplicate checkout creates exactly one order",
+          "status": "PASS"
+        },
+        {
+          "test": "LEFT JOIN retains shop with no orders",
+          "status": "PASS"
+        },
+        {
+          "test": "INNER JOIN returns buyer shop and snapshot items",
+          "status": "PASS"
+        },
+        {
+          "test": "catalog has no duplicate products from variants",
+          "status": "PASS"
+        },
+        {
+          "test": "chat start returns existing buyer/product thread",
+          "status": "PASS"
+        },
+        {
+          "test": "shop owner cannot start a buyer thread with self",
+          "status": "PASS"
+        },
+        {
+          "test": "chat sender stored from authenticated actor",
+          "status": "PASS"
+        },
+        {
+          "test": "unrelated user cannot read or send to conversation",
+          "status": "PASS"
+        },
+        {
+          "test": "shop owner replies to authorized conversation",
+          "status": "PASS"
+        },
+        {
+          "test": "empty or oversized chat text rejected",
+          "status": "PASS"
+        },
+        {
+          "test": "schema installer refuses nonempty database without changes",
+          "status": "PASS"
+        },
+        {
+          "test": "demo seeder refuses existing users without changes",
+          "status": "PASS"
+        },
+        {
+          "test": "shared installer refuses occupied or empty namespace",
+          "status": "PASS"
+        },
+        {
+          "test": "unrelated tables retain their row counts",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "source": "test-results-clozee_.json",
+      "executed_at": "2026-10-30T19:26:50+00:00",
+      "passed": 54,
+      "failed": 0,
+      "results": [
+        {
+          "test": "money uses exact integer cents",
+          "status": "PASS"
+        },
+        {
+          "test": "explicit table slots resolve and bound text is unchanged",
+          "status": "PASS"
+        },
+        {
+          "test": "unknown table slots are rejected",
+          "status": "PASS"
+        },
+        {
+          "test": "reject negative and excessive decimal precision",
+          "status": "PASS"
+        },
+        {
+          "test": "pickup and delivery state machines differ",
+          "status": "PASS"
+        },
+        {
+          "test": "passwords stored as hashes",
+          "status": "PASS"
+        },
+        {
+          "test": "one shop per owner updates existing shop",
+          "status": "PASS"
+        },
+        {
+          "test": "product CREATE and READ",
+          "status": "PASS"
+        },
+        {
+          "test": "legacy product metadata remains optional",
+          "status": "PASS"
+        },
+        {
+          "test": "database CHECK rejects zero garment measurement",
+          "status": "PASS"
+        },
+        {
+          "test": "image foreign key rejects orphan record",
+          "status": "PASS"
+        },
+        {
+          "test": "invalid negative product price rejected",
+          "status": "PASS"
+        },
+        {
+          "test": "duplicate sizes rejected",
+          "status": "PASS"
+        },
+        {
+          "test": "foreign owner product UPDATE rejected",
+          "status": "PASS"
+        },
+        {
+          "test": "foreign owner product DELETE rejected",
+          "status": "PASS"
+        },
+        {
+          "test": "owner product UPDATE persists",
+          "status": "PASS"
+        },
+        {
+          "test": "unused product physical DELETE works",
+          "status": "PASS"
+        },
+        {
+          "test": "foreign key rejects orphan variant",
+          "status": "PASS"
+        },
+        {
+          "test": "DB CHECK rejects actual zero quantity insert",
+          "status": "PASS"
+        },
+        {
+          "test": "pickup order deducts stock and uses server total",
+          "status": "PASS"
+        },
+        {
+          "test": "retry same key returns same order without extra stock deduction",
+          "status": "PASS"
+        },
+        {
+          "test": "same key different request rejected",
+          "status": "PASS"
+        },
+        {
+          "test": "mixed shop order rejected with no records",
+          "status": "PASS"
+        },
+        {
+          "test": "insufficient stock rolls back order",
+          "status": "PASS"
+        },
+        {
+          "test": "own shop purchase rejected",
+          "status": "PASS"
+        },
+        {
+          "test": "stale stock edit rejected after checkout",
+          "status": "PASS"
+        },
+        {
+          "test": "buyer and seller may read order; stranger may not",
+          "status": "PASS"
+        },
+        {
+          "test": "buyer may not change seller status",
+          "status": "PASS"
+        },
+        {
+          "test": "other seller may not change status",
+          "status": "PASS"
+        },
+        {
+          "test": "invalid status jump rejected",
+          "status": "PASS"
+        },
+        {
+          "test": "correct pickup sequence records status audit",
+          "status": "PASS"
+        },
+        {
+          "test": "completed order cannot be cancelled",
+          "status": "PASS"
+        },
+        {
+          "test": "referenced product hard delete rejected",
+          "status": "PASS"
+        },
+        {
+          "test": "product snapshots survive name and price edits",
+          "status": "PASS"
+        },
+        {
+          "test": "delivery fee calculated server-side",
+          "status": "PASS"
+        },
+        {
+          "test": "delivery cannot move to pickup status",
+          "status": "PASS"
+        },
+        {
+          "test": "cancellation returns stock exactly once",
+          "status": "PASS"
+        },
+        {
+          "test": "deactivated product cannot be ordered",
+          "status": "PASS"
+        },
+        {
+          "test": "deactivated shop cannot receive orders",
+          "status": "PASS"
+        },
+        {
+          "test": "concurrent buyers cannot oversell last item",
+          "status": "PASS"
+        },
+        {
+          "test": "concurrent duplicate checkout creates exactly one order",
+          "status": "PASS"
+        },
+        {
+          "test": "LEFT JOIN retains shop with no orders",
+          "status": "PASS"
+        },
+        {
+          "test": "INNER JOIN returns buyer shop and snapshot items",
+          "status": "PASS"
+        },
+        {
+          "test": "catalog has no duplicate products from variants",
+          "status": "PASS"
+        },
+        {
+          "test": "chat start returns existing buyer/product thread",
+          "status": "PASS"
+        },
+        {
+          "test": "shop owner cannot start a buyer thread with self",
+          "status": "PASS"
+        },
+        {
+          "test": "chat sender stored from authenticated actor",
+          "status": "PASS"
+        },
+        {
+          "test": "unrelated user cannot read or send to conversation",
+          "status": "PASS"
+        },
+        {
+          "test": "shop owner replies to authorized conversation",
+          "status": "PASS"
+        },
+        {
+          "test": "empty or oversized chat text rejected",
+          "status": "PASS"
+        },
+        {
+          "test": "schema installer refuses nonempty database without changes",
+          "status": "PASS"
+        },
+        {
+          "test": "demo seeder refuses existing users without changes",
+          "status": "PASS"
+        },
+        {
+          "test": "shared installer refuses occupied or empty namespace",
+          "status": "PASS"
+        },
+        {
+          "test": "unrelated tables retain their row counts",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "source": "browser-results-prefix.json",
+      "executed_at": "2026-10-30T19:20:58.254Z",
+      "passed": 24,
+      "failed": 0,
+      "results": [
+        {
+          "test": "catalog renders real PHP data and all product assets",
+          "status": "PASS"
+        },
+        {
+          "test": "new/preloved filter and empty search update results",
+          "status": "PASS"
+        },
+        {
+          "test": "mobile catalog has no horizontal page overflow",
+          "status": "PASS"
+        },
+        {
+          "test": "protected pages redirect anonymous users; logout is POST only",
+          "status": "PASS"
+        },
+        {
+          "test": "seller registers with HttpOnly and SameSite session cookie",
+          "status": "PASS"
+        },
+        {
+          "test": "seller creates and edits own shop",
+          "status": "PASS"
+        },
+        {
+          "test": "seller creates multi-size product using real form",
+          "status": "PASS"
+        },
+        {
+          "test": "malformed variant keys cannot inject HTML on validation errors",
+          "status": "PASS"
+        },
+        {
+          "test": "buyer registers, adds item, places pickup order",
+          "status": "PASS"
+        },
+        {
+          "test": "buyer cannot mutate seller order status",
+          "status": "PASS"
+        },
+        {
+          "test": "CSRF rejected before product mutation",
+          "status": "PASS"
+        },
+        {
+          "test": "other account cannot edit product or read private order",
+          "status": "PASS"
+        },
+        {
+          "test": "seller progresses pickup order; buyer sees completion",
+          "status": "PASS"
+        },
+        {
+          "test": "delivery checkout records fee and cancellation returns stock",
+          "status": "PASS"
+        },
+        {
+          "test": "seller edit persists while historical price/name stay unchanged",
+          "status": "PASS"
+        },
+        {
+          "test": "buyer asks a size question and seller replies in private chat",
+          "status": "PASS"
+        },
+        {
+          "test": "unrelated account cannot read or forge chat messages",
+          "status": "PASS"
+        },
+        {
+          "test": "chat content is escaped instead of executing HTML",
+          "status": "PASS"
+        },
+        {
+          "test": "referenced product cannot be deleted; deactivation hides public item",
+          "status": "PASS"
+        },
+        {
+          "test": "mobile seller table does not overflow the page",
+          "status": "PASS"
+        },
+        {
+          "test": "logout invalidates session and protects routes again",
+          "status": "PASS"
+        },
+        {
+          "test": "wrong login rejected then correct login restores access",
+          "status": "PASS"
+        },
+        {
+          "test": "SQL injection string cannot bypass login",
+          "status": "PASS"
+        },
+        {
+          "test": "no unexpected console, asset or page errors",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "source": "product-photos-unit-results.json",
+      "executed_at": "2026-10-30T19:26:50+00:00",
+      "passed": 17,
+      "failed": 0,
+      "results": [
+        {
+          "check": "optional garment fields remain optional",
+          "status": "PASS"
+        },
+        {
+          "check": "measurements accept 0.1 through 300 cm",
+          "status": "PASS"
+        },
+        {
+          "check": "measurements reject negatives zero precision arrays and overflow",
+          "status": "PASS"
+        },
+        {
+          "check": "valid JPEG decodes and keeps correct type",
+          "status": "PASS"
+        },
+        {
+          "check": "embedded PHP trailer is removed by re-encoding",
+          "status": "PASS"
+        },
+        {
+          "check": "EXIF orientation is applied and original EXIF is removed",
+          "status": "PASS"
+        },
+        {
+          "check": "large dimensions are resized with original aspect ratio",
+          "status": "PASS"
+        },
+        {
+          "check": "PNG transparency survives re-encoding",
+          "status": "PASS"
+        },
+        {
+          "check": "WebP is accepted and re-encoded",
+          "status": "PASS"
+        },
+        {
+          "check": "PHP file disguised as JPEG is rejected",
+          "status": "PASS"
+        },
+        {
+          "check": "SVG disguised as PNG is rejected",
+          "status": "PASS"
+        },
+        {
+          "check": "truncated JPEG is rejected",
+          "status": "PASS"
+        },
+        {
+          "check": "oversize file is rejected before decoding",
+          "status": "PASS"
+        },
+        {
+          "check": "overlarge image dimension is rejected",
+          "status": "PASS"
+        },
+        {
+          "check": "arbitrary local path is not accepted as HTTP upload",
+          "status": "PASS"
+        },
+        {
+          "check": "malformed upload arrays are rejected",
+          "status": "PASS"
+        },
+        {
+          "check": "stored image name rejects traversal and executable extensions",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "source": "product-photos-browser-results.json",
+      "executed_at": "2026-10-30T19:27:29.523Z",
+      "passed": 20,
+      "failed": 0,
+      "results": [
+        {
+          "check": "two-photo previews and main selection before saving",
+          "status": "PASS"
+        },
+        {
+          "check": "gallery, selected cover and garment details persist",
+          "status": "PASS"
+        },
+        {
+          "check": "anonymous image route serves JPEG with safe headers",
+          "status": "PASS"
+        },
+        {
+          "check": "thumbnail changes the displayed main photo",
+          "status": "PASS"
+        },
+        {
+          "check": "valid image with embedded PHP is re-encoded safely",
+          "status": "PASS"
+        },
+        {
+          "check": "excess photos roll back without orphan files",
+          "status": "PASS"
+        },
+        {
+          "check": "server rejects invalid upload fake.jpg",
+          "status": "PASS"
+        },
+        {
+          "check": "server rejects invalid upload fake.png",
+          "status": "PASS"
+        },
+        {
+          "check": "server rejects invalid upload broken.jpg",
+          "status": "PASS"
+        },
+        {
+          "check": "server rejects invalid upload large.jpg",
+          "status": "PASS"
+        },
+        {
+          "check": "invalid garment measurement cannot modify saved product",
+          "status": "PASS"
+        },
+        {
+          "check": "foreign owner cannot upload into another product",
+          "status": "PASS"
+        },
+        {
+          "check": "foreign photo id cannot become cover or be removed",
+          "status": "PASS"
+        },
+        {
+          "check": "owner changes saved cover and removes one photo",
+          "status": "PASS"
+        },
+        {
+          "check": "private image bytes cannot be fetched from upload directory URL",
+          "status": "PASS"
+        },
+        {
+          "check": "upload without CSRF is rejected before any file is stored",
+          "status": "PASS"
+        },
+        {
+          "check": "uploaded product checkout works; stale edit removes staged files without changing stock",
+          "status": "PASS"
+        },
+        {
+          "check": "inactive product images are private to owner",
+          "status": "PASS"
+        },
+        {
+          "check": "deleting unused product also removes its private photo",
+          "status": "PASS"
+        },
+        {
+          "check": "gallery and photo editor fit mobile viewport",
+          "status": "PASS"
+        }
+      ]
+    }
+  ]
+}

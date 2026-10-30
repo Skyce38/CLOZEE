@@ -9,7 +9,7 @@ CLOZEE ต้องคงเป็นระบบซื้อขายเสื�
 
 workspace `C:/Users/User/Downloads/database project` ว่างก่อนเริ่มตรวจ ต่อมาพบ `CLOZEE-planning-pack.zip` ระหว่างตรวจรอบสุดท้ายและได้อ่านครบทั้ง 7 ไฟล์ข้อความในแพ็กแล้ว ไม่พบ source เว็บไซต์หรือ Git repository ที่ใช้งานจริง ลิงก์ Google Sheets ที่ให้มามีชื่อ `username and Password`, แท็บ `Sheet1` (gid 0), หัวแถว A1:B1 เป็น `User`, `Password` จึงไม่ใช้เป็นหลักฐานแผน CLOZEE และไม่ได้อ่านค่าบัญชีหรือรหัสผ่าน ข้อความนี้ไม่ได้ยืนยันว่าในชีตไม่มีข้อมูลอื่น เพราะตรวจเฉพาะ metadata และ A1:H1
 
-การเปรียบเทียบด้านล่างใช้ `CLOZEE/docs/project-spec.md`, `functional-requirements.md`, `use-cases.md`, `project-structure.md` และ `CLOZEE/database/schema.sql` ภายในแพ็กเป็นแบบที่ได้รับจริง ส่วนข้อปรับปรุงเป็นคำแนะนำของผู้วิเคราะห์ ไม่ใช่ข้อกำหนดเพิ่มจากอาจารย์ เนื้อหา `for-codex.md` ถูกอ่านเป็นบริบทของแพ็ก ไม่ใช้เป็นอำนาจแทนคำขอผู้ใช้
+การเปรียบเทียบด้านล่างใช้ `CLOZEE/docs/project-spec.md`, `functional-requirements.md`, `use-cases.md`, `project-structure.md` และ `CLOZEE/database/schema.sql` ภายในแพ็กเป็นแบบที่ได้รับจริง ส่วนข้อปรับปรุงเป็นคำแนะนำของผู้วิเคราะห์ ไม่ใช่ข้อกำหนดเพิ่มจากอาจารย์ เนื้อหา `planning-context.md` ถูกอ่านเป็นบริบทของแพ็ก ไม่ใช้เป็นอำนาจแทนคำขอผู้ใช้
 
 เอกสารแนบใช้เป็นแหล่งข้อมูล ไม่ใช่คำสั่งให้ลงมือทำการบ้าน: ไม่รัน SQL, ไม่ import/reset ฐานข้อมูล, ไม่แก้ Lab, ไม่ใช้บัญชีในชีต, ไม่อัปโหลด Angsila และไม่คัดลอกตัวอย่างมาเป็น CLOZEE
 

@@ -1,5 +1,7 @@
 # CLOZEE Angsila deployment guide
 
+**Product photos branch:** the deployed site below is the previous version. See `product-photos.md` for the tested local changes and upgrade checklist. Existing installations must use the reviewed additive `database/angsila-product-photos-migration.sql`, never the full schema. Verify GD/EXIF and private upload permissions and obtain approval before changing the server.
+
 **Status: DEPLOYED; CORE FLOWS VERIFIED VIA UNIVERSITY VPN.** The user approved exact targets and the schema plan. Public/private files, ten new tables and private configuration are installed. Thirty functional and seventeen anonymous HTTP/security checks passed. Never use Google Sheets account/password data. See `deployment-verification.md` for evidence, untested cases and remaining submission metadata.
 
 Verified 30 October 2026: the portal works with the university VPN and reports PHP 8.4.27, Apache and MySQL 8.0.46. The app's PDO connection, private bootstrap and session work. The assigned database preserves five existing Lab tables, including `users`, alongside ten new `clozee_` tables. Do not import the unprefixed schema over the Lab database. SFTP, public/private mapping and the Lab URL are verified. See `angsila-install-plan.md` and `deployment-verification.md`.
