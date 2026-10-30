@@ -1,0 +1,1 @@
+<nav class="subnav" aria-label="จัดการร้าน"><a href="<?=h(url('seller/dashboard.php'))?>">ภาพรวมร้าน</a><a href="<?=h(url('seller/shop.php'))?>">ข้อมูลร้าน</a><a href="<?=h(url('seller/products.php'))?>">สินค้าและสต็อก</a><a href="<?=h(url('seller/orders.php'))?>">คำสั่งซื้อเข้าร้าน</a></nav>

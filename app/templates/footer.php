@@ -1,0 +1,1 @@
+</main><footer class="site-footer"><a class="brand" href="<?=h(url())?>">CLOZEE</a><p>A local marketplace for BUU students and Bangsaen locals.</p><span>New. Preloved. Nearby.</span></footer></div></body></html>

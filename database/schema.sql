@@ -1,5 +1,6 @@
 -- CLOZEE (BUU / Bangsaen clothing marketplace)
--- DRAFT schema v0.3 for MySQL / MariaDB review, not deployed or tested.
+-- Reviewed schema v1.0. Import ONLY into a new, dedicated empty database.
+-- Compatible target: MySQL 8.0.16+ / MariaDB 10.6+. No production import authorized.
 -- Select/create a dedicated database in phpMyAdmin first, then import this file.
 -- Does not contain CREATE/DROP DATABASE and never deletes existing data.
 -- IMPORTANT: review names, DB version, and existing schema before executing.
@@ -57,10 +58,14 @@ CREATE TABLE product_variants (
     size_label VARCHAR(50) NOT NULL,
     price DECIMAL(10,2) NOT NULL,
     stock_quantity INT UNSIGNED NOT NULL DEFAULT 0,
+    version INT UNSIGNED NOT NULL DEFAULT 1,
+    is_active TINYINT(1) NOT NULL DEFAULT 1,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (variant_id),
     UNIQUE KEY uq_variants_product_size (product_id, size_label),
+    CONSTRAINT ck_variant_price CHECK (price >= 0),
+    CONSTRAINT ck_variant_stock CHECK (stock_quantity <= 999999),
     CONSTRAINT fk_variants_product FOREIGN KEY (product_id)
       REFERENCES products(product_id) ON UPDATE CASCADE ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -75,9 +80,13 @@ CREATE TABLE orders (
     total_amount DECIMAL(10,2) NOT NULL,
     status ENUM('pending','confirmed','preparing','ready_for_pickup','out_for_delivery','completed','cancelled') NOT NULL DEFAULT 'pending',
     buyer_note TEXT NULL,
+    checkout_key CHAR(64) NOT NULL,
+    request_hash CHAR(64) NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (order_id),
+    UNIQUE KEY uq_order_checkout (buyer_user_id, checkout_key),
+    CONSTRAINT ck_order_money CHECK (shipping_fee >= 0 AND total_amount >= 0),
     KEY idx_orders_buyer (buyer_user_id, created_at),
     KEY idx_orders_shop (shop_id, created_at),
     CONSTRAINT fk_orders_buyer FOREIGN KEY (buyer_user_id)
@@ -95,6 +104,9 @@ CREATE TABLE order_items (
     quantity INT UNSIGNED NOT NULL,
     unit_price DECIMAL(10,2) NOT NULL,
     PRIMARY KEY (order_item_id),
+    UNIQUE KEY uq_order_variant (order_id, variant_id),
+    CONSTRAINT ck_order_quantity CHECK (quantity > 0 AND quantity <= 99),
+    CONSTRAINT ck_order_price CHECK (unit_price >= 0),
     KEY idx_order_items_order (order_id),
     KEY idx_order_items_variant (variant_id),
     CONSTRAINT fk_order_items_order FOREIGN KEY (order_id)
@@ -146,3 +158,26 @@ CREATE TABLE messages (
 -- - Checkout: SELECT ... FOR UPDATE + transactional stock update/order insert.
 -- - Status transitions depend on fulfillment method; validate in PHP.
 -- - No hard delete of products/shops referenced by order history.
+
+-- Immutable status audit, written in the same transaction as the status change.
+CREATE TABLE order_status_history (
+    history_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    order_id BIGINT UNSIGNED NOT NULL,
+    actor_user_id BIGINT UNSIGNED NOT NULL,
+    from_status VARCHAR(30) NULL,
+    to_status VARCHAR(30) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    KEY idx_history_order (order_id, history_id),
+    CONSTRAINT fk_history_order FOREIGN KEY (order_id) REFERENCES orders(order_id) ON DELETE RESTRICT,
+    CONSTRAINT fk_history_actor FOREIGN KEY (actor_user_id) REFERENCES users(user_id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Transient throttling metadata only; raw IP, email and password are never stored here.
+CREATE TABLE login_attempts (
+    attempt_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    bucket CHAR(64) NOT NULL,
+    ip_bucket CHAR(64) NOT NULL,
+    attempted_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    KEY idx_attempt_bucket_time (bucket, attempted_at),
+    KEY idx_attempt_ip_time (ip_bucket, attempted_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
