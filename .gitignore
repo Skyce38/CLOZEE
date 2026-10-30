@@ -1,0 +1,16 @@
+# Runtime secrets and machine-specific files
+.env
+.env.*
+!.env.example
+app/config/local.php
+storage/*
+!storage/.gitkeep
+!storage/uploads/
+storage/uploads/*
+!storage/uploads/.gitkeep
+*.log
+*.zip
+node_modules/
+.artifacts/
+.DS_Store
+Thumbs.db
