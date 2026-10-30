@@ -1,0 +1,15 @@
+digraph Architecture {
+ graph [rankdir=LR,bgcolor=white,pad="0.3",nodesep="0.5",ranksep="0.6",fontname=Arial];
+ node [shape=box,style="rounded,filled",fillcolor="#eef2ed",color="#244b36",fontname=Arial,fontsize=14,margin="0.2,0.15"];
+ edge [color="#6b806d",fontname=Arial,fontsize=11];
+ browser [label="Browser\nHTML / CSS / vanilla JS"];
+ public [label="Apache + PHP\npublic/*.php routes"];
+ auth [label="Session / CSRF / Ownership\napp/auth + bootstrap"];
+ services [label="Shop / Product / Order / Chat\napp/services"];
+ db [label="MySQL / MariaDB\nInnoDB + FK + transactions"];
+ config [label="Private configuration\noutside public webroot"];
+ browser -> public [label="HTTPS form / GET"];
+ public -> auth;auth -> services;services -> db [label="PDO prepared statements"];
+ config -> services [style=dashed,label="server only"];
+ public -> browser [label="HTML + safe output",constraint=false];
+}

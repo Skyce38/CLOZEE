@@ -37,3 +37,7 @@
 4. Deactivating hides the item from public listing but preserves historical orders.
 
 **Forbidden:** A user may not edit another shop's item, even if a URL or POST payload is modified.
+
+## Executed implementation and diagram
+
+[Use Case Diagram](diagrams/use-cases.svg) is generated from diagrams/use-cases.dot. UC-01–10 have implementation and tested flows, including the optional UC-09 text chat. Chat requires manual refresh and only buyer/shop owner access. UC-05 additionally permits physical deletion only when no order history references the product; historical products deactivate. UC-06 server-checks price/fee/activity/stock and uses a unique checkout key, request hash and DB row locks. See test-results.md rather than treating draft example flows as test results. Angsila execution remains pending.

@@ -1,5 +1,9 @@
 name: PHP and MySQL acceptance
-on: [push, pull_request]
+on:
+  push:
+    paths-ignore: ['docs/**', 'README.md', '*.zip']
+  pull_request:
+    paths-ignore: ['docs/**', 'README.md', '*.zip']
 permissions:
   contents: read
 jobs:

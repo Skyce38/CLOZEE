@@ -1,0 +1,70 @@
+{
+  "run_url": "https://github.com/Skyce38/CLOZEE/actions/runs/41032288293",
+  "run_id": 41032288293,
+  "job_id": 123984633516,
+  "commit": "c7783c5d8e19160521ac6588af0b93652d08fa4b",
+  "conclusion": "success",
+  "steps": [
+    {
+      "name": "Set up job",
+      "conclusion": "success"
+    },
+    {
+      "name": "Initialize containers",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/checkout@v4",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run shivammathur/setup-php@v2",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/setup-node@v4",
+      "conclusion": "success"
+    },
+    {
+      "name": "Syntax and isolated database setup",
+      "conclusion": "success"
+    },
+    {
+      "name": "Domain, database and concurrent checkout tests",
+      "conclusion": "success"
+    },
+    {
+      "name": "Browser acceptance",
+      "conclusion": "success"
+    },
+    {
+      "name": "Upload non-secret test evidence",
+      "conclusion": "success"
+    },
+    {
+      "name": "Post Run actions/setup-node@v4",
+      "conclusion": "success"
+    },
+    {
+      "name": "Post Run actions/checkout@v4",
+      "conclusion": "success"
+    },
+    {
+      "name": "Stop containers",
+      "conclusion": "success"
+    },
+    {
+      "name": "Complete job",
+      "conclusion": "success"
+    }
+  ],
+  "evidence_lines": [
+    "2026-10-30T09:17:36.1516508Z \u001b[32;1m✓ \u001b[0m\u001b[34;1mPHP \u001b[0m\u001b[90;1mInstalled PHP 8.3.36\u001b[0m",
+    "2026-10-30T09:17:39.5167909Z PHP 8.3.36 OK",
+    "2026-10-30T09:17:39.5168408Z pdo_mysql OK",
+    "2026-10-30T09:17:39.5168759Z mbstring OK",
+    "2026-10-30T09:17:39.5180278Z Database 8.4.13",
+    "2026-10-30T09:17:39.5192266Z Tables 10",
+    "2026-10-30T09:17:40.0898791Z 45 tests, 0 failed. Results: storage/test-results.json"
+  ]
+}

@@ -1,6 +1,12 @@
 {
   "name": "clozee-coursework-tests",
   "private": true,
-  "scripts": { "test:browser": "node tests/browser.cjs" },
-  "devDependencies": { "playwright": "1.62.1" }
+  "scripts": {
+    "test:browser": "node tests/browser.cjs"
+  },
+  "devDependencies": {
+    "@viz-js/viz": "^3.31.0",
+    "marked": "^18.1.2",
+    "playwright": "1.62.1"
+  }
 }

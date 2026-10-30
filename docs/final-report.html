@@ -1,0 +1,1010 @@
+<!doctype html><html lang="th"><head><meta charset="utf-8"><title>CLOZEE Final Project Report</title><style>@page{size:A4;margin:18mm 16mm 19mm}*{box-sizing:border-box}body{font-family:Tahoma,Arial,sans-serif;font-size:12px;line-height:1.8;color:#263b2d;margin:0}h1{font:54px Georgia,serif;color:#244b36;letter-spacing:-1.5px;margin:20px 0}h2{font-size:21px;line-height:1.45;font-weight:500;color:#244b36;margin:28px 0 12px;border-bottom:1px solid #ccd8c6;padding-bottom:9px;break-after:avoid}h3{font-size:16px;margin:22px 0 10px;break-after:avoid}p{margin:10px 0;orphans:3;widows:3}a{color:#244b36;text-decoration:underline;overflow-wrap:anywhere}strong{font-weight:700}table{border-collapse:collapse;width:100%;font-size:10px;line-height:1.55;margin:14px 0 20px;table-layout:fixed}th,td{padding:7px 6px;border:1px solid #d5ded1;text-align:left;vertical-align:top;overflow-wrap:anywhere}th{background:#eef2ed;color:#244b36}thead{display:table-header-group}tr{break-inside:avoid}img{display:block;max-width:100%;max-height:760px;width:auto;height:auto;margin:14px auto;object-fit:contain}p:has(>img),figure{break-inside:avoid}figure{margin:18px 0}figcaption{font-size:10px;color:#697464;text-align:center}img[alt="Mobile catalog"]{max-height:780px}code{font-family:Consolas,monospace;font-size:.92em;overflow-wrap:anywhere;background:#f1f4ef;padding:1px 3px}pre{white-space:pre-wrap;word-break:break-word}.page-break{break-before:page}ul,ol{padding-left:22px}li{margin:5px 0}@media screen{body{max-width:850px;padding:35px;margin:auto;background:#fff}html{background:#e8ece6}}</style></head><body><h1>CLOZEE</h1>
+<h2>Local Clothing Marketplace &amp; Delivery Platform</h2>
+<p>ระบบซื้อขายและจัดส่งเสื้อผ้ามือหนึ่งและมือสองสำหรับนิสิตมหาวิทยาลัยบูรพาและคนในพื้นที่บางแสน</p>
+<p><strong>รายงาน Final Project รอบ 2</strong><br>รายวิชา 89022167 Database Management<br>มหาวิทยาลัยบูรพา คณะวิทยาการสารสนเทศ<br>รหัสนิสิต: <strong>68160207</strong><br>ผู้จัดทำ: <strong>[ยังไม่ได้รับชื่อ–นามสกุล]</strong><br>สมาชิกเพิ่มเติม: <strong>[ยังไม่ได้รับข้อมูลสมาชิกอื่น หรือการยืนยันว่าทำเดี่ยว]</strong><br>อาจารย์ผู้สอน: <strong>[ยังไม่ได้รับชื่ออาจารย์]</strong><br>กำหนดส่ง: <strong>10 พฤศจิกายน 2569</strong><br>จัดทำหลักฐานการพัฒนา: 30 ตุลาคม 2569</p>
+<p><strong>สถานะ: ระบบ Local และ CI ผ่าน; ยังไม่พร้อมส่งฉบับสมบูรณ์ เพราะยังไม่ได้ deploy/ตรวจ Angsila และหน้าปกบางรายการยังเป็น placeholder</strong></p>
+<div class="page-break"></div><h2>1 บทนำและ Problem Statement</h2>
+<p>นิสิต BUU และคนในบางแสนอาจซื้อขายเสื้อผ้าใหม่/มือสองผ่านหลายช่องทาง ทำให้ข้อมูลไซซ์ สภาพ สต็อก และจุดนัดรับกระจัดกระจาย CLOZEE เสนอพื้นที่เดียวสำหรับค้นหาเสื้อผ้าท้องถิ่น เปิดร้าน จัดการตัวเลือกไซซ์ สั่งซื้อ และบันทึกวิธีรับสินค้า แนวปัญหานี้เป็นสมมติฐานของโครงการจาก project-spec มิใช่ผลสำรวจหรือข้อมูลสัมภาษณ์ที่ได้ทำจริง</p>
+<p>วัตถุประสงค์คือประยุกต์ PHP และฐานข้อมูลเชิงสัมพันธ์ให้ผู้ซื้อเลือกเสื้อผ้าและเห็นสถานะ ส่วนผู้ขายควบคุมข้อมูลและสต็อกของร้านตนเอง พร้อมแสดงหลักฐาน CRUD, Authentication, Authorization, JOIN และ transaction ตามเนื้อหารายวิชา</p>
+<p>กลุ่มเป้าหมายคือผู้ซื้อที่เป็นนิสิตมหาวิทยาลัยบูรพาและคนในบางแสน และผู้ขายรายย่อย/ร้านเสื้อผ้าในพื้นที่ บัญชีเดียวเป็นผู้ซื้อและเปิดร้านได้หนึ่งร้าน ไม่มีการยืนยันสถานภาพนิสิตหรือกำหนด BUU SSO ในรุ่นนี้</p>
+<h2>2 ขอบเขตและ Requirements</h2>
+<p>P0 ประกอบด้วยบัญชีผู้ใช้ ร้านค้า สินค้าใหม่/มือสอง ไซซ์ ราคา สต็อก ค้นหา/กรอง ตะกร้าร้านเดียว คำสั่งซื้อ นัดรับ/จัดส่ง ประวัติและการเปลี่ยนสถานะ P1 ที่ทำเพิ่มหลังทดสอบระบบหลักคือแชทข้อความ ส่วนหลายรูปและรายงานยอดขายยังไม่ได้ทำ</p>
+<p>การจัดส่งเป็นการบันทึกตัวเลือกและรายละเอียดเพื่อให้ร้านดำเนินการโดยตรง ค่าจัดส่งตัวอย่างตั้งที่ server 30 บาทต่อ order; นัดรับฟรี ไม่มีระบบรับเงินออนไลน์ rider dispatch, GPS, shipping API, refund/dispute, rating หรือ checkout หลายร้าน</p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Requirement</th>
+<th>Implementation</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>FR-01/02</td>
+<td>สมัคร/เข้าสู่ระบบ/ออกจากระบบ</td>
+<td>Register, hash/verify, session, guard, POST+CSRF logout</td>
+</tr>
+<tr>
+<td>FR-03</td>
+<td>ร้านของผู้ใช้</td>
+<td>สร้างและแก้ไขร้านหนึ่งร้านต่อบัญชี</td>
+</tr>
+<tr>
+<td>FR-04/05</td>
+<td>สินค้า/ไซซ์/ราคา/สต็อก</td>
+<td>C/R/U, deactivate และ DELETE เฉพาะสินค้ายังไม่มีประวัติ; version กัน stale stock</td>
+</tr>
+<tr>
+<td>FR-06/07</td>
+<td>ค้นหา/กรอง/รายละเอียด</td>
+<td>GET filters condition/category/size/query, product/shop pages</td>
+</tr>
+<tr>
+<td>FR-08/09</td>
+<td>checkout ร้านเดียว/นัดรับ/จัดส่ง</td>
+<td>server cart, row locks, idempotency, snapshots, server fee</td>
+</tr>
+<tr>
+<td>FR-10/11</td>
+<td>สถานะ/ประวัติ</td>
+<td>shop owner state machine, buyer-owned history, status audit</td>
+</tr>
+<tr>
+<td>FR-12</td>
+<td>ตรวจสิทธิ์ทุก mutation</td>
+<td>actor จาก session; scoped DB checks; tests สองบัญชี</td>
+</tr>
+<tr>
+<td>FR-13</td>
+<td>ข้อความผู้ซื้อ–ร้าน</td>
+<td>ทำแล้ว: participant-only text chat, manual refresh</td>
+</tr>
+<tr>
+<td>FR-14/15</td>
+<td>หลายรูป/สรุปยอดขาย</td>
+<td>ยังไม่ทำ เป็น P1 ที่เลื่อนได้</td>
+</tr>
+</tbody></table>
+<p>NFR เน้น prepared statements, output escaping, CSRF, session/cookie, ownership, FK/unique/check, atomic transactions และ responsive design ดู functional-requirements.md และ implementation-decisions.md รายละเอียดครบ</p>
+<p>ข้อกำหนดอาจารย์อ้าง <code>Database-authen.pdf</code> หน้า 31–36 โดยเฉพาะหน้า 33 องค์ประกอบขั้นต่ำ หน้า 34 วันส่ง หน้า 35 รายงาน หน้า 36 checklist ไม่ใช้เกณฑ์คะแนน Lab แทน Final ดู course-requirements.md สำหรับ traceability</p>
+<h2>3 Use Cases และสิทธิ์</h2>
+<figure><img src="diagrams/use-cases.svg" alt="Use Case Diagram"><figcaption>Use Case Diagram — actual application / generated diagram as labelled</figcaption></figure>
+<p>ผู้เยี่ยมชมค้นหา/ดูสินค้าและสมัครสมาชิก ผู้ซื้อ checkout ดูประวัติของตนและคุยกับร้าน ผู้ขายสร้าง/แก้ร้านและสินค้า ดู order ของร้านและเปลี่ยนสถานะ บัญชีเดียวเล่นบทบาท buyer/seller ได้ตามบริบท ไม่ใช่ role ที่ผู้ใช้ส่งมาแล้วได้รับสิทธิ์เอง</p>
+<p>UC-06 flow: login → เลือกไซซ์และจำนวน → cart ร้านเดียว → เลือก pickup/delivery และข้อมูลจำลอง → server ตรวจราคา/stock/สิทธิ์ → transaction lock → สร้าง order/items/snapshots → ลด stock และ audit → commit → แสดง order เฉพาะผู้มีสิทธิ์ ถ้า stock ไม่พอหรือผิดร้านจะ rollback ทั้งชุด</p>
+<p>UC-05 flow: เจ้าของร้าน login → เพิ่มสินค้าพร้อม variants → อ่าน/แก้ไขข้อมูล → ปิดขายหรือ DELETE เฉพาะรายการที่ไม่มีประวัติการซื้อ การเปลี่ยน ID ของร้านอื่นต้องถูกปฏิเสธ</p>
+<h2>4 ER Diagram และการออกแบบฐานข้อมูล</h2>
+<figure><img src="diagrams/er-diagram.svg" alt="ER Diagram"><figcaption>ER Diagram — actual application / generated diagram as labelled</figcaption></figure>
+<p>โมเดลจริงมี <strong>10 ตาราง 75 คอลัมน์ 14 Foreign Keys</strong> รวม users, shops, products, product_variants, orders, order_items, conversations, messages, order_status_history และ login_attempts ใช้ InnoDB/utf8mb4, BIGINT UNSIGNED สำหรับคีย์ และ DECIMAL สำหรับเงิน</p>
+<p>users 1:0..1 shops บังคับด้วย UNIQUE owner; shops 1:N products/orders; products 1:N variants; orders 1:N items; variants 1:N historical items; conversations 1:N messages; order 1:N status history ส่วน login_attempts เป็นข้อมูลจำกัดการลอง login ชั่วคราวที่ไม่ผูก FK กับผู้ใช้ เพราะคำขออาจไม่ใช่บัญชีจริง</p>
+<p>ER แสดง cardinality ที่ schema อนุญาต (0..N) แต่ service บังคับสินค้าต้องมีอย่างน้อยหนึ่ง variant และ order อย่างน้อยหนึ่ง item ภายใน transaction FK product ของ conversation เป็น nullable และ SET NULL เมื่อสินค้าไม่มีแล้ว ส่วนประวัติคำสั่งซื้อใช้ RESTRICT ป้องกันการทำลายความสัมพันธ์</p>
+<h2>5 Architecture และ Project Structure</h2>
+<figure><img src="diagrams/architecture.svg" alt="Architecture"><figcaption>Architecture — actual application / generated diagram as labelled</figcaption></figure>
+<p>Browser ได้ HTML/CSS/vanilla JS จาก PHP หลัง Apache ประมวลผล route ใน public/ ทุก mutation ผ่าน session/CSRF และ service ที่ตรวจ ownership แล้วใช้ PDO native prepared statements ติดต่อ MySQL/MariaDB config และ storage อยู่ภายนอก webroot ไม่มี password บน browser หรือ repo</p>
+<p>public/ แยก route สำหรับ catalog/auth/shop/product/cart/checkout/orders/messages และ seller ส่วน app/ มี bootstrap, validation, auth, services และ templates; database/ เก็บ schema/seed/JOIN; scripts/ ใช้ CLI ติดตั้งและตรวจ; docs/ เก็บรายงานและหลักฐาน Node/Python ใช้เฉพาะ test/document tooling ไม่ต้องใช้ขณะเสิร์ฟ PHP</p>
+<h2>6 การทำงานจริงและ UI</h2>
+<p>หน้าร้านใช้สีขาว/เขียว สไตล์ editorial ภาพสินค้าเป็นภาพสาธิตสร้างใหม่ มิใช่สินค้า/ลูกค้าจริง รูปด้านล่างเป็น screenshot จากเว็บ PHP ที่รันจริง แยกจาก design concept ซึ่งไม่ใช้เป็นหลักฐานทดสอบ</p>
+<h3>6.1 หน้าร้านและมือถือ</h3>
+<figure><img src="evidence/catalog-desktop.png" alt="Desktop catalog"><figcaption>Desktop catalog — actual application / generated diagram as labelled</figcaption></figure>
+<figure><img src="evidence/catalog-mobile.png" alt="Mobile catalog"><figcaption>Mobile catalog — actual application / generated diagram as labelled</figcaption></figure>
+<h3>6.2 Login และ Product CRUD</h3>
+<figure><img src="evidence/login.png" alt="Login"><figcaption>Login — actual application / generated diagram as labelled</figcaption></figure>
+<figure><img src="evidence/product-create.png" alt="Seller product form"><figcaption>Seller product form — actual application / generated diagram as labelled</figcaption></figure>
+<p>Create/Read/Update persist ลง DB จริง ส่วน DELETE สินค้าที่ไม่มีประวัติทดสอบใน service suite ถ้ามี order อ้างอิงจะปฏิเสธและใช้ deactivate แทน</p>
+<h3>6.3 Checkout และสถานะ</h3>
+<figure><img src="evidence/checkout-pickup.png" alt="Pickup checkout"><figcaption>Pickup checkout — actual application / generated diagram as labelled</figcaption></figure>
+<figure><img src="evidence/seller-order-completed.png" alt="Completed order"><figcaption>Completed order — actual application / generated diagram as labelled</figcaption></figure>
+<p>ข้อมูลนัดรับ/ที่อยู่ในหลักฐานเป็นข้อความจำลอง ไม่มีข้อมูลผู้ซื้อจริง</p>
+<h3>6.4 แชทข้อความ</h3>
+<figure><img src="evidence/chat.png" alt="Participant-only chat"><figcaption>Participant-only chat — actual application / generated diagram as labelled</figcaption></figure>
+<p>เริ่มจากหน้าสินค้า ใช้ thread เดิมของ buyer/product คู่เดิม ส่งได้เฉพาะ buyer หรือเจ้าของร้าน แสดงล่าสุด 100 ข้อความและ refresh ด้วยตนเอง ไม่มีการอ้างว่า realtime</p>
+<h2>7 CRUD และ Data Integrity</h2>
+<p>ProductService ทำ CREATE/UPDATE product+variants ใน transaction, ตรวจเจ้าของร้านจาก session, ราคา/ไซซ์/stock จาก server และ version ของ variant หาก checkout เปลี่ยน stock ระหว่างเปิด form จะปฏิเสธ stale edit</p>
+<p>OrderService ใช้ lock ตาม buyer → shop → products → variants; ตรวจร้าน/สินค้ายัง active และ stock อีกครั้ง; สร้าง order/items และลด stock/audit พร้อมกัน เงินคิดเป็นสตางค์ integer ก่อนบันทึก DECIMAL request key unique ต่อผู้ซื้อและ payload hash กัน retry ที่ไม่ตรงกัน ทำให้ส่งซ้ำไม่หัก stock ซ้ำ</p>
+<figure><img src="diagrams/order-status.svg" alt="Order status state machine"><figcaption>Order status state machine — actual application / generated diagram as labelled</figcaption></figure>
+<p>Seller เปลี่ยนสถานะตามวิธีรับสินค้าเท่านั้น Cancel อนุญาตก่อนพร้อมรับ/ออกส่งและคืน stock ครั้งเดียวภายใต้ order lock Terminal states เปลี่ยนซ้ำไม่ได้ snapshots ชื่อ/ไซซ์/ราคายังคงเดิมเมื่อแก้ product</p>
+<h2>8 SQL JOIN และผลจริง</h2>
+<p>ตัวอย่าง SQL อยู่ใน database/demo-joins.sql และผลรันอยู่ sql-join-evidence.md / evidence/join-results.json INNER JOIN เชื่อมผู้ซื้อ–order–ร้าน–snapshot items ส่วน LEFT JOIN คงร้านที่ไม่มี order โดยใช้ COUNT(o.order_id) ไม่ใช่ COUNT(*)</p>
+<table>
+<thead>
+<tr>
+<th>Order</th>
+<th>Buyer</th>
+<th>Shop</th>
+<th>Item</th>
+<th>Qty</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>Demo buyer</td>
+<td>Browser Demo Wardrobe mvuqxv5p</td>
+<td>Browser linen mvuqxv5p</td>
+<td>2</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Demo buyer</td>
+<td>Browser Demo Wardrobe mvuqypuh</td>
+<td>Browser linen mvuqypuh</td>
+<td>2</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Demo buyer</td>
+<td>Browser Demo Wardrobe mvuqypuh</td>
+<td>Browser linen mvuqypuh</td>
+<td>1</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Demo buyer</td>
+<td>Browser Demo Wardrobe mvur03vx</td>
+<td>Browser linen mvur03vx</td>
+<td>2</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>Shop</th>
+<th>Order count</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Bangsaen Closet</td>
+<td>0</td>
+</tr>
+<tr>
+<td>BUU Rewear</td>
+<td>0</td>
+</tr>
+<tr>
+<td>The Next Wardrobe</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<p>JOIN หนึ่งต่อหลายเพิ่มจำนวนแถวได้ จึงไม่ SUM(total_amount) หลัง JOIN items โดยตรง Product catalog aggregate variants ให้เหลือหนึ่งแถวต่อ product ก่อน pagination หลักการอ้าง Data-base-join.pdf หน้า 9, 16, 28–30</p>
+<h2>9 Authentication และ Security</h2>
+<p>ใช้ password_hash/password_verify, normalized unique email, session_regenerate_id หลัง login/register, strict session mode และ idle timeout 30 นาที Cookie มี HttpOnly/SameSite=Lax; Secure default true แต่ปิดเฉพาะ Local HTTP ที่ทดสอบ ห้ามอ้างว่า HTTPS บน Angsila ผ่านแล้ว</p>
+<p>ทุก form เปลี่ยนข้อมูลรวม logout ใช้ POST+CSRF ทุกคำสั่ง SQL รับค่าผ่าน prepared statements Escape output ด้วย htmlspecialchars CSP จำกัด source ของ asset/form และห้าม framing DB errors ไม่เผยต่อผู้ใช้ ผู้ใช้ A ถูกตรวจทั้ง URL และ POST ว่าแก้ข้อมูล B ไม่ได้</p>
+<p>จำกัด login ผิดจาก bucket account+IP และ IP ในช่วง 15 นาที เก็บ hash ไม่เก็บรหัสผ่าน/IP ดิบ private config และ demo passwords ถูก gitignore และอยู่นอก public การทดสอบใช้บัญชี example.test ที่สร้างขึ้นเท่านั้น ไม่อ่านหรือใช้ชีต User/Password</p>
+<h2>10 Testing และผลที่ได้</h2>
+<p>Local: <strong>47 / 47 domain/database/concurrency tests ผ่าน</strong>, <strong>24 / 24 browser tests ผ่าน</strong> Environment PHP 8.5.12, 11.4.9-MariaDB, installed Chrome via Playwright ที่ desktop และ 390×844</p>
+<p>CI: <a href="https://github.com/Skyce38/CLOZEE/actions/runs/41032288293">GitHub Actions run 41032288293</a> ยืนยัน PHP 8.3.36 + MySQL 8.4.13 และ Chromium ขั้น syntax/schema/seed, domain/concurrency และ browser ผ่านสำหรับ commit <code>c7783c5</code> หลักฐานแยก revision ชัดเจน ไม่ใช้ CI เก่าอ้างว่า commit ใหม่ผ่านอัตโนมัติ</p>
+<p>Concurrency test ใช้สอง PHP processes เชื่อม DB อิสระแย่งซื้อ item ชิ้นสุดท้าย ผลสำเร็จเพียงหนึ่งคำขอ stock เหลือศูนย์ ส่วนสองคำขอ key เดียวได้ order เดียว stock ลดครั้งเดียว ทดสอบ rollback, stale edit, cancel คืน stock, snapshot, ownership, CSRF, SQL injection และ XSS chat เพิ่มด้วย</p>
+<p>รายละเอียดชื่อ test และผลจริงทั้งหมดใน test-results.md และ JSON ใน evidence/ การทดสอบนี้ไม่ใช่ penetration/load test และยังไม่ใช่ผลบน Angsila</p>
+<h2>11 Deployment และสถานะส่งงาน</h2>
+<p>Repository: <a href="https://github.com/Skyce38/CLOZEE">Skyce38/CLOZEE</a><br>Local URL: <a href="http://127.0.0.1:8088">http://127.0.0.1:8088</a> (เฉพาะเครื่องพัฒนา ไม่ใช่ URL ส่งงาน)<br>Angsila URL: <strong>[ยังไม่มี URL เป้าหมายที่ได้รับอนุญาต / ยังไม่ deploy]</strong></p>
+<p>ผู้ใช้แจ้งว่า portal phpMyAdmin อาจเข้าไม่ได้ แต่ยังไม่มีการยืนยันสาเหตุการขัดข้อง target directory, runtime และ upload method ยังไม่ทราบ ผู้ใช้สั่งทำ Local ให้ครบและไม่เข้าระบบจริงจนกว่าจะมีข้อมูล/สิทธิ์ยืนยัน จึงจัด deployment.md และ deployment-verification.md แยก พร้อม boundary การอนุมัติ ไม่อ้างว่าเว็บ Angsila เปิดได้แล้ว</p>
+<h2>12 ข้อจำกัดและงานที่ยังต้องทำ</h2>
+<p>ยังไม่ได้ deploy/ตรวจ Angsila; ต้องเติมข้อมูลหน้าปกที่ยังไม่ทราบ; รูปสินค้าเป็นชุดภาพสาธิต ไม่มี customer upload/multiple images; chat ไม่ realtime; order/thread/shop listing จำกัดล่าสุดไม่เกิน 100; ไม่มี analytics dashboard, payment, courier, GPS, refunds หรือ BUU SSO; pain point ยังเป็นสมมติฐาน ไม่อ้างการวิจัยจริง</p>
+<p>ก่อนส่งจริงต้องยืนยัน target/permissions, deploy ด้วย private config, ทดสอบบน HTTPS/Apache/DB ของ Angsila, กรอก URL จริงและอัปเดตหลักฐาน/checklist นอกจากนี้ผู้จัดทำควรยืนยันช่องทางส่ง/slot นำเสนอกับอาจารย์ เพราะสไลด์ที่ให้ไม่ได้กำหนดรายละเอียดเหล่านี้</p>
+<h2>13 แหล่งอ้างอิง</h2>
+<ul>
+<li>Database-authen.pdf หน้า 31–36: Final Project; หน้า 5–18: CRUD/Auth/Security</li>
+<li>CRUD-and-VERSION-CONTROL.pdf หน้า 3–17, 22–36: PHP/MySQL/Git/Angsila</li>
+<li>Data-base-join.pdf หน้า 4–5, 8–30: relational keys/JOIN/debug</li>
+<li>CLOZEE-round2-kit.zip: round2-build-brief, project-spec, functional-requirements, use-cases, final-report-outline</li>
+<li><a href="https://www.php.net/manual/en/pdo.prepared-statements.php">PHP PDO prepared statements</a></li>
+<li><a href="https://dev.mysql.com/doc/refman/8.0/en/innodb-locking-reads.html">MySQL InnoDB locking reads</a></li>
+<li>GitHub source/CI และหลักฐานที่รันจริงใน docs/evidence; ไม่มีการคัดลอกโปรเจกต์ Resume/อาหารเป็น CLOZEE</li>
+</ul>
+<div class="page-break"></div><h2>ภาคผนวก Data Dictionary</h2>
+<p>สร้างจาก information_schema ของ schema ที่นำเข้าจริงบน MariaDB 11.4.9 ไม่ใช่การเดาจากชื่อฟิลด์ รวม 10 ตาราง 75 คอลัมน์ 14 Foreign Keys เวลาในฐานข้อมูลเป็น UTC ส่วน UI ระบุ UTC ไว้ชัดเจน</p>
+<h2>conversations</h2>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>NULL?</th>
+<th>Default</th>
+<th>Key / rule</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>conversation_id</td>
+<td>bigint(20) unsigned</td>
+<td>NO</td>
+<td>NULL</td>
+<td>PRI; auto_increment</td>
+<td>รหัสการสนทนา</td>
+</tr>
+<tr>
+<td>buyer_user_id</td>
+<td>bigint(20) unsigned</td>
+<td>NO</td>
+<td>NULL</td>
+<td>MUL; FK → users.user_id</td>
+<td>บัญชีผู้ซื้อ</td>
+</tr>
+<tr>
+<td>shop_id</td>
+<td>bigint(20) unsigned</td>
+<td>NO</td>
+<td>NULL</td>
+<td>MUL; FK → shops.shop_id</td>
+<td>รหัสร้าน</td>
+</tr>
+<tr>
+<td>product_id</td>
+<td>bigint(20) unsigned</td>
+<td>YES</td>
+<td>NULL</td>
+<td>MUL; FK → products.product_id</td>
+<td>รหัสสินค้า</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamp</td>
+<td>NO</td>
+<td>current_timestamp()</td>
+<td>-</td>
+<td>เวลาสร้าง (UTC)</td>
+</tr>
+<tr>
+<td>last_message_at</td>
+<td>timestamp</td>
+<td>YES</td>
+<td>NULL</td>
+<td>-</td>
+<td>เวลาข้อความล่าสุด ใช้เรียง thread</td>
+</tr>
+</tbody></table>
+<h2>login_attempts</h2>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>NULL?</th>
+<th>Default</th>
+<th>Key / rule</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>attempt_id</td>
+<td>bigint(20) unsigned</td>
+<td>NO</td>
+<td>NULL</td>
+<td>PRI; auto_increment</td>
+<td>รหัสบันทึกการล็อกอินผิด</td>
+</tr>
+<tr>
+<td>bucket</td>
+<td>char(64)</td>
+<td>NO</td>
+<td>NULL</td>
+<td>MUL</td>
+<td>SHA-256 ของ IP + normalized email</td>
+</tr>
+<tr>
+<td>ip_bucket</td>
+<td>char(64)</td>
+<td>NO</td>
+<td>NULL</td>
+<td>MUL</td>
+<td>SHA-256 ของ IP เพื่อจำกัดการลองรวม</td>
+</tr>
+<tr>
+<td>attempted_at</td>
+<td>timestamp</td>
+<td>NO</td>
+<td>current_timestamp()</td>
+<td>-</td>
+<td>เวลา login ผิด เก็บชั่วคราว</td>
+</tr>
+</tbody></table>
+<h2>messages</h2>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>NULL?</th>
+<th>Default</th>
+<th>Key / rule</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>message_id</td>
+<td>bigint(20) unsigned</td>
+<td>NO</td>
+<td>NULL</td>
+<td>PRI; auto_increment</td>
+<td>รหัสข้อความ</td>
+</tr>
+<tr>
+<td>conversation_id</td>
+<td>bigint(20) unsigned</td>
+<td>NO</td>
+<td>NULL</td>
+<td>MUL; FK → conversations.conversation_id</td>
+<td>รหัสการสนทนา</td>
+</tr>
+<tr>
+<td>sender_user_id</td>
+<td>bigint(20) unsigned</td>
+<td>NO</td>
+<td>NULL</td>
+<td>MUL; FK → users.user_id</td>
+<td>ผู้ส่งจริงจาก session</td>
+</tr>
+<tr>
+<td>message_text</td>
+<td>text</td>
+<td>NO</td>
+<td>NULL</td>
+<td>-</td>
+<td>ข้อความล้วน 1–2000 ตัวอักษร Escape เมื่อแสดงผล</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamp</td>
+<td>NO</td>
+<td>current_timestamp()</td>
+<td>-</td>
+<td>เวลาสร้าง (UTC)</td>
+</tr>
+</tbody></table>
+<h2>orders</h2>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>NULL?</th>
+<th>Default</th>
+<th>Key / rule</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>order_id</td>
+<td>bigint(20) unsigned</td>
+<td>NO</td>
+<td>NULL</td>
+<td>PRI; auto_increment</td>
+<td>รหัสคำสั่งซื้อ</td>
+</tr>
+<tr>
+<td>buyer_user_id</td>
+<td>bigint(20) unsigned</td>
+<td>NO</td>
+<td>NULL</td>
+<td>MUL; FK → users.user_id</td>
+<td>บัญชีผู้ซื้อ</td>
+</tr>
+<tr>
+<td>shop_id</td>
+<td>bigint(20) unsigned</td>
+<td>NO</td>
+<td>NULL</td>
+<td>MUL; FK → shops.shop_id</td>
+<td>รหัสร้าน</td>
+</tr>
+<tr>
+<td>fulfillment_method</td>
+<td>enum(&#39;pickup&#39;,&#39;delivery&#39;)</td>
+<td>NO</td>
+<td>NULL</td>
+<td>-</td>
+<td>pickup หรือ delivery</td>
+</tr>
+<tr>
+<td>fulfillment_details</td>
+<td>text</td>
+<td>NO</td>
+<td>NULL</td>
+<td>-</td>
+<td>สถานที่และรายละเอียดส่วนตัวที่ผู้ซื้อให้ร้าน</td>
+</tr>
+<tr>
+<td>shipping_fee</td>
+<td>decimal(10,2)</td>
+<td>NO</td>
+<td>0.00</td>
+<td>-</td>
+<td>ค่าจัดส่ง ณ เวลาสั่งซื้อ</td>
+</tr>
+<tr>
+<td>total_amount</td>
+<td>decimal(10,2)</td>
+<td>NO</td>
+<td>NULL</td>
+<td>-</td>
+<td>ผลรวมสินค้าและค่าจัดส่งจาก server</td>
+</tr>
+<tr>
+<td>status</td>
+<td>enum(&#39;pending&#39;,&#39;confirmed&#39;,&#39;preparing&#39;,&#39;ready_for_pickup&#39;,&#39;out_for_delivery&#39;,&#39;completed&#39;,&#39;cancelled&#39;)</td>
+<td>NO</td>
+<td>&#39;pending&#39;</td>
+<td>-</td>
+<td>สถานะปัจจุบันตาม state machine</td>
+</tr>
+<tr>
+<td>buyer_note</td>
+<td>text</td>
+<td>YES</td>
+<td>NULL</td>
+<td>-</td>
+<td>หมายเหตุถึงร้าน</td>
+</tr>
+<tr>
+<td>checkout_key</td>
+<td>char(64)</td>
+<td>NO</td>
+<td>NULL</td>
+<td>-</td>
+<td>รหัสกันคำขอซ้ำ ไม่ซ้ำร่วมกับ buyer_user_id</td>
+</tr>
+<tr>
+<td>request_hash</td>
+<td>char(64)</td>
+<td>NO</td>
+<td>NULL</td>
+<td>-</td>
+<td>SHA-256 ของคำขอเพื่อป้องกันใช้ key เดิมกับข้อมูลอื่น</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamp</td>
+<td>NO</td>
+<td>current_timestamp()</td>
+<td>-</td>
+<td>เวลาสร้าง (UTC)</td>
+</tr>
+<tr>
+<td>updated_at</td>
+<td>timestamp</td>
+<td>NO</td>
+<td>current_timestamp()</td>
+<td>-; on update current_timestamp()</td>
+<td>เวลาแก้ไขล่าสุด (UTC)</td>
+</tr>
+</tbody></table>
+<h2>order_items</h2>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>NULL?</th>
+<th>Default</th>
+<th>Key / rule</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>order_item_id</td>
+<td>bigint(20) unsigned</td>
+<td>NO</td>
+<td>NULL</td>
+<td>PRI; auto_increment</td>
+<td>รหัสรายการซื้อ</td>
+</tr>
+<tr>
+<td>order_id</td>
+<td>bigint(20) unsigned</td>
+<td>NO</td>
+<td>NULL</td>
+<td>MUL; FK → orders.order_id</td>
+<td>รหัสคำสั่งซื้อ</td>
+</tr>
+<tr>
+<td>variant_id</td>
+<td>bigint(20) unsigned</td>
+<td>NO</td>
+<td>NULL</td>
+<td>MUL; FK → product_variants.variant_id</td>
+<td>รหัสตัวเลือกไซซ์</td>
+</tr>
+<tr>
+<td>product_name_snapshot</td>
+<td>varchar(180)</td>
+<td>NO</td>
+<td>NULL</td>
+<td>-</td>
+<td>ชื่อสินค้า ณ วันที่สั่ง</td>
+</tr>
+<tr>
+<td>size_label_snapshot</td>
+<td>varchar(50)</td>
+<td>NO</td>
+<td>NULL</td>
+<td>-</td>
+<td>ไซซ์ ณ วันที่สั่ง</td>
+</tr>
+<tr>
+<td>quantity</td>
+<td>int(10) unsigned</td>
+<td>NO</td>
+<td>NULL</td>
+<td>-</td>
+<td>จำนวน 1–99</td>
+</tr>
+<tr>
+<td>unit_price</td>
+<td>decimal(10,2)</td>
+<td>NO</td>
+<td>NULL</td>
+<td>-</td>
+<td>ราคาต่อหน่วย ณ วันที่สั่ง</td>
+</tr>
+</tbody></table>
+<h2>order_status_history</h2>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>NULL?</th>
+<th>Default</th>
+<th>Key / rule</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>history_id</td>
+<td>bigint(20) unsigned</td>
+<td>NO</td>
+<td>NULL</td>
+<td>PRI; auto_increment</td>
+<td>รหัสประวัติสถานะ</td>
+</tr>
+<tr>
+<td>order_id</td>
+<td>bigint(20) unsigned</td>
+<td>NO</td>
+<td>NULL</td>
+<td>MUL; FK → orders.order_id</td>
+<td>รหัสคำสั่งซื้อ</td>
+</tr>
+<tr>
+<td>actor_user_id</td>
+<td>bigint(20) unsigned</td>
+<td>NO</td>
+<td>NULL</td>
+<td>MUL; FK → users.user_id</td>
+<td>ผู้สร้างคำสั่งซื้อหรือผู้เปลี่ยนสถานะ</td>
+</tr>
+<tr>
+<td>from_status</td>
+<td>varchar(30)</td>
+<td>YES</td>
+<td>NULL</td>
+<td>-</td>
+<td>สถานะเดิม NULL สำหรับการสร้างครั้งแรก</td>
+</tr>
+<tr>
+<td>to_status</td>
+<td>varchar(30)</td>
+<td>NO</td>
+<td>NULL</td>
+<td>-</td>
+<td>สถานะใหม่</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamp</td>
+<td>NO</td>
+<td>current_timestamp()</td>
+<td>-</td>
+<td>เวลาสร้าง (UTC)</td>
+</tr>
+</tbody></table>
+<h2>products</h2>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>NULL?</th>
+<th>Default</th>
+<th>Key / rule</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>product_id</td>
+<td>bigint(20) unsigned</td>
+<td>NO</td>
+<td>NULL</td>
+<td>PRI; auto_increment</td>
+<td>รหัสสินค้า</td>
+</tr>
+<tr>
+<td>shop_id</td>
+<td>bigint(20) unsigned</td>
+<td>NO</td>
+<td>NULL</td>
+<td>MUL; FK → shops.shop_id</td>
+<td>รหัสร้าน</td>
+</tr>
+<tr>
+<td>product_name</td>
+<td>varchar(180)</td>
+<td>NO</td>
+<td>NULL</td>
+<td>-</td>
+<td>ชื่อสินค้าในปัจจุบัน</td>
+</tr>
+<tr>
+<td>description</td>
+<td>text</td>
+<td>YES</td>
+<td>NULL</td>
+<td>-</td>
+<td>รายละเอียดร้านหรือสินค้า</td>
+</tr>
+<tr>
+<td>category</td>
+<td>varchar(80)</td>
+<td>YES</td>
+<td>NULL</td>
+<td>-</td>
+<td>หมวดหมู่จากรายการค่าที่อนุญาตใน PHP</td>
+</tr>
+<tr>
+<td>condition_type</td>
+<td>enum(&#39;new&#39;,&#39;secondhand&#39;)</td>
+<td>NO</td>
+<td>NULL</td>
+<td>MUL</td>
+<td>new หรือ secondhand</td>
+</tr>
+<tr>
+<td>image_path</td>
+<td>varchar(255)</td>
+<td>YES</td>
+<td>NULL</td>
+<td>-</td>
+<td>ชื่อภาพสาธิตที่อนุญาตในระบบ</td>
+</tr>
+<tr>
+<td>is_active</td>
+<td>tinyint(1)</td>
+<td>NO</td>
+<td>1</td>
+<td>-</td>
+<td>1 เปิดใช้งาน / 0 ปิดใช้งาน</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamp</td>
+<td>NO</td>
+<td>current_timestamp()</td>
+<td>-</td>
+<td>เวลาสร้าง (UTC)</td>
+</tr>
+<tr>
+<td>updated_at</td>
+<td>timestamp</td>
+<td>NO</td>
+<td>current_timestamp()</td>
+<td>-; on update current_timestamp()</td>
+<td>เวลาแก้ไขล่าสุด (UTC)</td>
+</tr>
+</tbody></table>
+<h2>product_variants</h2>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>NULL?</th>
+<th>Default</th>
+<th>Key / rule</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>variant_id</td>
+<td>bigint(20) unsigned</td>
+<td>NO</td>
+<td>NULL</td>
+<td>PRI; auto_increment</td>
+<td>รหัสตัวเลือกไซซ์</td>
+</tr>
+<tr>
+<td>product_id</td>
+<td>bigint(20) unsigned</td>
+<td>NO</td>
+<td>NULL</td>
+<td>MUL; FK → products.product_id</td>
+<td>รหัสสินค้า</td>
+</tr>
+<tr>
+<td>size_label</td>
+<td>varchar(50)</td>
+<td>NO</td>
+<td>NULL</td>
+<td>-</td>
+<td>ไซซ์ ตัวพิมพ์ใหญ่และไม่ซ้ำต่อสินค้า</td>
+</tr>
+<tr>
+<td>price</td>
+<td>decimal(10,2)</td>
+<td>NO</td>
+<td>NULL</td>
+<td>-</td>
+<td>ราคาต่อหน่วย DECIMAL; PHP คำนวณเป็นสตางค์</td>
+</tr>
+<tr>
+<td>stock_quantity</td>
+<td>int(10) unsigned</td>
+<td>NO</td>
+<td>0</td>
+<td>-</td>
+<td>จำนวนพร้อมขาย 0–999999</td>
+</tr>
+<tr>
+<td>version</td>
+<td>int(10) unsigned</td>
+<td>NO</td>
+<td>1</td>
+<td>-</td>
+<td>เลขรุ่นสำหรับป้องกันการแก้สต็อกทับกัน</td>
+</tr>
+<tr>
+<td>is_active</td>
+<td>tinyint(1)</td>
+<td>NO</td>
+<td>1</td>
+<td>-</td>
+<td>1 เปิดใช้งาน / 0 ปิดใช้งาน</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamp</td>
+<td>NO</td>
+<td>current_timestamp()</td>
+<td>-</td>
+<td>เวลาสร้าง (UTC)</td>
+</tr>
+<tr>
+<td>updated_at</td>
+<td>timestamp</td>
+<td>NO</td>
+<td>current_timestamp()</td>
+<td>-; on update current_timestamp()</td>
+<td>เวลาแก้ไขล่าสุด (UTC)</td>
+</tr>
+</tbody></table>
+<h2>shops</h2>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>NULL?</th>
+<th>Default</th>
+<th>Key / rule</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>shop_id</td>
+<td>bigint(20) unsigned</td>
+<td>NO</td>
+<td>NULL</td>
+<td>PRI; auto_increment</td>
+<td>รหัสร้าน</td>
+</tr>
+<tr>
+<td>owner_user_id</td>
+<td>bigint(20) unsigned</td>
+<td>NO</td>
+<td>NULL</td>
+<td>UNI; FK → users.user_id</td>
+<td>เจ้าของร้าน หนึ่งร้านต่อบัญชี</td>
+</tr>
+<tr>
+<td>shop_name</td>
+<td>varchar(150)</td>
+<td>NO</td>
+<td>NULL</td>
+<td>-</td>
+<td>ชื่อร้าน</td>
+</tr>
+<tr>
+<td>description</td>
+<td>text</td>
+<td>YES</td>
+<td>NULL</td>
+<td>-</td>
+<td>รายละเอียดร้านหรือสินค้า</td>
+</tr>
+<tr>
+<td>pickup_location</td>
+<td>varchar(255)</td>
+<td>YES</td>
+<td>NULL</td>
+<td>-</td>
+<td>จุดนัดรับที่ร้านระบุ</td>
+</tr>
+<tr>
+<td>is_active</td>
+<td>tinyint(1)</td>
+<td>NO</td>
+<td>1</td>
+<td>-</td>
+<td>1 เปิดใช้งาน / 0 ปิดใช้งาน</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamp</td>
+<td>NO</td>
+<td>current_timestamp()</td>
+<td>-</td>
+<td>เวลาสร้าง (UTC)</td>
+</tr>
+<tr>
+<td>updated_at</td>
+<td>timestamp</td>
+<td>NO</td>
+<td>current_timestamp()</td>
+<td>-; on update current_timestamp()</td>
+<td>เวลาแก้ไขล่าสุด (UTC)</td>
+</tr>
+</tbody></table>
+<h2>users</h2>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>NULL?</th>
+<th>Default</th>
+<th>Key / rule</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>user_id</td>
+<td>bigint(20) unsigned</td>
+<td>NO</td>
+<td>NULL</td>
+<td>PRI; auto_increment</td>
+<td>รหัสบัญชีผู้ใช้</td>
+</tr>
+<tr>
+<td>full_name</td>
+<td>varchar(120)</td>
+<td>NO</td>
+<td>NULL</td>
+<td>-</td>
+<td>ชื่อแสดงผล</td>
+</tr>
+<tr>
+<td>email</td>
+<td>varchar(190)</td>
+<td>NO</td>
+<td>NULL</td>
+<td>UNI</td>
+<td>อีเมลไม่ซ้ำ ปรับเป็นตัวพิมพ์เล็กใน PHP</td>
+</tr>
+<tr>
+<td>password_hash</td>
+<td>varchar(255)</td>
+<td>NO</td>
+<td>NULL</td>
+<td>-</td>
+<td>รหัสผ่านที่ผ่าน password_hash เท่านั้น</td>
+</tr>
+<tr>
+<td>phone</td>
+<td>varchar(30)</td>
+<td>YES</td>
+<td>NULL</td>
+<td>-</td>
+<td>เบอร์โทร (optional; ปัจจุบันไม่ใช้ในฟอร์ม)</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamp</td>
+<td>NO</td>
+<td>current_timestamp()</td>
+<td>-</td>
+<td>เวลาสร้าง (UTC)</td>
+</tr>
+<tr>
+<td>updated_at</td>
+<td>timestamp</td>
+<td>NO</td>
+<td>current_timestamp()</td>
+<td>-; on update current_timestamp()</td>
+<td>เวลาแก้ไขล่าสุด (UTC)</td>
+</tr>
+</tbody></table>
+<h2>Unique constraints</h2>
+<table>
+<thead>
+<tr>
+<th>Table</th>
+<th>Index</th>
+<th>Columns</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>conversations</td>
+<td>PRIMARY</td>
+<td>conversation_id</td>
+</tr>
+<tr>
+<td>login_attempts</td>
+<td>PRIMARY</td>
+<td>attempt_id</td>
+</tr>
+<tr>
+<td>messages</td>
+<td>PRIMARY</td>
+<td>message_id</td>
+</tr>
+<tr>
+<td>orders</td>
+<td>PRIMARY</td>
+<td>order_id</td>
+</tr>
+<tr>
+<td>orders</td>
+<td>uq_order_checkout</td>
+<td>buyer_user_id,checkout_key</td>
+</tr>
+<tr>
+<td>order_items</td>
+<td>PRIMARY</td>
+<td>order_item_id</td>
+</tr>
+<tr>
+<td>order_items</td>
+<td>uq_order_variant</td>
+<td>order_id,variant_id</td>
+</tr>
+<tr>
+<td>order_status_history</td>
+<td>PRIMARY</td>
+<td>history_id</td>
+</tr>
+<tr>
+<td>products</td>
+<td>PRIMARY</td>
+<td>product_id</td>
+</tr>
+<tr>
+<td>product_variants</td>
+<td>PRIMARY</td>
+<td>variant_id</td>
+</tr>
+<tr>
+<td>product_variants</td>
+<td>uq_variants_product_size</td>
+<td>product_id,size_label</td>
+</tr>
+<tr>
+<td>shops</td>
+<td>PRIMARY</td>
+<td>shop_id</td>
+</tr>
+<tr>
+<td>shops</td>
+<td>uq_shops_owner</td>
+<td>owner_user_id</td>
+</tr>
+<tr>
+<td>users</td>
+<td>PRIMARY</td>
+<td>user_id</td>
+</tr>
+<tr>
+<td>users</td>
+<td>uq_users_email</td>
+<td>email</td>
+</tr>
+</tbody></table>
+<h2>กติกาที่ต้องตรวจใน PHP</h2>
+<p>ทุก order item ต้องอยู่ในร้านของ order, ผู้ส่งแชทต้องเป็นผู้ร่วมสนทนา, สินค้าต้องมีอย่างน้อยหนึ่ง variant, order ต้องมีอย่างน้อยหนึ่ง item, สต็อกต้องไม่ถูกขายเกิน, state transition ต้องตรงวิธีรับสินค้า และราคาต้องมาจาก server ดู implementation-decisions.md สำหรับ CHECK และ business rules ฉบับเต็ม</p>
+</body></html>

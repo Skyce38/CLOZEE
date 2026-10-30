@@ -1,0 +1,12 @@
+digraph OrderStatus {
+ graph [rankdir=LR,bgcolor=white,pad="0.3",fontname=Arial];
+ node [shape=box,style="rounded,filled",fillcolor="#eef2ed",color="#244b36",fontname=Arial,fontsize=13];
+ edge [fontname=Arial,fontsize=11,color="#6b806d"];
+ pending -> confirmed -> preparing;
+ preparing -> ready_for_pickup [label="pickup"];
+ preparing -> out_for_delivery [label="delivery"];
+ ready_for_pickup -> completed;out_for_delivery -> completed;
+ pending -> cancelled;confirmed -> cancelled;preparing -> cancelled;
+ cancelled [fillcolor="#fae9e5",label="cancelled\nrestock once"];
+ completed [fillcolor="#dbe8ac"];
+}

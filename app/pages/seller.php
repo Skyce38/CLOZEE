@@ -26,7 +26,8 @@ if($mode==='edit') {
     }
     if($_SERVER['REQUEST_METHOD']==='POST') {
         $editing=array_merge($editing?:[],$_POST);
-        $variantRows=is_array($_POST['variants']??null)?$_POST['variants']:[];
+        // Reindex untrusted array keys before using numeric indices in HTML field names.
+        $variantRows=is_array($_POST['variants']??null)?array_slice(array_values(array_filter($_POST['variants'],'is_array')),0,12):[];
     }
     if(!$variantRows)$variantRows=[['size_label'=>'M','price'=>'','stock_quantity'=>1,'is_active'=>1]];
 }

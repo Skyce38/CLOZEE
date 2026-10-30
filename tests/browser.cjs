@@ -17,6 +17,11 @@ const suffix=Date.now().toString(36);
 const password=crypto.randomBytes(18).toString('hex'); // ephemeral, never logged or stored
 const errors=[];
 let browser;
+function observe(page) {
+  page.on('pageerror', e=>errors.push(e.message));
+  page.on('console', m=>{if(['error','warning'].includes(m.type())&&!/Failed to load resource: the server responded with a status of (403|404|405|422)/.test(m.text())) errors.push(m.text());});
+  page.on('response', r=>{if(r.status()>=400&&['image','stylesheet','script','font'].includes(r.request().resourceType()))errors.push('Asset '+r.status()+' '+r.url());});
+}
 async function test(name, work) {
   try { await work(); results.push({test:name,status:'PASS'});console.log('PASS',name); }
   catch(e) { results.push({test:name,status:'FAIL',detail:e.message});console.error('FAIL',name,e.message);throw e; }
@@ -50,7 +55,7 @@ async function checkout(page,productId,variant,quantity,method) {
 (async()=>{
   browser=await chromium.launch({channel:process.env.CLOZEE_BROWSER_CHANNEL||'chrome',headless:true});
   const visitor=await browser.newContext({viewport:{width:1536,height:1024}});
-  const p=await visitor.newPage();p.on('pageerror',e=>errors.push(e.message));
+  const p=await visitor.newPage();observe(p);
   await test('catalog renders real PHP data and all product assets',async()=>{
     const r=await p.goto(base+'/');assert.equal(r.status(),200);await ready(p);
     assert.match(await p.title(),/CLOZEE/);assert.ok(await p.locator('.product-card').count()>=4);
@@ -74,8 +79,8 @@ async function checkout(page,productId,variant,quantity,method) {
     const missing=await p.request.post(base+'/logout.php',{form:{}});assert.equal(missing.status(),403);
     await shot(p,'login');
   });
-  const sellerContext=await browser.newContext({viewport:{width:1440,height:1000}});const seller=await sellerContext.newPage();seller.on('pageerror',e=>errors.push(e.message));
-  await test('seller registers with secure session cookie',async()=>{
+  const sellerContext=await browser.newContext({viewport:{width:1440,height:1000}});const seller=await sellerContext.newPage();observe(seller);
+  await test('seller registers with HttpOnly and SameSite session cookie',async()=>{
     await register(seller,'seller');const cookies=await sellerContext.cookies();const session=cookies.find(x=>x.name==='clozee_session');assert.ok(session&&session.httpOnly&&session.sameSite==='Lax');
   });
   await test('seller creates and edits own shop',async()=>{
@@ -91,7 +96,12 @@ async function checkout(page,productId,variant,quantity,method) {
     const href=await seller.getByRole('link',{name:'แก้ไข',exact:true}).first().getAttribute('href');productId=new URL(href,base).searchParams.get('id');
     await seller.goto(base+'/product.php?id='+productId);variantId=await seller.locator('select[name=variant_id] option').nth(1).getAttribute('value');assert.ok(variantId);await shot(seller,'product-detail');
   });
-  const buyerContext=await browser.newContext({viewport:{width:1440,height:1000}});const buyer=await buyerContext.newPage();buyer.on('pageerror',e=>errors.push(e.message));
+  await test('malformed variant keys cannot inject HTML on validation errors',async()=>{
+    await seller.goto(base+'/seller/product-edit.php?id='+productId);
+    const r=await seller.request.post(base+'/seller/product-edit.php?id='+productId,{form:{csrf:await csrf(seller),product_id:productId,product_name:'',category:'Shirts',condition_type:'secondhand',image_path:'linen.jpg','variants[x" onfocus="window.injected=1][size_label]':'M','variants[x" onfocus="window.injected=1][price]':'290.00','variants[x" onfocus="window.injected=1][stock_quantity]':'3'}});
+    assert.equal(r.status(),422);assert.ok(!(await r.text()).includes('onfocus='));
+  });
+  const buyerContext=await browser.newContext({viewport:{width:1440,height:1000}});const buyer=await buyerContext.newPage();observe(buyer);
   let pickupOrder,deliveryOrder;
   await test('buyer registers, adds item, places pickup order',async()=>{await register(buyer,'buyer');pickupOrder=await checkout(buyer,productId,variantId,2,'pickup');assert.ok(await buyer.getByText('580.00 ฿',{exact:true}).last().isVisible());await shot(buyer,'order-pickup');});
   await test('buyer cannot mutate seller order status',async()=>{const r=await buyer.request.post(base+'/order.php?id='+pickupOrder,{form:{csrf:await csrf(buyer),order_id:pickupOrder,status:'confirmed'}});assert.equal(r.status(),422);});
@@ -119,8 +129,8 @@ async function checkout(page,productId,variant,quantity,method) {
   await test('wrong login rejected then correct login restores access',async()=>{
     await buyer.goto(base+'/login.php');await buyer.getByLabel('อีเมล',{exact:true}).fill('buyer.'+suffix+'@example.test');await buyer.getByLabel('รหัสผ่าน',{exact:true}).fill('wrong-demo-value');await buyer.getByRole('button',{name:'เข้าสู่ระบบ',exact:true}).click();assert.ok(await buyer.getByRole('alert').isVisible());await buyer.getByLabel('รหัสผ่าน',{exact:true}).fill(password);await buyer.getByRole('button',{name:'เข้าสู่ระบบ',exact:true}).click();await buyer.waitForURL('**/products.php');
   });
-  await test('SQL injection string cannot bypass login',async()=>{await p.goto(base+'/login.php');const r=await p.request.post(base+'/login.php',{form:{csrf:await csrf(p),email:"' OR 1=1 --",password:'incorrect-test-value'}});assert.equal(r.status(),422);assert.match(await r.text(),/อีเมลหรือรหัสผ่านไม่ถูกต้อง/);});
-  await test('no browser JavaScript runtime errors',async()=>assert.deepEqual(errors,[]));
+  await test('SQL injection string cannot bypass login',async()=>{await p.goto(base+'/login.php');const r=await p.request.post(base+'/login.php',{form:{csrf:await csrf(p),email:"' OR 1=1 -- "+suffix,password:'incorrect-test-value'}});assert.equal(r.status(),422);assert.match(await r.text(),/อีเมลหรือรหัสผ่านไม่ถูกต้อง/);});
+  await test('no unexpected console, asset or page errors',async()=>assert.deepEqual(errors,[]));
   await shot(seller,'seller-orders-mobile');
 })().catch(e=>{console.error(e.stack);process.exitCode=1;}).finally(async()=>{
   if(browser)await browser.close();

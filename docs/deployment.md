@@ -2,6 +2,8 @@
 
 **Status: PREPARED, NOT DEPLOYED.** No Angsila account, server, filesystem or production database has been accessed or modified. The user requires explicit approval before using credentials or changing the live system. Never use Google Sheets account/password data.
 
+User update, 30 October 2026: the instructor's phpMyAdmin portal appears unavailable to the user; CLOZEE's assigned URL/directory, PHP/DB versions and permitted transfer method remain unknown. This is user-reported, not a server outage diagnosis. The user explicitly instructed local completion first and no access to the real server until environment and permissions are confirmed. No server probes or logins were performed for this build.
+
 ## Information required before an approval request
 
 - Exact owner-approved Angsila URL and filesystem target; existing files and rollback owner.

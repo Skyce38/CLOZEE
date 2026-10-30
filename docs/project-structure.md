@@ -1,57 +1,50 @@
-# CLOZEE — Proposed Project Structure (NOT yet created by Codex)
+# CLOZEE implemented project structure
 
-The current package only contains planning docs and draft schema. This tree is the *target* for the web application, not proof that these files already exist.
+This tree describes the actual local implementation. The original proposed tree is preserved in reference/project-structure-v0.3.md. Only public/ may be web-visible.
 
 ```text
 CLOZEE/
-├── README.md
-├── .gitignore                       # create when implementing
-├── docs/
-│   ├── project-spec.md
-│   ├── functional-requirements.md
-│   ├── use-cases.md
-│   ├── project-structure.md
-│   ├── for-codex.md
-│   └── course-requirements.md       # Codex to create after reviewing PDFs
-├── database/
-│   ├── schema.sql
-│   └── seed.sql                     # Codex to create for demo accounts
-├── app/
-│   ├── config/
-│   │   ├── db.php                   # no embedded credentials
-│   │   └── env.example.php          # safe non-secret template, if needed
-│   ├── auth/
-│   │   ├── session.php
-│   │   └── csrf.php
-│   ├── services/
-│   │   ├── ShopService.php
-│   │   ├── ProductService.php
-│   │   └── OrderService.php
-│   └── templates/
-│       ├── header.php
-│       └── footer.php
-├── public/                          # web-facing document root / mapped Angsila subfolder
-│   ├── index.php
-│   ├── register.php
-│   ├── login.php
-│   ├── logout.php
-│   ├── products.php
-│   ├── product.php
-│   ├── shop.php
-│   ├── seller/
-│   │   ├── dashboard.php
-│   │   ├── products.php
-│   │   └── orders.php
-│   ├── checkout.php
-│   ├── orders.php
-│   └── assets/
-│       ├── css/
-│       ├── js/
-│       └── images/
-└── storage/                         # private writable area if host supports
-    └── uploads/
+  app/
+    bootstrap.php                 configuration, headers, shared helpers
+    validation.php                money, IDs, enums and status transitions
+    config/example.php            safe configuration template
+    config/db.php                 native PDO connection/query/transaction helpers
+    config/local.php              PRIVATE and gitignored; not in release packages
+    auth/session.php              session/auth/CSRF/throttling
+    services/                     ShopService, ProductService, OrderService, ChatService
+    pages/                        PHP controllers and HTML for public/protected flows
+    templates/                    shared header/footer/product/seller navigation
+  public/
+    index.php, products.php, product.php, shop.php
+    register.php, login.php, logout.php
+    cart.php, checkout.php, orders.php, order.php, messages.php
+    seller/                       dashboard, shop, products, product-edit, orders
+    assets/                       CSS, vanilla JS, favicon, generated demo photos
+  database/
+    schema.sql                    reviewed 10-table schema
+    seed.sql                      fictional data with password hashes only
+    demo-joins.sql                CLOZEE INNER/LEFT JOIN examples
+  scripts/
+    migrate.php, seed.php, doctor.php, export-metadata.php
+    build-docs.py, render-diagrams.cjs, print-report.cjs, package-release.py
+  tests/
+    run.php, worker.php           real DB, business rules and process concurrency
+    browser.cjs                   real HTTP/Playwright acceptance and responsive checks
+  docs/
+    course-requirements.md, implementation-decisions.md, test-results.md
+    data-dictionary.md, use-cases.md, sql-join-evidence.md
+    final-report.md, final-report.html, CLOZEE-Final-Report-Round2.pdf
+    deployment.md, deployment-verification.md, manual-tests.md
+    final-submission-checklist.md, build-log.md, visual-qa.md
+    diagrams/                     ER / use cases / architecture / status: DOT + SVG
+    evidence/                     actual non-secret screenshots and JSON results
+    design/                       visual concept; not test evidence
+    reference/                    original planning baseline, not current readiness
+  storage/                        private logs/accounts/session-independent runtime files; ignored
+  output/                         generated source/deployment ZIPs and manifest; ignored
+  .github/workflows/test.yml       isolated PHP/MySQL/Chromium CI
+  .gitignore, .gitattributes, README.md
+  package.json, package-lock.json  DEV tooling only; no Node production runtime
 ```
 
-## Deployment caution
-
-Do not assume that Angsila can use `public/` as its document root or that it allows writable folders outside a specific home directory. Confirm actual PHP version, file permissions and web root before adapting structure. Keep config and secrets outside the web-visible area whenever possible; do not commit real host credentials. If the host requires a different layout, document the mapping and keep source-of-truth protected.
+The application has no rewrite dependency or Composer dependency. Apache must map the URL to public/ while keeping app/config, storage, database and tooling outside webroot. Actual Angsila mapping is unknown and not yet authorized; see deployment.md. There is no claim that the target server has been tested.

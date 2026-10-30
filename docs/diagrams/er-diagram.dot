@@ -1,0 +1,31 @@
+digraph ER {
+ graph [rankdir=TB,bgcolor="white",pad="0.3",nodesep="0.4",ranksep="0.65",fontname="Arial",label="CLOZEE relational model — 10 tables / 14 foreign keys",labelloc=t,fontsize=20];
+ node [shape=record,fontname="Arial",fontsize=12,style="rounded,filled",fillcolor="#eef2ed",color="#244b36",margin="0.15,0.1"];
+ edge [fontname="Arial",fontsize=10,color="#6b806d",arrowsize=0.7];
+ users [label="{users|PK user_id\lUQ email\lpassword_hash\lfull_name / phone\l}"];
+ shops [label="{shops|PK shop_id\lFK,UQ owner_user_id\lshop_name / pickup_location\lis_active\l}"];
+ products [label="{products|PK product_id\lFK shop_id\lproduct_name / category\lcondition_type / image_path\lis_active\l}"];
+ product_variants [label="{product_variants|PK variant_id\lFK product_id\lUQ product_id + size_label\lprice / stock_quantity\lversion / is_active\l}"];
+ orders [label="{orders|PK order_id\lFK buyer_user_id / shop_id\lUQ buyer_user_id + checkout_key\lrequest_hash / total_amount\lshipping_fee / status\lfulfillment_method / details\l}"];
+ order_items [label="{order_items|PK order_item_id\lFK order_id / variant_id\lUQ order_id + variant_id\lquantity / unit_price\lname / size snapshots\l}"];
+ conversations [label="{conversations|PK conversation_id\lFK buyer_user_id / shop_id\lFK product_id (nullable)\llast_message_at\l}"];
+ messages [label="{messages|PK message_id\lFK conversation_id\lFK sender_user_id\lmessage_text / created_at\l}"];
+ order_status_history [label="{order_status_history|PK history_id\lFK order_id / actor_user_id\lfrom_status / to_status\lcreated_at\l}"];
+ login_attempts [label="{login_attempts|PK attempt_id\lbucket / ip_bucket (hashes)\lattempted_at\lNo foreign keys\l}"];
+ users -> shops [label="1 : 0..1"];
+ shops -> products [label="1 : 0..N"];
+ products -> product_variants [label="1 : 0..N"];
+ users -> orders [label="buyer 1 : 0..N"];
+ shops -> orders [label="1 : 0..N"];
+ orders -> order_items [label="1 : 0..N"];
+ product_variants -> order_items [label="1 : 0..N"];
+ users -> conversations [label="buyer 1 : 0..N"];
+ shops -> conversations [label="1 : 0..N"];
+ products -> conversations [label="0..1 product / thread",style=dashed];
+ conversations -> messages [label="1 : 0..N"];
+ users -> messages [label="sender",constraint=false,style=dashed];
+ orders -> order_status_history [label="1 : 0..N"];
+ users -> order_status_history [label="actor",constraint=false,style=dashed];
+ {rank=same;users;login_attempts;}
+ {rank=same;products;orders;conversations;}
+}

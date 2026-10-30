@@ -1,0 +1,184 @@
+{
+    "executed_at": "2026-10-30T09:36:27+00:00",
+    "database_version": "11.4.9-MariaDB",
+    "inner_join": [
+        {
+            "order_id": 1,
+            "buyer": "Demo buyer",
+            "shop_name": "Browser Demo Wardrobe mvuqxv5p",
+            "product_name_snapshot": "Browser linen mvuqxv5p",
+            "quantity": 2,
+            "unit_price": "290.00"
+        },
+        {
+            "order_id": 2,
+            "buyer": "Demo buyer",
+            "shop_name": "Browser Demo Wardrobe mvuqypuh",
+            "product_name_snapshot": "Browser linen mvuqypuh",
+            "quantity": 2,
+            "unit_price": "290.00"
+        },
+        {
+            "order_id": 3,
+            "buyer": "Demo buyer",
+            "shop_name": "Browser Demo Wardrobe mvuqypuh",
+            "product_name_snapshot": "Browser linen mvuqypuh",
+            "quantity": 1,
+            "unit_price": "290.00"
+        },
+        {
+            "order_id": 4,
+            "buyer": "Demo buyer",
+            "shop_name": "Browser Demo Wardrobe mvur03vx",
+            "product_name_snapshot": "Browser linen mvur03vx",
+            "quantity": 2,
+            "unit_price": "290.00"
+        },
+        {
+            "order_id": 5,
+            "buyer": "Demo buyer",
+            "shop_name": "Browser Demo Wardrobe mvur03vx",
+            "product_name_snapshot": "Browser linen mvur03vx",
+            "quantity": 1,
+            "unit_price": "290.00"
+        },
+        {
+            "order_id": 6,
+            "buyer": "Demo buyer",
+            "shop_name": "Browser Demo Wardrobe mvur42rk",
+            "product_name_snapshot": "Browser linen mvur42rk",
+            "quantity": 2,
+            "unit_price": "290.00"
+        },
+        {
+            "order_id": 7,
+            "buyer": "Demo buyer",
+            "shop_name": "Browser Demo Wardrobe mvur42rk",
+            "product_name_snapshot": "Browser linen mvur42rk",
+            "quantity": 1,
+            "unit_price": "290.00"
+        },
+        {
+            "order_id": 8,
+            "buyer": "Demo buyer",
+            "shop_name": "Browser Demo Wardrobe mvurim4c",
+            "product_name_snapshot": "Browser linen mvurim4c",
+            "quantity": 2,
+            "unit_price": "290.00"
+        },
+        {
+            "order_id": 9,
+            "buyer": "Demo buyer",
+            "shop_name": "Browser Demo Wardrobe mvurim4c",
+            "product_name_snapshot": "Browser linen mvurim4c",
+            "quantity": 1,
+            "unit_price": "290.00"
+        },
+        {
+            "order_id": 10,
+            "buyer": "Demo buyer",
+            "shop_name": "Browser Demo Wardrobe mvurt7yi",
+            "product_name_snapshot": "Browser linen mvurt7yi",
+            "quantity": 2,
+            "unit_price": "290.00"
+        },
+        {
+            "order_id": 11,
+            "buyer": "Demo buyer",
+            "shop_name": "Browser Demo Wardrobe mvurt7yi",
+            "product_name_snapshot": "Browser linen mvurt7yi",
+            "quantity": 1,
+            "unit_price": "290.00"
+        },
+        {
+            "order_id": 12,
+            "buyer": "Demo buyer",
+            "shop_name": "Browser Demo Wardrobe mvurz5ej",
+            "product_name_snapshot": "Browser linen mvurz5ej",
+            "quantity": 2,
+            "unit_price": "290.00"
+        }
+    ],
+    "left_join": [
+        {
+            "shop_id": 1,
+            "shop_name": "Bangsaen Closet",
+            "order_count": 0
+        },
+        {
+            "shop_id": 2,
+            "shop_name": "BUU Rewear",
+            "order_count": 0
+        },
+        {
+            "shop_id": 3,
+            "shop_name": "The Next Wardrobe",
+            "order_count": 0
+        },
+        {
+            "shop_id": 4,
+            "shop_name": "Browser Demo Wardrobe mvuqxv5p",
+            "order_count": 1
+        },
+        {
+            "shop_id": 5,
+            "shop_name": "Browser Demo Wardrobe mvuqypuh",
+            "order_count": 2
+        },
+        {
+            "shop_id": 6,
+            "shop_name": "Outsider Demo Shop",
+            "order_count": 0
+        },
+        {
+            "shop_id": 7,
+            "shop_name": "Browser Demo Wardrobe mvur03vx",
+            "order_count": 2
+        },
+        {
+            "shop_id": 8,
+            "shop_name": "Outsider Demo Shop",
+            "order_count": 0
+        },
+        {
+            "shop_id": 9,
+            "shop_name": "Browser Demo Wardrobe mvur42rk",
+            "order_count": 2
+        },
+        {
+            "shop_id": 10,
+            "shop_name": "Outsider Demo Shop",
+            "order_count": 0
+        },
+        {
+            "shop_id": 11,
+            "shop_name": "Browser Demo Wardrobe mvurim4c",
+            "order_count": 2
+        },
+        {
+            "shop_id": 12,
+            "shop_name": "Outsider Demo Shop",
+            "order_count": 0
+        },
+        {
+            "shop_id": 13,
+            "shop_name": "Browser Demo Wardrobe mvurt7yi",
+            "order_count": 2
+        },
+        {
+            "shop_id": 14,
+            "shop_name": "Outsider Demo Shop",
+            "order_count": 0
+        },
+        {
+            "shop_id": 15,
+            "shop_name": "Browser Demo Wardrobe mvurz5ej",
+            "order_count": 2
+        },
+        {
+            "shop_id": 16,
+            "shop_name": "Outsider Demo Shop",
+            "order_count": 0
+        }
+    ]
+}

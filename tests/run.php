@@ -83,6 +83,17 @@ test('unrelated user cannot read or send to conversation',function()use($buyerTw
 test('shop owner replies to authorized conversation',function()use($otherSeller,$conversation){send_message($otherSeller,$conversation,'Fictional seller reply');check((int)query('SELECT COUNT(*) FROM messages WHERE conversation_id=?',[$conversation])->fetchColumn()===2);});
 test('empty or oversized chat text rejected',function()use($buyer,$conversation){rejects(fn()=>send_message($buyer,$conversation,''));rejects(fn()=>send_message($buyer,$conversation,str_repeat('x',2001)));});
 
+test('schema installer refuses nonempty database without changes',function(){
+    $before=count(query('SHOW TABLES')->fetchAll());
+    $proc=proc_open([PHP_BINARY,ROOT.'/scripts/migrate.php','--empty-database'],[1=>['pipe','w'],2=>['pipe','w']],$pipes);
+    $out=stream_get_contents($pipes[1]);$err=stream_get_contents($pipes[2]);fclose($pipes[1]);fclose($pipes[2]);check(proc_close($proc)===1);check(str_contains($err,'not empty'));check(count(query('SHOW TABLES')->fetchAll())===$before);
+});
+test('demo seeder refuses existing users without changes',function(){
+    $before=(int)query('SELECT COUNT(*) FROM users')->fetchColumn();
+    $proc=proc_open([PHP_BINARY,ROOT.'/scripts/seed.php','--demo-only'],[1=>['pipe','w'],2=>['pipe','w']],$pipes);
+    $out=stream_get_contents($pipes[1]);$err=stream_get_contents($pipes[2]);fclose($pipes[1]);fclose($pipes[2]);check(proc_close($proc)===1);check(str_contains($err,'users already exist'));check((int)query('SELECT COUNT(*) FROM users')->fetchColumn()===$before);
+});
+
 $failed=count(array_filter($results,fn($r)=>$r['status']==='FAIL'));
 $report=['executed_at'=>gmdate('c'),'php'=>PHP_VERSION,'database'=>query('SELECT VERSION()')->fetchColumn(),'suite'=>'domain + real PDO database + multi-process concurrency','passed'=>count($results)-$failed,'failed'=>$failed,'results'=>$results];
 file_put_contents(ROOT.'/storage/test-results.json',json_encode($report,JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE));

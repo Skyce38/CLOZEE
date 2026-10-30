@@ -1,0 +1,198 @@
+{
+    "executed_at": "2026-10-30T09:29:20+00:00",
+    "php": "8.5.12",
+    "database": "11.4.9-MariaDB",
+    "suite": "domain + real PDO database + multi-process concurrency",
+    "passed": 47,
+    "failed": 0,
+    "results": [
+        {
+            "test": "money uses exact integer cents",
+            "status": "PASS"
+        },
+        {
+            "test": "reject negative and excessive decimal precision",
+            "status": "PASS"
+        },
+        {
+            "test": "pickup and delivery state machines differ",
+            "status": "PASS"
+        },
+        {
+            "test": "passwords stored as hashes",
+            "status": "PASS"
+        },
+        {
+            "test": "one shop per owner updates existing shop",
+            "status": "PASS"
+        },
+        {
+            "test": "product CREATE and READ",
+            "status": "PASS"
+        },
+        {
+            "test": "invalid negative product price rejected",
+            "status": "PASS"
+        },
+        {
+            "test": "duplicate sizes rejected",
+            "status": "PASS"
+        },
+        {
+            "test": "foreign owner product UPDATE rejected",
+            "status": "PASS"
+        },
+        {
+            "test": "foreign owner product DELETE rejected",
+            "status": "PASS"
+        },
+        {
+            "test": "owner product UPDATE persists",
+            "status": "PASS"
+        },
+        {
+            "test": "unused product physical DELETE works",
+            "status": "PASS"
+        },
+        {
+            "test": "foreign key rejects orphan variant",
+            "status": "PASS"
+        },
+        {
+            "test": "DB CHECK rejects actual zero quantity insert",
+            "status": "PASS"
+        },
+        {
+            "test": "pickup order deducts stock and uses server total",
+            "status": "PASS"
+        },
+        {
+            "test": "retry same key returns same order without extra stock deduction",
+            "status": "PASS"
+        },
+        {
+            "test": "same key different request rejected",
+            "status": "PASS"
+        },
+        {
+            "test": "mixed shop order rejected with no records",
+            "status": "PASS"
+        },
+        {
+            "test": "insufficient stock rolls back order",
+            "status": "PASS"
+        },
+        {
+            "test": "own shop purchase rejected",
+            "status": "PASS"
+        },
+        {
+            "test": "stale stock edit rejected after checkout",
+            "status": "PASS"
+        },
+        {
+            "test": "buyer and seller may read order; stranger may not",
+            "status": "PASS"
+        },
+        {
+            "test": "buyer may not change seller status",
+            "status": "PASS"
+        },
+        {
+            "test": "other seller may not change status",
+            "status": "PASS"
+        },
+        {
+            "test": "invalid status jump rejected",
+            "status": "PASS"
+        },
+        {
+            "test": "correct pickup sequence records status audit",
+            "status": "PASS"
+        },
+        {
+            "test": "completed order cannot be cancelled",
+            "status": "PASS"
+        },
+        {
+            "test": "referenced product hard delete rejected",
+            "status": "PASS"
+        },
+        {
+            "test": "product snapshots survive name and price edits",
+            "status": "PASS"
+        },
+        {
+            "test": "delivery fee calculated server-side",
+            "status": "PASS"
+        },
+        {
+            "test": "delivery cannot move to pickup status",
+            "status": "PASS"
+        },
+        {
+            "test": "cancellation returns stock exactly once",
+            "status": "PASS"
+        },
+        {
+            "test": "deactivated product cannot be ordered",
+            "status": "PASS"
+        },
+        {
+            "test": "deactivated shop cannot receive orders",
+            "status": "PASS"
+        },
+        {
+            "test": "concurrent buyers cannot oversell last item",
+            "status": "PASS"
+        },
+        {
+            "test": "concurrent duplicate checkout creates exactly one order",
+            "status": "PASS"
+        },
+        {
+            "test": "LEFT JOIN retains shop with no orders",
+            "status": "PASS"
+        },
+        {
+            "test": "INNER JOIN returns buyer shop and snapshot items",
+            "status": "PASS"
+        },
+        {
+            "test": "catalog has no duplicate products from variants",
+            "status": "PASS"
+        },
+        {
+            "test": "chat start returns existing buyer\/product thread",
+            "status": "PASS"
+        },
+        {
+            "test": "shop owner cannot start a buyer thread with self",
+            "status": "PASS"
+        },
+        {
+            "test": "chat sender stored from authenticated actor",
+            "status": "PASS"
+        },
+        {
+            "test": "unrelated user cannot read or send to conversation",
+            "status": "PASS"
+        },
+        {
+            "test": "shop owner replies to authorized conversation",
+            "status": "PASS"
+        },
+        {
+            "test": "empty or oversized chat text rejected",
+            "status": "PASS"
+        },
+        {
+            "test": "schema installer refuses nonempty database without changes",
+            "status": "PASS"
+        },
+        {
+            "test": "demo seeder refuses existing users without changes",
+            "status": "PASS"
+        }
+    ]
+}

@@ -73,3 +73,7 @@ CLOZEE proposes one local web platform to publish and browse clothing listings, 
 
 ## 11. Main report contents
 Introduction and audience; requirements/use cases; ER diagram/schema/data dictionary; architecture/screenshot walk-through; CRUD and auth/security; tests and limitations; public Angsila URL and repository URL. These are based on the provided teaching slides, not on general project assumptions.
+
+## 12. Round 2 implementation status
+
+Local implementation now follows docs/round2-build-brief.md. Actual code decisions are in implementation-decisions.md; test counts/evidence are in test-results.md. Text-only participant chat is implemented after local core tests; multiple images and sales analytics are deferred. Physical DELETE is supported only for products without order references; other products deactivate. Order idempotency, stale stock protection, cancellation/restock and status audit are implemented. Angsila has NOT been accessed/deployed, following the user's instruction to complete local work first. Original pain-point hypotheses and out-of-scope boundaries remain unchanged. See course-requirements.md for verified lecturer requirements and final-submission-checklist.md for remaining gates.

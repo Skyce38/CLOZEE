@@ -1,0 +1,25 @@
+graph UseCases {
+ graph [rankdir=LR,bgcolor=white,pad="0.4",nodesep="0.35",ranksep="0.6",fontname=Arial,fontsize=20,label="CLOZEE use cases",labelloc=t];
+ node [fontname=Arial,fontsize=13,color="#244b36",style=filled,fillcolor="#eef2ed"];
+ edge [color="#6b806d"];
+ visitor [shape=box,label="Visitor\n(not logged in)"];
+ buyer [shape=box,label="Buyer\n(authenticated user)"];
+ seller [shape=box,label="Seller\n(shop owner)"];
+ subgraph cluster_system {
+  label="CLOZEE system boundary";color="#b9c8b1";style=rounded;
+  node [shape=ellipse];
+  auth [label="UC-01 Register / Login"];
+  browse [label="UC-02 Browse / Search / Filter"];
+  detail [label="UC-03 Product details"];
+  shop [label="UC-04 Create / Edit shop"];
+  product [label="UC-05 Product / Variant CRUD"];
+  checkout [label="UC-06 Single-shop checkout\nPickup or Delivery"];
+  history [label="UC-07 Own order history"];
+  status [label="UC-08 Manage shop order status"];
+  chat [label="UC-09 Participant-only text chat"];
+  logout [label="UC-10 Logout"];
+ }
+ visitor -- auth;visitor -- browse;visitor -- detail;
+ buyer -- browse;buyer -- detail;buyer -- checkout;buyer -- history;buyer -- chat;buyer -- logout;
+ seller -- shop;seller -- product;seller -- status;seller -- chat;seller -- logout;
+}

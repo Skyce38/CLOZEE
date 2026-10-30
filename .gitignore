@@ -14,3 +14,8 @@ node_modules/
 .artifacts/
 .DS_Store
 Thumbs.db
+
+# Superseded local draft PDF (may be open in a viewer)
+/docs/CLOZEE-Final-Report.pdf
+
+/output/
