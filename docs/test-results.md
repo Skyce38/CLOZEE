@@ -6,11 +6,11 @@
 | --- | --- | --- | --- |
 | Domain / real DB / multiprocess concurrency | PHP 8.5.12, 11.4.9-MariaDB | 51 PASS, 0 FAIL | 2026-10-30T13:34:51+00:00 |
 | HTTP / browser / responsive | Playwright with installed Chrome (Browser plugin not available) | 24 PASS, 0 FAIL | 2026-10-30T13:36:14.670Z |
-| GitHub CI | PHP 8.3.36 + MySQL 8.4.13 + Chromium | SUCCESS for verified commit f3342a0 | 2026-10-30 |
+| GitHub CI | PHP 8.3.36 + MySQL 8.4.13 + Chromium | SUCCESS for verified commit dd60169 | 2026-10-30 |
 | Angsila real functional flows | Apache + PDO/MySQL 8.0.46, Chrome via university VPN | 30 PASS, 0 FAIL | 2026-10-30T14:42:08Z |
-| Angsila anonymous HTTP/security checks | HTTPS from local machine via VPN | 17 PASS, 0 FAIL | 2026-10-30T14:44:28.436224+00:00 |
+| Angsila anonymous HTTP/security checks | HTTPS from local machine via VPN | 17 PASS, 0 FAIL | 2026-10-30T18:42:01.795710+00:00 |
 
-CI evidence: [41064936461](https://github.com/Skyce38/CLOZEE/actions/runs/41064936461); evidence/ci-verification.json records the verified commit and step results. Future commits need their own CI check before delivery; a passing older run does not prove a newer revision.
+CI evidence: [41109199837](https://github.com/Skyce38/CLOZEE/actions/runs/41109199837); evidence/ci-verification.json records the verified commit and step results. Future commits need their own CI check before delivery; a passing older run does not prove a newer revision.
 
 Commands: `php tests/run.php` with CLOZEE_TEST_DB set to a dedicated test DB; `npm ci` then `npm run test:browser` against the loopback demo server. PHP lint and scripts/doctor.php also executed. Database schema imported into a new isolated DB; migrate/seed scripts refuse existing data. Tests create only fake example.test accounts. Raw local logs remain in ignored storage; sanitized copies are in evidence/.
 
