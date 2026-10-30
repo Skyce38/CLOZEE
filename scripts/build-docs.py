@@ -12,6 +12,9 @@ domain = json.loads((ROOT/'storage/test-results.json').read_text(encoding='utf-8
 browser = json.loads((ROOT/'storage/browser-results.json').read_text(encoding='utf-8'))
 joins = json.loads((ROOT/'storage/join-results.json').read_text(encoding='utf-8'))
 ci = json.loads((DOC/'evidence/ci-verification.json').read_text(encoding='utf-8'))
+live = json.loads((DOC/'evidence/angsila-functional-results.json').read_text(encoding='utf-8'))
+live_http = json.loads((DOC/'evidence/angsila-http-results.json').read_text(encoding='utf-8'))
+assert live['failed'] == 0 and live_http['failed'] == 0, 'Do not claim live acceptance with failures.'
 assert domain['failed'] == 0 and browser['failed'] == 0, 'Do not publish passing results with failing tests.'
 
 def write(name, text):
@@ -68,7 +71,7 @@ requirements='''# CLOZEE Course Requirements สำหรับ Final Round 2
 | F04 | หน้าเว็บทำ CRUD กับ MySQL ได้จริง | หน้า 33 | Shop/Product CRUD; ลบถาวรเฉพาะสินค้าไม่มีประวัติซื้อขาย; ทดสอบ Local และ MySQL CI |
 | F05 | Login / Logout และตรวจสิทธิ์พื้นฐาน | หน้า 33 | app/auth, owner checks, CSRF และ browser tests |
 | F06 | GitHub Repository + README + Commit History | หน้า 33 | https://github.com/Skyce38/CLOZEE พร้อมประวัติ; ตรวจ revision ล่าสุดก่อนส่ง |
-| F07 | Deploy บน Angsila และทดสอบได้ | หน้า 33–34, 36 | ยังไม่ deploy ตามคำสั่งผู้ใช้ รอ target/environment/สิทธิ์ที่ยืนยัน |
+| F07 | Deploy บน Angsila และทดสอบได้ | หน้า 33–34, 36 | ติดตั้งตามอนุมัติแล้ว; ทดสอบผ่าน VPN ที่ https://angsila.informatics.buu.ac.th/~68160207/clozee/ ดู deployment-verification.md |
 | F08 | รายงาน Project ตามรายการเนื้อหา | หน้า 34–35 | final-report.md และ PDF พร้อมหลักฐานจริง; หน้าปกมี placeholder สำหรับข้อมูลที่ยังไม่ได้รับ |
 
 ## กำหนดส่งและเนื้อหารายงาน
@@ -108,7 +111,7 @@ Schema ที่พัฒนามี 10 ตารางเป็นการอ
 
 ## สถานะปัจจุบันและข้อจำกัด
 
-ระบบหลักและ text chat พัฒนาและทดสอบจริงแล้ว ดู test-results.md / evidence และ implementation-decisions.md สำหรับข้อปรับจาก draft ไม่ใช้สถานะก่อนพัฒนามารับรองว่าเว็บไซต์พร้อมส่ง การ deploy Angsila ยังไม่ทำตามคำสั่งผู้ใช้ จึงยังเป็น NOT READY TO SUBMIT แม้ Local/CI ผ่าน
+ระบบหลักและ text chat พัฒนาและทดสอบจริงแล้ว รวมถึง Angsila ผ่าน VPN หลังผู้ใช้อนุมัติปลายทาง ดู test-results.md / deployment-verification.md และ evidence สำหรับขอบเขตจริง ยังต้องเติมข้อมูลหน้าปกและยืนยันช่องทางส่ง/slot นำเสนอ ไม่อ้างว่าทดสอบจากนอก VPN หรือ restore backup แล้ว
 '''
 write('course-requirements.md',requirements)
 
@@ -123,7 +126,8 @@ tests=f'''# CLOZEE Test Results
 | Domain / real DB / multiprocess concurrency | PHP {domain['php']}, {domain['database']} | {domain['passed']} PASS, {domain['failed']} FAIL | {domain['executed_at']} |
 | HTTP / browser / responsive | {browser['browser']} | {browser['passed']} PASS, {browser['failed']} FAIL | {browser['executed_at']} |
 | GitHub CI | PHP 8.3.36 + MySQL 8.4.13 + Chromium | SUCCESS for verified commit {ci['commit'][:7]} | 2026-10-30 |
-| Angsila | Not accessed / no target approved | NOT TESTED | — |
+| Angsila real functional flows | Apache + PDO/MySQL 8.0.46, Chrome via university VPN | {live['passed']} PASS, {live['failed']} FAIL | {live['executed_at']} |
+| Angsila anonymous HTTP/security checks | HTTPS from local machine via VPN | {live_http['passed']} PASS, {live_http['failed']} FAIL | {live_http['executed_at']} |
 
 CI evidence: [{ci['run_id']}]({ci['run_url']}); evidence/ci-verification.json records the verified commit and step results. Future commits need their own CI check before delivery; a passing older run does not prove a newer revision.
 
@@ -137,6 +141,12 @@ Browser viewports: {', '.join(browser['viewports'])}. Browser plugin absent; use
 ## Browser tests
 
 {table(['Test','Observed'],ui_checks)}
+
+## Angsila live functional checks
+
+{table(['Observed flow','Result'],[[r['check'],r['status']] for r in live['results']])}
+
+Independent fresh-browser desktop/mobile screenshots: evidence/angsila-catalog-desktop.png and angsila-catalog-mobile.png. These use no saved browser session. Live physical DELETE, concurrent races, backup restore and off-VPN reachability were not repeated; see evidence/angsila-functional-results.json. The isolated local/MySQL CI suites cover physical DELETE and concurrency separately.
 ## Defects and test corrections recorded during development
 
 - Normalized untrusted variant array keys before rendering failed form submissions and added a browser HTML-injection regression test.
@@ -148,7 +158,7 @@ Browser viewports: {', '.join(browser['viewports'])}. Browser plugin absent; use
 
 ## Remaining verification
 
-Angsila, Apache host-specific mapping, HTTPS Secure cookie behavior on the live target, real network/browser-device coverage and restoration from a production backup have NOT been tested. No claim of penetration testing/load testing or real payment/delivery integration. App has no customer image upload. Manual target checklist: manual-tests.md.
+Angsila mapping, live core flows, HTTPS Secure/HttpOnly/SameSite cookies, blocked private URLs and fresh-browser desktop/mobile rendering were tested. Off-VPN access, actual mobile hardware, penetration/load testing and restoration from backup were not verified. App has no customer image upload or real payment/delivery integration. See deployment-verification.md and manual-tests.md.
 '''
 write('test-results.md',tests)
 for source,target in [('storage/test-results.json','domain-results.json'),('storage/browser-results.json','browser-results.json'),('storage/join-results.json','join-results.json')]:
@@ -174,9 +184,10 @@ report=f'''# CLOZEE
 สมาชิกเพิ่มเติม: **[ยังไม่ได้รับข้อมูลสมาชิกอื่น หรือการยืนยันว่าทำเดี่ยว]**  
 อาจารย์ผู้สอน: **[ยังไม่ได้รับชื่ออาจารย์]**  
 กำหนดส่ง: **10 พฤศจิกายน 2569**  
-จัดทำหลักฐานการพัฒนา: 30 ตุลาคม 2569
+จัดทำหลักฐานการพัฒนา: 30 ตุลาคม 2569<br>
+ปรับปรุงรายงานและชุดส่งงาน: 31 ตุลาคม 2569
 
-**สถานะ: ระบบ Local และ CI ผ่าน; ยังไม่พร้อมส่งฉบับสมบูรณ์ เพราะยังไม่ได้ deploy/ตรวจ Angsila และหน้าปกบางรายการยังเป็น placeholder**
+**สถานะ: ระบบ Local, MySQL CI และระบบหลักบน Angsila ผ่านการตรวจแล้ว; ยังต้องเติมข้อมูลหน้าปกและยืนยันรายละเอียดการส่งก่อนส่งฉบับสมบูรณ์ การเข้าถึงนอก VPN ยังไม่ยืนยัน**
 
 <div class="page-break"></div>
 
@@ -291,7 +302,7 @@ JOIN หนึ่งต่อหลายเพิ่มจำนวนแถว
 
 ## 9 Authentication และ Security
 
-ใช้ password_hash/password_verify, normalized unique email, session_regenerate_id หลัง login/register, strict session mode และ idle timeout 30 นาที Cookie มี HttpOnly/SameSite=Lax; Secure default true แต่ปิดเฉพาะ Local HTTP ที่ทดสอบ ห้ามอ้างว่า HTTPS บน Angsila ผ่านแล้ว
+ใช้ password_hash/password_verify, normalized unique email, session_regenerate_id หลัง login/register, strict session mode และ idle timeout 30 นาที Cookie มี HttpOnly/SameSite=Lax; Secure default true แต่ปิดเฉพาะ Local HTTP การตรวจ HTTPS บน Angsila ยืนยัน Secure/HttpOnly/SameSite=Lax และ no-store แล้ว ไม่มีการส่งออก cookie value หรือรหัสผ่าน
 
 ทุก form เปลี่ยนข้อมูลรวม logout ใช้ POST+CSRF ทุกคำสั่ง SQL รับค่าผ่าน prepared statements Escape output ด้วย htmlspecialchars CSP จำกัด source ของ asset/form และห้าม framing DB errors ไม่เผยต่อผู้ใช้ ผู้ใช้ A ถูกตรวจทั้ง URL และ POST ว่าแก้ข้อมูล B ไม่ได้
 
@@ -305,21 +316,27 @@ CI: [GitHub Actions run {ci['run_id']}]({ci['run_url']}) ยืนยัน PHP 
 
 Concurrency test ใช้สอง PHP processes เชื่อม DB อิสระแย่งซื้อ item ชิ้นสุดท้าย ผลสำเร็จเพียงหนึ่งคำขอ stock เหลือศูนย์ ส่วนสองคำขอ key เดียวได้ order เดียว stock ลดครั้งเดียว ทดสอบ rollback, stale edit, cancel คืน stock, snapshot, ownership, CSRF, SQL injection และ XSS chat เพิ่มด้วย
 
-รายละเอียดชื่อ test และผลจริงทั้งหมดใน test-results.md และ JSON ใน evidence/ การทดสอบนี้ไม่ใช่ penetration/load test และยังไม่ใช่ผลบน Angsila
+Angsila: ตรวจผ่าน {live['passed']} functional checkpoints และ {live_http['passed']} anonymous HTTP/security checks พร้อม fresh-browser desktop/mobile capture ระบบนัดรับ Order #1 สำเร็จ ยกเลิกจัดส่ง Order #2 คืนสต็อก และจัดส่ง Order #3 สำเร็จ ทดสอบสิทธิ์ข้ามบัญชี แชท และ snapshot ด้วยข้อมูล QA สมมติ รายละเอียดใน test-results.md และ JSON evidence/ การทดสอบนี้ไม่ใช่ penetration/load test; concurrency และ physical DELETE ผ่านใน isolated DB/CI แต่ไม่ได้ทำซ้ำบน live
 
 ## 11 Deployment และสถานะส่งงาน
 
 Repository: [Skyce38/CLOZEE](https://github.com/Skyce38/CLOZEE)  
 Local URL: http://127.0.0.1:8088 (เฉพาะเครื่องพัฒนา ไม่ใช่ URL ส่งงาน)  
-Angsila URL: **[ยังไม่มี URL เป้าหมายที่ได้รับอนุญาต / ยังไม่ deploy]**
+Angsila URL: **https://angsila.informatics.buu.ac.th/~68160207/clozee/**
 
-ผู้ใช้แจ้งว่า portal phpMyAdmin อาจเข้าไม่ได้ แต่ยังไม่มีการยืนยันสาเหตุการขัดข้อง target directory, runtime และ upload method ยังไม่ทราบ ผู้ใช้สั่งทำ Local ให้ครบและไม่เข้าระบบจริงจนกว่าจะมีข้อมูล/สิทธิ์ยืนยัน จึงจัด deployment.md และ deployment-verification.md แยก พร้อม boundary การอนุมัติ ไม่อ้างว่าเว็บ Angsila เปิดได้แล้ว
+ผู้ใช้ยืนยันว่าต้องเปิด VPN มหาวิทยาลัย และล็อกอิน phpMyAdmin/FileZilla ด้วยตนเอง จากนั้นอนุมัติปลายทางและแผน SQL ก่อนเขียนจริง แยก public_html/clozee ออกจาก clozee-private นอกเว็บ ใช้ฐาน s68160207 โดยสร้างเฉพาะตาราง clozee_ 10 ตาราง เก็บตาราง Lab เดิมทั้งห้าไว้ครบ รหัสผ่านกรอกโดยผู้ใช้ในไฟล์ส่วนตัวที่ Git ไม่ติดตามและไม่อยู่ใน public_html ไม่อ่านหรือใช้รหัสผ่านจาก Google Sheets
+
+ตรวจ schema จริงได้ 75 คอลัมน์, 14 Foreign Keys, 5 enforced CHECK; หน้าเว็บ PHP/PDO เชื่อมต่อและทำงานกับ MySQL 8.0.46 ได้จริง HTTP protection ผ่านและเว็บ Lab เดิมยังเปิดได้ ดู deployment-verification.md สำหรับหลักฐานและขอบเขตการตรวจ การเปิดด้วยเบราว์เซอร์ใหม่ผ่านในเครือข่าย/VPN เดียวกัน ไม่อ้างว่าทดสอบจากอินเทอร์เน็ตภายนอก VPN แล้ว
+
+![Angsila desktop — actual fresh anonymous browser](evidence/angsila-catalog-desktop.png)
+
+![Angsila mobile — actual fresh anonymous browser](evidence/angsila-catalog-mobile.png)
 
 ## 12 ข้อจำกัดและงานที่ยังต้องทำ
 
-ยังไม่ได้ deploy/ตรวจ Angsila; ต้องเติมข้อมูลหน้าปกที่ยังไม่ทราบ; รูปสินค้าเป็นชุดภาพสาธิต ไม่มี customer upload/multiple images; chat ไม่ realtime; order/thread/shop listing จำกัดล่าสุดไม่เกิน 100; ไม่มี analytics dashboard, payment, courier, GPS, refunds หรือ BUU SSO; pain point ยังเป็นสมมติฐาน ไม่อ้างการวิจัยจริง
+ต้องเติมข้อมูลหน้าปกที่ยังไม่ทราบและยืนยันช่องทางส่ง/slot นำเสนอ; ไม่ยืนยัน off-VPN reachability หรือ restore backup; รูปสินค้าเป็นชุดภาพสาธิต ไม่มี customer upload/multiple images; chat ไม่ realtime; order/thread/shop listing จำกัดล่าสุดไม่เกิน 100; ไม่มี analytics dashboard, payment, courier, GPS, refunds หรือ BUU SSO; pain point ยังเป็นสมมติฐาน ไม่อ้างการวิจัยจริง
 
-ก่อนส่งจริงต้องยืนยัน target/permissions, deploy ด้วย private config, ทดสอบบน HTTPS/Apache/DB ของ Angsila, กรอก URL จริงและอัปเดตหลักฐาน/checklist นอกจากนี้ผู้จัดทำควรยืนยันช่องทางส่ง/slot นำเสนอกับอาจารย์ เพราะสไลด์ที่ให้ไม่ได้กำหนดรายละเอียดเหล่านี้
+ก่อนส่งจริงต้องเติมชื่อผู้จัดทำ/สมาชิก/อาจารย์ ตรวจ URL ผ่าน VPN อีกครั้ง และยืนยันช่องทางส่ง/slot นำเสนอกับอาจารย์ เพราะสไลด์ที่ให้ไม่ได้กำหนดรายละเอียดเหล่านี้ ห้ามส่งไฟล์ config หรือรหัสผ่านใน ZIP/GitHub บัญชี ร้าน สินค้า และคำสั่งซื้อ QA เป็นข้อมูลสมมติ มิใช่การซื้อขายจริง
 
 ## 13 แหล่งอ้างอิง
 

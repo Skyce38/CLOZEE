@@ -1,0 +1,25 @@
+{
+  "executed_at": "2026-10-30T14:41:56.828Z",
+  "target": "https://angsila.informatics.buu.ac.th/~68160207/clozee/",
+  "browser": "Fresh Chrome via Playwright; Browser plugin not available",
+  "network_scope": "University VPN on local machine; no saved browser session",
+  "errors": [],
+  "results": [
+    {
+      "viewport": {
+        "width": 1536,
+        "height": 1024
+      },
+      "check": "Fresh anonymous browser: HTTPS, identity, image decoding, no overflow, screenshot",
+      "status": "PASS"
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "check": "Fresh anonymous browser: HTTPS, identity, image decoding, no overflow, screenshot",
+      "status": "PASS"
+    }
+  ]
+}

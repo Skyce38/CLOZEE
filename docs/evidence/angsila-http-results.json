@@ -1,0 +1,77 @@
+{
+  "executed_at": "2026-10-30T18:42:01.795710+00:00",
+  "target": "https://angsila.informatics.buu.ac.th/~68160207/clozee",
+  "network_scope": "This local machine with university VPN; off-VPN reachability not established",
+  "passed": 17,
+  "failed": 0,
+  "results": [
+    {
+      "check": "Anonymous HTTPS catalog opens",
+      "status": "PASS"
+    },
+    {
+      "check": "MIME sniffing protection",
+      "status": "PASS"
+    },
+    {
+      "check": "Frame embedding denied",
+      "status": "PASS"
+    },
+    {
+      "check": "CSP restricts script to same origin",
+      "status": "PASS"
+    },
+    {
+      "check": "Personal pages are not cached",
+      "status": "PASS"
+    },
+    {
+      "check": "Session cookie Secure HttpOnly SameSite=Lax",
+      "status": "PASS"
+    },
+    {
+      "check": "Public stylesheet reachable",
+      "status": "PASS"
+    },
+    {
+      "check": "Existing Lab homepage still opens",
+      "status": "PASS"
+    },
+    {
+      "check": "Anonymous seller page redirects to login",
+      "status": "PASS"
+    },
+    {
+      "check": "Logout rejects HEAD instead of changing session",
+      "status": "PASS"
+    },
+    {
+      "check": "POST without CSRF rejected",
+      "status": "PASS"
+    },
+    {
+      "check": "Private resource blocked: /app/config/local.php",
+      "status": "PASS"
+    },
+    {
+      "check": "Private resource blocked: /app/config/db-password.txt",
+      "status": "PASS"
+    },
+    {
+      "check": "Private resource blocked: /database/angsila-schema.sql",
+      "status": "PASS"
+    },
+    {
+      "check": "Private resource blocked: /storage/",
+      "status": "PASS"
+    },
+    {
+      "check": "Private resource blocked: /.git/config",
+      "status": "PASS"
+    },
+    {
+      "check": "Private resource blocked: /../clozee-private/app/config/db-password.txt",
+      "status": "PASS"
+    }
+  ]
+}

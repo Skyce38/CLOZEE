@@ -39,5 +39,7 @@ Executed against the isolated local demo database, with fictional browser-test o
 | 14 | Outsider Demo Shop | 0 |
 | 15 | Browser Demo Wardrobe mvurz5ej | 2 |
 | 16 | Outsider Demo Shop | 0 |
+| 17 | Browser Demo Wardrobe mvv0mgun | 2 |
+| 18 | Outsider Demo Shop | 0 |
 
 Zero-order shops remain because shops is the preserved LEFT side. COUNT(o.order_id) counts matched rows, not the NULL placeholder. Snapshot items can repeat an order ID because orders 1:N order_items. Do not SUM order totals across item rows.

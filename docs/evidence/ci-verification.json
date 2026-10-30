@@ -1,30 +1,10 @@
 {
-  "run_url": "https://github.com/Skyce38/CLOZEE/actions/runs/41034821401",
-  "run_id": 41034821401,
-  "job_id": 123992965164,
-  "commit": "7f27ff636c58bcd320e41755c00d7fab223ef88e",
+  "run_url": "https://github.com/Skyce38/CLOZEE/actions/runs/41064936461",
+  "run_id": 41064936461,
+  "job_id": 124093714515,
+  "commit": "f3342a0469b4145ea618547696fa1e0d33fc4a19",
   "conclusion": "success",
   "steps": [
-    {
-      "name": "Set up job",
-      "conclusion": "success"
-    },
-    {
-      "name": "Initialize containers",
-      "conclusion": "success"
-    },
-    {
-      "name": "Run actions/checkout@v4",
-      "conclusion": "success"
-    },
-    {
-      "name": "Run shivammathur/setup-php@v2",
-      "conclusion": "success"
-    },
-    {
-      "name": "Run actions/setup-node@v4",
-      "conclusion": "success"
-    },
     {
       "name": "Syntax and isolated database setup",
       "conclusion": "success"
@@ -34,37 +14,21 @@
       "conclusion": "success"
     },
     {
+      "name": "Shared database namespace acceptance",
+      "conclusion": "success"
+    },
+    {
       "name": "Browser acceptance",
-      "conclusion": "success"
-    },
-    {
-      "name": "Upload non-secret test evidence",
-      "conclusion": "success"
-    },
-    {
-      "name": "Post Run actions/setup-node@v4",
-      "conclusion": "success"
-    },
-    {
-      "name": "Post Run actions/checkout@v4",
-      "conclusion": "success"
-    },
-    {
-      "name": "Stop containers",
-      "conclusion": "success"
-    },
-    {
-      "name": "Complete job",
       "conclusion": "success"
     }
   ],
   "evidence_lines": [
-    "2026-10-30T09:38:20.9048454Z ✓ PHP Installed PHP 8.3.36",
-    "2026-10-30T09:38:25.5338918Z PHP 8.3.36 OK",
-    "2026-10-30T09:38:25.5339255Z pdo_mysql OK",
-    "2026-10-30T09:38:25.5339937Z mbstring OK",
-    "2026-10-30T09:38:25.5352937Z Database 8.4.13",
-    "2026-10-30T09:38:25.5367337Z Tables 10",
-    "2026-10-30T09:38:26.3287802Z 47 tests, 0 failed. Results: storage/test-results.json"
+    "2026-10-30T13:39:07.8834470Z ✓ PHP Installed PHP 8.3.36",
+    "2026-10-30T13:39:11.8266215Z PHP 8.3.36 OK",
+    "2026-10-30T13:39:11.8266536Z pdo_mysql OK",
+    "2026-10-30T13:39:11.8266783Z mbstring OK",
+    "2026-10-30T13:39:11.8276271Z Database 8.4.13",
+    "2026-10-30T13:39:12.5145979Z 51 tests, 0 failed. Results: storage/test-results.json",
+    "2026-10-30T13:39:13.2245488Z 51 tests, 0 failed. Results: storage/test-results-clozee_.json"
   ]
 }

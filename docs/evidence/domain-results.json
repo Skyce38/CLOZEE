@@ -1,13 +1,22 @@
 {
-    "executed_at": "2026-10-30T09:29:20+00:00",
+    "executed_at": "2026-10-30T13:34:51+00:00",
     "php": "8.5.12",
     "database": "11.4.9-MariaDB",
+    "table_prefix": "",
     "suite": "domain + real PDO database + multi-process concurrency",
-    "passed": 47,
+    "passed": 51,
     "failed": 0,
     "results": [
         {
             "test": "money uses exact integer cents",
+            "status": "PASS"
+        },
+        {
+            "test": "explicit table slots resolve and bound text is unchanged",
+            "status": "PASS"
+        },
+        {
+            "test": "unknown table slots are rejected",
             "status": "PASS"
         },
         {
@@ -192,6 +201,14 @@
         },
         {
             "test": "demo seeder refuses existing users without changes",
+            "status": "PASS"
+        },
+        {
+            "test": "shared installer refuses occupied or empty namespace",
+            "status": "PASS"
+        },
+        {
+            "test": "unrelated tables retain their row counts",
             "status": "PASS"
         }
     ]

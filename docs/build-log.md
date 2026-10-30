@@ -9,6 +9,6 @@
 | C Buyer/orders | Search/cart/single-shop pickup+delivery checkout; row locks, idempotency, snapshots; seller state machine and restock; multiprocess concurrency and browser tests | PASS locally and MySQL CI |
 | D Chat/UI | Text chat after local core gates; participant checks, escaped content, desktop/mobile styling and image-load checks | PASS locally and MySQL CI |
 | E Submission materials | Actual schema Data Dictionary, ER/UC/architecture, JOIN evidence, README/report, PDF render review, sanitized test evidence and source packaging | Completed; cover placeholders disclosed |
-| F Angsila | User approved exact public/private targets and 10-table namespace; files/schema installed, metadata verified, Lab preserved | Private DB password configuration and live acceptance tests pending; NOT READY TO SUBMIT |
+| F Angsila | Exact targets approved; files/schema/private configuration installed; Lab preserved; 30 functional and 17 anonymous HTTP checks plus independent desktop/mobile capture | Core technical acceptance PASS via university VPN; cover metadata/submission details pending |
 
 Local result counts are in test-results.md and JSON evidence, rather than assuming every listed manual test was executed. GitHub CI verifies an exact revision; docs-only changes do not rerun the unchanged code suite. Overall final-coursework status is NOT READY TO SUBMIT until Angsila is deployed/verified and required final metadata/links are complete. No actual credentials or Google Sheets passwords were read or used.

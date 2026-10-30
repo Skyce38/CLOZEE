@@ -18,7 +18,7 @@
 | F04 | หน้าเว็บทำ CRUD กับ MySQL ได้จริง | หน้า 33 | Shop/Product CRUD; ลบถาวรเฉพาะสินค้าไม่มีประวัติซื้อขาย; ทดสอบ Local และ MySQL CI |
 | F05 | Login / Logout และตรวจสิทธิ์พื้นฐาน | หน้า 33 | app/auth, owner checks, CSRF และ browser tests |
 | F06 | GitHub Repository + README + Commit History | หน้า 33 | https://github.com/Skyce38/CLOZEE พร้อมประวัติ; ตรวจ revision ล่าสุดก่อนส่ง |
-| F07 | Deploy บน Angsila และทดสอบได้ | หน้า 33–34, 36 | ยังไม่ deploy ตามคำสั่งผู้ใช้ รอ target/environment/สิทธิ์ที่ยืนยัน |
+| F07 | Deploy บน Angsila และทดสอบได้ | หน้า 33–34, 36 | ติดตั้งตามอนุมัติแล้ว; ทดสอบผ่าน VPN ที่ https://angsila.informatics.buu.ac.th/~68160207/clozee/ ดู deployment-verification.md |
 | F08 | รายงาน Project ตามรายการเนื้อหา | หน้า 34–35 | final-report.md และ PDF พร้อมหลักฐานจริง; หน้าปกมี placeholder สำหรับข้อมูลที่ยังไม่ได้รับ |
 
 ## กำหนดส่งและเนื้อหารายงาน
@@ -58,4 +58,4 @@ Schema ที่พัฒนามี 10 ตารางเป็นการอ
 
 ## สถานะปัจจุบันและข้อจำกัด
 
-ระบบหลักและ text chat พัฒนาและทดสอบจริงแล้ว ดู test-results.md / evidence และ implementation-decisions.md สำหรับข้อปรับจาก draft ไม่ใช้สถานะก่อนพัฒนามารับรองว่าเว็บไซต์พร้อมส่ง การ deploy Angsila ยังไม่ทำตามคำสั่งผู้ใช้ จึงยังเป็น NOT READY TO SUBMIT แม้ Local/CI ผ่าน
+ระบบหลักและ text chat พัฒนาและทดสอบจริงแล้ว รวมถึง Angsila ผ่าน VPN หลังผู้ใช้อนุมัติปลายทาง ดู test-results.md / deployment-verification.md และ evidence สำหรับขอบเขตจริง ยังต้องเติมข้อมูลหน้าปกและยืนยันช่องทางส่ง/slot นำเสนอ ไม่อ้างว่าทดสอบจากนอก VPN หรือ restore backup แล้ว

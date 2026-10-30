@@ -1,6 +1,6 @@
 # CLOZEE Final Submission Audit — 10 November 2026
 
-Audit date: 30 October 2026. **NOT READY TO SUBMIT** while Angsila and cover metadata remain incomplete. Local deliverable is implemented/tested; this audit does not equate local success with the lecturer's final hosting requirement.
+Audit date: 30 October 2026. **Technical core deployed and verified; final submission metadata remains incomplete.** Angsila was tested directly via university VPN; off-VPN reachability and backup restoration remain unverified. Fill report-cover names and confirm final submission/reservation details before declaring the complete submission ready.
 
 ## Lecturer requirements (Database-authen.pdf pp.33–36)
 
@@ -11,7 +11,7 @@ Audit date: 30 October 2026. **NOT READY TO SUBMIT** while Angsila and cover met
 - [x] Login/Logout, session, basic authorization and ownership tested.
 - [x] GitHub repository/source/README/history prepared at https://github.com/Skyce38/CLOZEE (verify latest pushed revision below before handoff).
 - [x] Report includes architecture, actual app screenshots, CRUD/auth/security, tests and limitations.
-- [ ] Angsila website deployed and independently browser-verified — target/runtime/permissions not yet known; user instructed no live access.
+- [x] Angsila website deployed after exact-target approval and independently browser-verified through university VPN: https://angsila.informatics.buu.ac.th/~68160207/clozee/
 - [ ] Final cover: author's full name, other members/solo confirmation and instructor name — explicit placeholders remain.
 - [ ] Final Angsila URL and round-2 submission/reservation details confirmed by author/instructor.
 
@@ -42,6 +42,6 @@ Registration and detailed JOIN evidence below are CLOZEE kit requirements; do no
 
 ## Actual results and remaining proof
 
-Local suite: 47 domain/DB/concurrency/install-guard tests and 24 browser tests passed; exact times and cases are in test-results.md and evidence JSON. Verified CI revision/run is recorded in evidence/ci-verification.json; check the latest code run after push. Final report PDF is CLOZEE-Final-Report-Round2.pdf, with HTML/Markdown source. Screenshots show the running PHP app; design/concept.png is not test proof.
+Local suite: 51 domain/DB/concurrency/install-guard tests and 24 browser tests passed for both table namespaces. Angsila passed 30 functional checkpoints and 17 anonymous HTTP/security checks; a fresh browser independently captured desktop/mobile views. Physical DELETE and concurrent races were tested in isolated local/MySQL CI databases, not repeated on live. Exact times, scope and cases are in test-results.md and evidence JSON. Final report PDF is CLOZEE-Final-Report-Round2.pdf, with HTML/Markdown source. Screenshots show actual PHP pages; design/concept.png is not test proof.
 
-Before final submission: fill metadata, obtain approved Angsila target, review private upload/DB/rollback plan, obtain explicit deployment approval, deploy and run target tests. Then replace NOT TESTED markers with actual evidence. Do not tick the Angsila gate based on localhost or CI.
+Before final submission: fill report metadata, confirm the final submission/reservation details and recheck the live URL via VPN. Do not export private configuration/passwords or claim unperformed penetration/load/restore/off-VPN tests. Actual live checks, rather than localhost or CI, support the checked Angsila gate above.

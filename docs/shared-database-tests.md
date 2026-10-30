@@ -16,4 +16,4 @@ The prefixed schema was installed alongside the original ten test tables. Tests 
 
 Evidence: `evidence/shared-db-domain.json`, `evidence/shared-db-default-browser.json`, and `evidence/shared-db-prefix-browser.json`. The existing report/test-results document describes the preceding build; this addendum records the later namespace change. GitHub's new workflow separately tests both namespaces; its latest result must be checked before claiming CI success for this revision.
 
-`database/angsila-schema.sql` is generated from the canonical schema, uses ten `clozee_` tables, and contains no DROP, DELETE or TRUNCATE statements. It is prepared for review only, not executed on Angsila. Set the private application prefix to match before deployment.
+`database/angsila-schema.sql` is generated from the canonical schema, uses ten `clozee_` tables, and contains no DROP, DELETE or TRUNCATE statements. These were pre-installation tests. Subsequently the user approved the exact target and equivalent CREATE statements were executed on Angsila; live verification is in `deployment-verification.md` and the Angsila evidence files. The private live application prefix matches `clozee_`.

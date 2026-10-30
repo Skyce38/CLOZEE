@@ -1,4 +1,4 @@
-# Angsila installation plan — approved, in progress
+# Angsila installation plan — approved and executed
 
 30 October 2026. The user approved the exact targets with “ทำเลย” after reviewing the plan. Follow `deployment-verification.md` for actual progress; approval alone does not mean installation or tests passed.
 
@@ -11,7 +11,7 @@
 | Database schema for review | `database/angsila-schema.sql` |
 | Transfer method | User-authenticated FileZilla SFTP session, port 22 |
 
-The home/webroot and existing Lab URL are verified. The CLOZEE targets are new proposed directories, absent from the inspected listings. Existing Lab files and five Lab tables remain in place. No DROP/DELETE/TRUNCATE statements occur in the new schema. No production demo seed is planned.
+The home/webroot and existing Lab URL are verified. The CLOZEE targets were absent before installation and have now been created after approval. Existing Lab files and five Lab tables remain in place. No DROP/DELETE/TRUNCATE statements occur in the schema. No production demo seeder was run; labelled QA data was created through actual forms. Thirty live functional checkpoints and seventeen anonymous HTTP checks passed; see `deployment-verification.md` for full scope.
 
 ## Prepared split layout
 

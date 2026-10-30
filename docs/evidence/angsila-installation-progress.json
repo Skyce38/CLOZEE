@@ -1,5 +1,7 @@
 {
   "recorded_date": "2026-10-30",
+  "record_type": "Historical schema/file installation checkpoint before private config",
+  "superseded_by": ["angsila-functional-results.json", "angsila-http-results.json", "angsila-visual-results.json"],
   "source_commit": "d2dea676d63e7d56454c54b7bedda7a65e5c9e18",
   "approved_targets": true,
   "public_directory": "/home/BUU/68160207/public_html/clozee",

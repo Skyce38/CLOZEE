@@ -11,7 +11,7 @@ const {chromium}=require('playwright');
   const browser=await chromium.launch({channel:process.env.CLOZEE_BROWSER_CHANNEL||'chrome',headless:true});
   try {
     const page=await browser.newPage();await page.goto(pathToFileURL(path.join(doc,'final-report.html')).href);await page.waitForLoadState('networkidle');await page.locator('img').evaluateAll(a=>Promise.all(a.map(i=>i.decode())));
-    const pdf=await page.pdf({format:'A4',preferCSSPageSize:true,printBackground:true,displayHeaderFooter:true,headerTemplate:'<span></span>',footerTemplate:'<div style="font-size:8px;color:#697464;width:100%;padding:0 16mm;display:flex;justify-content:space-between"><span>CLOZEE · 89022167 Database Management · Local / CI evidence</span><span><span class="pageNumber"></span> / <span class="totalPages"></span></span></div>'});
+    const pdf=await page.pdf({format:'A4',preferCSSPageSize:true,printBackground:true,displayHeaderFooter:true,headerTemplate:'<span></span>',footerTemplate:'<div style="font-size:8px;color:#697464;width:100%;padding:0 16mm;display:flex;justify-content:space-between"><span>CLOZEE · 89022167 Database Management · Local / CI / Angsila evidence</span><span><span class="pageNumber"></span> / <span class="totalPages"></span></span></div>'});
     const target=path.join(doc,'CLOZEE-Final-Report-Round2.pdf');
     fs.writeFileSync(target+'.tmp',pdf);fs.renameSync(target+'.tmp',target);
     console.log('Printed docs/CLOZEE-Final-Report-Round2.pdf from actual report source and evidence.');

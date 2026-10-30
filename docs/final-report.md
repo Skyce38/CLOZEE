@@ -12,9 +12,10 @@
 สมาชิกเพิ่มเติม: **[ยังไม่ได้รับข้อมูลสมาชิกอื่น หรือการยืนยันว่าทำเดี่ยว]**  
 อาจารย์ผู้สอน: **[ยังไม่ได้รับชื่ออาจารย์]**  
 กำหนดส่ง: **10 พฤศจิกายน 2569**  
-จัดทำหลักฐานการพัฒนา: 30 ตุลาคม 2569
+จัดทำหลักฐานการพัฒนา: 30 ตุลาคม 2569<br>
+ปรับปรุงรายงานและชุดส่งงาน: 31 ตุลาคม 2569
 
-**สถานะ: ระบบ Local และ CI ผ่าน; ยังไม่พร้อมส่งฉบับสมบูรณ์ เพราะยังไม่ได้ deploy/ตรวจ Angsila และหน้าปกบางรายการยังเป็น placeholder**
+**สถานะ: ระบบ Local, MySQL CI และระบบหลักบน Angsila ผ่านการตรวจแล้ว; ยังต้องเติมข้อมูลหน้าปกและยืนยันรายละเอียดการส่งก่อนส่งฉบับสมบูรณ์ การเข้าถึงนอก VPN ยังไม่ยืนยัน**
 
 <div class="page-break"></div>
 
@@ -142,7 +143,7 @@ JOIN หนึ่งต่อหลายเพิ่มจำนวนแถว
 
 ## 9 Authentication และ Security
 
-ใช้ password_hash/password_verify, normalized unique email, session_regenerate_id หลัง login/register, strict session mode และ idle timeout 30 นาที Cookie มี HttpOnly/SameSite=Lax; Secure default true แต่ปิดเฉพาะ Local HTTP ที่ทดสอบ ห้ามอ้างว่า HTTPS บน Angsila ผ่านแล้ว
+ใช้ password_hash/password_verify, normalized unique email, session_regenerate_id หลัง login/register, strict session mode และ idle timeout 30 นาที Cookie มี HttpOnly/SameSite=Lax; Secure default true แต่ปิดเฉพาะ Local HTTP การตรวจ HTTPS บน Angsila ยืนยัน Secure/HttpOnly/SameSite=Lax และ no-store แล้ว ไม่มีการส่งออก cookie value หรือรหัสผ่าน
 
 ทุก form เปลี่ยนข้อมูลรวม logout ใช้ POST+CSRF ทุกคำสั่ง SQL รับค่าผ่าน prepared statements Escape output ด้วย htmlspecialchars CSP จำกัด source ของ asset/form และห้าม framing DB errors ไม่เผยต่อผู้ใช้ ผู้ใช้ A ถูกตรวจทั้ง URL และ POST ว่าแก้ข้อมูล B ไม่ได้
 
@@ -150,27 +151,33 @@ JOIN หนึ่งต่อหลายเพิ่มจำนวนแถว
 
 ## 10 Testing และผลที่ได้
 
-Local: **47 / 47 domain/database/concurrency tests ผ่าน**, **24 / 24 browser tests ผ่าน** Environment PHP 8.5.12, 11.4.9-MariaDB, installed Chrome via Playwright ที่ desktop และ 390×844
+Local: **51 / 51 domain/database/concurrency tests ผ่าน**, **24 / 24 browser tests ผ่าน** Environment PHP 8.5.12, 11.4.9-MariaDB, installed Chrome via Playwright ที่ desktop และ 390×844
 
-CI: [GitHub Actions run 41034821401](https://github.com/Skyce38/CLOZEE/actions/runs/41034821401) ยืนยัน PHP 8.3.36 + MySQL 8.4.13 และ Chromium ขั้น syntax/schema/seed, domain/concurrency และ browser ผ่านสำหรับ commit `7f27ff6` หลักฐานแยก revision ชัดเจน ไม่ใช้ CI เก่าอ้างว่า commit ใหม่ผ่านอัตโนมัติ
+CI: [GitHub Actions run 41064936461](https://github.com/Skyce38/CLOZEE/actions/runs/41064936461) ยืนยัน PHP 8.3.36 + MySQL 8.4.13 และ Chromium ขั้น syntax/schema/seed, domain/concurrency และ browser ผ่านสำหรับ commit `f3342a0` หลักฐานแยก revision ชัดเจน ไม่ใช้ CI เก่าอ้างว่า commit ใหม่ผ่านอัตโนมัติ
 
 Concurrency test ใช้สอง PHP processes เชื่อม DB อิสระแย่งซื้อ item ชิ้นสุดท้าย ผลสำเร็จเพียงหนึ่งคำขอ stock เหลือศูนย์ ส่วนสองคำขอ key เดียวได้ order เดียว stock ลดครั้งเดียว ทดสอบ rollback, stale edit, cancel คืน stock, snapshot, ownership, CSRF, SQL injection และ XSS chat เพิ่มด้วย
 
-รายละเอียดชื่อ test และผลจริงทั้งหมดใน test-results.md และ JSON ใน evidence/ การทดสอบนี้ไม่ใช่ penetration/load test และยังไม่ใช่ผลบน Angsila
+Angsila: ตรวจผ่าน 30 functional checkpoints และ 17 anonymous HTTP/security checks พร้อม fresh-browser desktop/mobile capture ระบบนัดรับ Order #1 สำเร็จ ยกเลิกจัดส่ง Order #2 คืนสต็อก และจัดส่ง Order #3 สำเร็จ ทดสอบสิทธิ์ข้ามบัญชี แชท และ snapshot ด้วยข้อมูล QA สมมติ รายละเอียดใน test-results.md และ JSON evidence/ การทดสอบนี้ไม่ใช่ penetration/load test; concurrency และ physical DELETE ผ่านใน isolated DB/CI แต่ไม่ได้ทำซ้ำบน live
 
 ## 11 Deployment และสถานะส่งงาน
 
 Repository: [Skyce38/CLOZEE](https://github.com/Skyce38/CLOZEE)  
 Local URL: http://127.0.0.1:8088 (เฉพาะเครื่องพัฒนา ไม่ใช่ URL ส่งงาน)  
-Angsila URL: **[ยังไม่มี URL เป้าหมายที่ได้รับอนุญาต / ยังไม่ deploy]**
+Angsila URL: **https://angsila.informatics.buu.ac.th/~68160207/clozee/**
 
-ผู้ใช้แจ้งว่า portal phpMyAdmin อาจเข้าไม่ได้ แต่ยังไม่มีการยืนยันสาเหตุการขัดข้อง target directory, runtime และ upload method ยังไม่ทราบ ผู้ใช้สั่งทำ Local ให้ครบและไม่เข้าระบบจริงจนกว่าจะมีข้อมูล/สิทธิ์ยืนยัน จึงจัด deployment.md และ deployment-verification.md แยก พร้อม boundary การอนุมัติ ไม่อ้างว่าเว็บ Angsila เปิดได้แล้ว
+ผู้ใช้ยืนยันว่าต้องเปิด VPN มหาวิทยาลัย และล็อกอิน phpMyAdmin/FileZilla ด้วยตนเอง จากนั้นอนุมัติปลายทางและแผน SQL ก่อนเขียนจริง แยก public_html/clozee ออกจาก clozee-private นอกเว็บ ใช้ฐาน s68160207 โดยสร้างเฉพาะตาราง clozee_ 10 ตาราง เก็บตาราง Lab เดิมทั้งห้าไว้ครบ รหัสผ่านกรอกโดยผู้ใช้ในไฟล์ส่วนตัวที่ Git ไม่ติดตามและไม่อยู่ใน public_html ไม่อ่านหรือใช้รหัสผ่านจาก Google Sheets
+
+ตรวจ schema จริงได้ 75 คอลัมน์, 14 Foreign Keys, 5 enforced CHECK; หน้าเว็บ PHP/PDO เชื่อมต่อและทำงานกับ MySQL 8.0.46 ได้จริง HTTP protection ผ่านและเว็บ Lab เดิมยังเปิดได้ ดู deployment-verification.md สำหรับหลักฐานและขอบเขตการตรวจ การเปิดด้วยเบราว์เซอร์ใหม่ผ่านในเครือข่าย/VPN เดียวกัน ไม่อ้างว่าทดสอบจากอินเทอร์เน็ตภายนอก VPN แล้ว
+
+![Angsila desktop — actual fresh anonymous browser](evidence/angsila-catalog-desktop.png)
+
+![Angsila mobile — actual fresh anonymous browser](evidence/angsila-catalog-mobile.png)
 
 ## 12 ข้อจำกัดและงานที่ยังต้องทำ
 
-ยังไม่ได้ deploy/ตรวจ Angsila; ต้องเติมข้อมูลหน้าปกที่ยังไม่ทราบ; รูปสินค้าเป็นชุดภาพสาธิต ไม่มี customer upload/multiple images; chat ไม่ realtime; order/thread/shop listing จำกัดล่าสุดไม่เกิน 100; ไม่มี analytics dashboard, payment, courier, GPS, refunds หรือ BUU SSO; pain point ยังเป็นสมมติฐาน ไม่อ้างการวิจัยจริง
+ต้องเติมข้อมูลหน้าปกที่ยังไม่ทราบและยืนยันช่องทางส่ง/slot นำเสนอ; ไม่ยืนยัน off-VPN reachability หรือ restore backup; รูปสินค้าเป็นชุดภาพสาธิต ไม่มี customer upload/multiple images; chat ไม่ realtime; order/thread/shop listing จำกัดล่าสุดไม่เกิน 100; ไม่มี analytics dashboard, payment, courier, GPS, refunds หรือ BUU SSO; pain point ยังเป็นสมมติฐาน ไม่อ้างการวิจัยจริง
 
-ก่อนส่งจริงต้องยืนยัน target/permissions, deploy ด้วย private config, ทดสอบบน HTTPS/Apache/DB ของ Angsila, กรอก URL จริงและอัปเดตหลักฐาน/checklist นอกจากนี้ผู้จัดทำควรยืนยันช่องทางส่ง/slot นำเสนอกับอาจารย์ เพราะสไลด์ที่ให้ไม่ได้กำหนดรายละเอียดเหล่านี้
+ก่อนส่งจริงต้องเติมชื่อผู้จัดทำ/สมาชิก/อาจารย์ ตรวจ URL ผ่าน VPN อีกครั้ง และยืนยันช่องทางส่ง/slot นำเสนอกับอาจารย์ เพราะสไลด์ที่ให้ไม่ได้กำหนดรายละเอียดเหล่านี้ ห้ามส่งไฟล์ config หรือรหัสผ่านใน ZIP/GitHub บัญชี ร้าน สินค้า และคำสั่งซื้อ QA เป็นข้อมูลสมมติ มิใช่การซื้อขายจริง
 
 ## 13 แหล่งอ้างอิง
 
