@@ -47,7 +47,7 @@
 
 หลักฐาน JSON อยู่ใน private `storage/` และ CI artifacts; ตัวอย่างหน้าจออยู่ใน `docs/evidence/product-photos/` ตรวจหน้าจอ 1440px และ 390px แล้วไม่มี page overflow ทดสอบ migration บนฐาน local/test ทั้งสอง namespace โดยจำนวนสินค้าและคำสั่งซื้อคงเดิม เรียกซ้ำแล้วไม่แก้ข้อมูล
 
-ผลเหล่านี้ยังไม่ใช่การทดสอบฟีเจอร์รูปสินค้าบน Angsila ส่วนผล MySQL บน GitHub Actions ให้ตรวจ run ของ commit สาขานี้ก่อน merge
+GitHub Actions ผ่านครบทั้ง 5 ชุดบน MySQL 8.4.13 / PHP 8.3 / Chromium: [run 41115700733](https://github.com/Skyce38/CLOZEE/actions/runs/41115700733), commit `d9f9eea` ดู `evidence/product-photos/ci-verification.json` ผลเหล่านี้ยังไม่ใช่การทดสอบฟีเจอร์รูปสินค้าบน Angsila
 
 ## ก่อนอัปเดต Angsila
 

@@ -1,0 +1,21 @@
+{
+  "scope": "Product photos and garment details; isolated GitHub CI, not Angsila",
+  "head_sha": "d9f9eea42d81c7026c7b4840ee76eb935350c796",
+  "run_id": 41115700733,
+  "run_url": "https://github.com/Skyce38/CLOZEE/actions/runs/41115700733",
+  "status": "completed",
+  "conclusion": "success",
+  "completed_at": "2026-10-30T19:31:19Z",
+  "job_id": 124269251749,
+  "pass_lines": 169,
+  "suites": {
+    "domain_default": 54,
+    "domain_clozee_prefix": 54,
+    "image_validation": 17,
+    "browser_regression": 24,
+    "browser_photos": 20
+  },
+  "mysql": "8.4.13",
+  "php": "8.3",
+  "browser": "Chromium 151.0.7922.34"
+}
