@@ -1,6 +1,6 @@
-# How Codex should use the CLOZEE planning package
+# How to use the CLOZEE planning package
 
-You previously reported that you could not find CLOZEE planning, schema or project structure in the workspace. These files were written in ChatGPT and are now supplied as **the initial design reference**, not previously existing files.
+This package contains the initial CLOZEE planning, schema and proposed project structure. These documents are design references; implementation and deployment status are recorded separately.
 
 Read all files in this package in order:
 1. README.md

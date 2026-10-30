@@ -1,4 +1,4 @@
-# CLOZEE — Proposed Project Structure (NOT yet created by Codex)
+# CLOZEE — Proposed Project Structure (historical planning draft)
 
 The current package only contains planning docs and draft schema. This tree is the *target* for the web application, not proof that these files already exist.
 
@@ -11,11 +11,11 @@ CLOZEE/
 │   ├── functional-requirements.md
 │   ├── use-cases.md
 │   ├── project-structure.md
-│   ├── for-codex.md
-│   └── course-requirements.md       # Codex to create after reviewing PDFs
+│   ├── planning-context.md
+│   └── course-requirements.md       # To create after reviewing PDFs
 ├── database/
 │   ├── schema.sql
-│   └── seed.sql                     # Codex to create for demo accounts
+│   └── seed.sql                     # To create for demo accounts
 ├── app/
 │   ├── config/
 │   │   ├── db.php                   # no embedded credentials

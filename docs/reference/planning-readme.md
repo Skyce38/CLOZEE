@@ -11,7 +11,7 @@ CLOZEE is a responsive clothing marketplace for Burapha University students and 
 3. `docs/use-cases.md` — actors and main scenarios
 4. `database/schema.sql` — **draft** MySQL/MariaDB relational schema (8 tables)
 5. `docs/project-structure.md` — **proposed**, not yet implemented source structure
-6. `docs/for-codex.md` — instructions for the coding assistant and interpretation of course materials
+6. `docs/planning-context.md` — planning context and interpretation of course materials
 
 ## Classroom context
 
@@ -23,7 +23,7 @@ This pack contains no usernames, passwords, or API keys. Do not paste or commit 
 
 ## What is not in this pack
 
-No deployed application, no runnable authentication code, no seed data, and no official course-material PDFs. The SQL and structure are **planning drafts** intended for Codex review before implementation.
+No deployed application, no runnable authentication code, no seed data, and no official course-material PDFs. The SQL and structure are **planning drafts** for review before implementation.
 
 ## Final-round work authorization
-The user has asked to prepare the full 10 November 2026 submission. Codex should start with `docs/round2-build-brief.md`, then use `docs/final-submission-checklist.md` and `docs/final-report-outline.md` before claiming readiness. Deployment remains subject to authorized access and verification.
+The user has asked to prepare the full 10 November 2026 submission. Start with `docs/round2-build-brief.md`, then use `docs/final-submission-checklist.md` and `docs/final-report-outline.md` before claiming readiness. Deployment remains subject to authorized access and verification.
