@@ -50,7 +50,25 @@ test('one shop per owner updates existing shop',function()use($seller,$shop){che
 test('product CREATE and READ',function()use($pid){check((int)query('SELECT COUNT(*) FROM {{products}} WHERE product_id=?',[$pid])->fetchColumn()===1);});
 test('legacy product metadata remains optional',function()use($pid){$r=query('SELECT brand,chest_cm,length_cm,condition_notes FROM {{products}} WHERE product_id=?',[$pid])->fetch();check(count(array_filter($r,fn($value)=>$value!==null))===0);});
 test('database CHECK rejects zero garment measurement',function()use($pid){rejects(fn()=>query('UPDATE {{products}} SET chest_cm=0 WHERE product_id=?',[$pid]));});
-test('image foreign key rejects orphan record',function(){rejects(fn()=>query('INSERT INTO {{product_images}}(product_id,storage_name,mime_type,byte_size,width,height) VALUES(?,?,?,?,?,?)',[PHP_INT_MAX,bin2hex(random_bytes(16)).'.jpg','image/jpeg',100,10,10]));});
+test('image foreign key rejects orphan record',function(){rejects(fn()=>query('INSERT INTO {{product_images}}(product_id,storage_name,mime_type,byte_size,width,height,image_data) VALUES(?,?,?,?,?,?,?)',[PHP_INT_MAX,bin2hex(random_bytes(16)).'.png','image/png',1,1,1,'x']));});
+test('database image BLOB retains binary bytes and rollback is atomic',function()use($pid){
+    $bytes="\0\xffPNG-test";$before=(int)query('SELECT COUNT(*) FROM {{product_images}}')->fetchColumn();
+    try{transaction(function()use($pid,$bytes){
+        query('INSERT INTO {{product_images}}(product_id,storage_name,mime_type,byte_size,width,height,image_data) VALUES(?,?,?,?,?,?,?)',[$pid,bin2hex(random_bytes(16)).'.png','image/png',strlen($bytes),1,1,$bytes]);
+        check(query('SELECT image_data FROM {{product_images}} WHERE image_id=?',[(int)db()->lastInsertId()])->fetchColumn()===$bytes);
+        throw new ValidationException('intentional rollback');
+    });}catch(ValidationException $e){}
+    check((int)query('SELECT COUNT(*) FROM {{product_images}}')->fetchColumn()===$before);
+});
+test('database image CHECK rejects byte length mismatch and invalid dimensions',function()use($pid){
+    foreach([[2,1,1,'x'],[1,0,1,'x'],[1,1601,1,'x']] as [$size,$width,$height,$bytes])rejects(fn()=>query('INSERT INTO {{product_images}}(product_id,storage_name,mime_type,byte_size,width,height,image_data) VALUES(?,?,?,?,?,?,?)',[$pid,bin2hex(random_bytes(16)).'.png','image/png',$size,$width,$height,$bytes]));
+});
+test('concurrent photo additions cannot exceed four images',function()use($pid){
+    transaction(function()use($pid){query('SELECT product_id FROM {{products}} WHERE product_id=? FOR UPDATE',[$pid])->fetch();$photos=[];for($n=0;$n<3;$n++)$photos[]=['storage_name'=>bin2hex(random_bytes(16)).'.png','mime_type'=>'image/png','byte_size'=>1,'width'=>1,'height'=>1,'image_data'=>'x'];sync_product_photos($pid,[],$photos);});
+    $running=[];for($n=0;$n<2;$n++){$process=proc_open([PHP_BINARY,ROOT.'/tests/photo-worker.php',(string)$pid],[1=>['pipe','w'],2=>['pipe','w']],$pipes);$running[]=[$process,$pipes];}
+    $out=[];foreach($running as [$process,$pipes]){$out[]=stream_get_contents($pipes[1]);$error=stream_get_contents($pipes[2]);fclose($pipes[1]);fclose($pipes[2]);check(proc_close($process)===0,$error);}
+    sort($out);check($out===['created','limited']);check(count(product_images($pid))===4);query('DELETE FROM {{product_images}} WHERE product_id=?',[$pid]);
+});
 test('invalid negative product price rejected',function()use($seller){$d=product_input();$d['variants'][0]['price']='-1';rejects(fn()=>save_product($seller,null,$d));});
 test('duplicate sizes rejected',function()use($seller){$d=product_input();$d['variants'][]=$d['variants'][0];rejects(fn()=>save_product($seller,null,$d));});
 test('foreign owner product UPDATE rejected',function()use($otherSeller,$pid){rejects(fn()=>save_product($otherSeller,$pid,product_edit_input($pid)));});

@@ -26,7 +26,7 @@ async function test(name, work) {
   try { await work(); results.push({test:name,status:'PASS'});console.log('PASS',name); }
   catch(e) { results.push({test:name,status:'FAIL',detail:e.message});console.error('FAIL',name,e.message);throw e; }
 }
-async function ready(page) { await page.waitForLoadState('networkidle');await page.locator('img').evaluateAll(imgs=>Promise.all(imgs.map(im=>im.decode().catch(()=>{})))); }
+async function ready(page) { await page.waitForLoadState('networkidle');await page.locator('img').evaluateAll(imgs=>{imgs.forEach(im=>im.loading='eager');return Promise.all(imgs.map(im=>im.decode()));}); }
 async function shot(page,name) { await ready(page);await page.screenshot({path:path.join(evidence,name+'.png'),fullPage:true}); }
 async function csrf(page) { return page.locator('input[name=csrf]').first().inputValue(); }
 async function register(page, role) {

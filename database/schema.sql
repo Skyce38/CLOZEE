@@ -194,10 +194,13 @@ CREATE TABLE product_images (
  storage_name VARCHAR(64) NOT NULL,
  mime_type VARCHAR(32) NOT NULL,
  byte_size INT UNSIGNED NOT NULL,
+ image_data MEDIUMBLOB NOT NULL,
  width SMALLINT UNSIGNED NOT NULL,
  height SMALLINT UNSIGNED NOT NULL,
  sort_order TINYINT UNSIGNED NOT NULL DEFAULT 0,
  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ CONSTRAINT ck_product_images_bytes CHECK (byte_size > 0 AND byte_size <= 1572864 AND OCTET_LENGTH(image_data) = byte_size),
+ CONSTRAINT ck_product_images_dimensions CHECK (width BETWEEN 1 AND 1600 AND height BETWEEN 1 AND 1600),
  UNIQUE KEY uq_product_images_storage (storage_name),
  KEY idx_product_images_order (product_id,sort_order,image_id),
  CONSTRAINT fk_product_images_product FOREIGN KEY (product_id)
