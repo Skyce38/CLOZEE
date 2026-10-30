@@ -1,0 +1,9 @@
+{
+  "commit": "f3342a0469b4145ea618547696fa1e0d33fc4a19",
+  "run_id": 41064936461,
+  "job_id": 124093714515,
+  "run_url": "https://github.com/Skyce38/CLOZEE/actions/runs/41064936461",
+  "conclusion": "success",
+  "verified_steps": ["Syntax and isolated database setup", "Domain, database and concurrent checkout tests", "Shared database namespace acceptance", "Browser acceptance", "Upload non-secret test evidence"],
+  "scope": "GitHub Actions; no Angsila writes or uploads"
+}
