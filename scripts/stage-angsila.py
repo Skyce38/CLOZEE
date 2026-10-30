@@ -38,10 +38,11 @@ for name in tracked:
     else:
         shutil.copyfile(source,target)
 (out/'private'/'storage').mkdir(exist_ok=True)
+(out/'private'/'storage'/'uploads').mkdir(exist_ok=True)
 manifest = {'source_commit':revision,'private_root':private,'php_entry_points':entry_count,'contains_credentials':False,
             'web_upload':'Upload web/ contents to the approved public_html/clozee directory only.',
             'private_upload':'Upload private/ contents to private_root outside public_html.',
             'configuration':'Create app/config/local.php privately; never upload the local development config.',
-            'database':'Import reviewed database/angsila-schema.sql separately after approval; no production demo seed.'}
+            'database':'New empty namespace: reviewed database/angsila-schema.sql. Existing deployment: reviewed database/angsila-product-photos-migration.sql only. Approval required; no production demo seed.'}
 (out/'STAGING-PLAN.json').write_text(json.dumps(manifest,indent=2),encoding='utf-8')
 print(json.dumps(manifest,indent=2))

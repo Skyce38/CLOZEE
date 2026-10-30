@@ -48,6 +48,9 @@ $pid2=save_product($otherSeller,null,product_input('Other shirt'));$vid2=(int)qu
 test('passwords stored as hashes',function()use($buyer){$hash=query('SELECT password_hash FROM {{users}} WHERE user_id=?',[$buyer])->fetchColumn();check(str_starts_with($hash,'$2y$')||str_starts_with($hash,'$argon'));});
 test('one shop per owner updates existing shop',function()use($seller,$shop){check(save_shop($seller,['shop_name'=>'Updated Shop','description'=>'Updated','pickup_location'=>'Fictional BUU meetup','is_active'=>1])===$shop);});
 test('product CREATE and READ',function()use($pid){check((int)query('SELECT COUNT(*) FROM {{products}} WHERE product_id=?',[$pid])->fetchColumn()===1);});
+test('legacy product metadata remains optional',function()use($pid){$r=query('SELECT brand,chest_cm,length_cm,condition_notes FROM {{products}} WHERE product_id=?',[$pid])->fetch();check(count(array_filter($r,fn($value)=>$value!==null))===0);});
+test('database CHECK rejects zero garment measurement',function()use($pid){rejects(fn()=>query('UPDATE {{products}} SET chest_cm=0 WHERE product_id=?',[$pid]));});
+test('image foreign key rejects orphan record',function(){rejects(fn()=>query('INSERT INTO {{product_images}}(product_id,storage_name,mime_type,byte_size,width,height) VALUES(?,?,?,?,?,?)',[PHP_INT_MAX,bin2hex(random_bytes(16)).'.jpg','image/jpeg',100,10,10]));});
 test('invalid negative product price rejected',function()use($seller){$d=product_input();$d['variants'][0]['price']='-1';rejects(fn()=>save_product($seller,null,$d));});
 test('duplicate sizes rejected',function()use($seller){$d=product_input();$d['variants'][]=$d['variants'][0];rejects(fn()=>save_product($seller,null,$d));});
 test('foreign owner product UPDATE rejected',function()use($otherSeller,$pid){rejects(fn()=>save_product($otherSeller,$pid,product_edit_input($pid)));});

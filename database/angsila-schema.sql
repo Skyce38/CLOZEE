@@ -43,12 +43,18 @@ CREATE TABLE `clozee_products` (
     category VARCHAR(80) NULL,
     condition_type ENUM('new','secondhand') NOT NULL,
     image_path VARCHAR(255) NULL,
+    brand VARCHAR(100) NULL,
+    chest_cm DECIMAL(4,1) NULL,
+    length_cm DECIMAL(4,1) NULL,
+    condition_notes VARCHAR(1000) NULL,
     is_active TINYINT(1) NOT NULL DEFAULT 1,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (product_id),
     KEY idx_products_shop (shop_id),
     KEY idx_products_condition_active (condition_type, is_active),
+    CONSTRAINT `clozee_ck_products_chest` CHECK (chest_cm IS NULL OR (chest_cm > 0 AND chest_cm <= 300)),
+    CONSTRAINT `clozee_ck_products_length` CHECK (length_cm IS NULL OR (length_cm > 0 AND length_cm <= 300)),
     CONSTRAINT `clozee_fk_products_shop` FOREIGN KEY (shop_id)
       REFERENCES `clozee_shops`(shop_id) ON UPDATE CASCADE ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -181,4 +187,20 @@ CREATE TABLE `clozee_login_attempts` (
     attempted_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     KEY idx_attempt_bucket_time (bucket, attempted_at),
     KEY idx_attempt_ip_time (ip_bucket, attempted_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `clozee_product_images` (
+ image_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+ product_id BIGINT UNSIGNED NOT NULL,
+ storage_name VARCHAR(64) NOT NULL,
+ mime_type VARCHAR(32) NOT NULL,
+ byte_size INT UNSIGNED NOT NULL,
+ width SMALLINT UNSIGNED NOT NULL,
+ height SMALLINT UNSIGNED NOT NULL,
+ sort_order TINYINT UNSIGNED NOT NULL DEFAULT 0,
+ created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ UNIQUE KEY uq_product_images_storage (storage_name),
+ KEY idx_product_images_order (product_id,sort_order,image_id),
+ CONSTRAINT `clozee_fk_product_images_product` FOREIGN KEY (product_id)
+  REFERENCES `clozee_products`(product_id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
