@@ -6,6 +6,6 @@
 <a class="brand" href="<?=h(url())?>">CLOZEE</a><nav aria-label="เมนูหลัก">
 <a href="<?=h(url('products.php'))?>">Explore</a><a href="<?=h(url('orders.php'))?>">My orders</a><a href="<?=h(url('seller/dashboard.php'))?>">Sell with us</a>
 </nav><div class="account-nav"><?php if($currentUser): ?>
-<a href="<?=h(url('cart.php'))?>">ตะกร้า (<?=$cartCount?>)</a><span class="user-name"><?=h($currentUser['full_name'])?></span><form method="post" action="<?=h(url('logout.php'))?>"><?=csrf_field()?><button class="text-button" type="submit">ออกจากระบบ</button></form>
+<a href="<?=h(url('cart.php'))?>">ตะกร้า (<?=$cartCount?>)</a><a href="<?=h(url('messages.php'))?>">ข้อความ</a><span class="user-name"><?=h($currentUser['full_name'])?></span><form method="post" action="<?=h(url('logout.php'))?>"><?=csrf_field()?><button class="text-button" type="submit">ออกจากระบบ</button></form>
 <?php else: ?><a class="button compact" href="<?=h(url('login.php'))?>">Log in</a><?php endif; ?></div></header>
 <main id="main"><?php if(!empty($_SESSION['flash'])): ?><div class="notice" role="status"><?=h($_SESSION['flash'])?></div><?php unset($_SESSION['flash']);endif; ?>

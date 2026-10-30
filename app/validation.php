@@ -8,7 +8,7 @@ function text_value(mixed $value, int $min, int $max, string $label): string
     if (!is_string($value)) throw new ValidationException($label . 'ไม่ถูกต้อง');
     $value = trim($value);
     $length = mb_strlen($value, 'UTF-8');
-    if ($length < $min || $length > $max || str_contains($value, "\0")) throw new ValidationException($label . "ต้องมี $min–$max ตัวอักษร");
+    if ($length < $min || $length > $max || str_contains($value, "\0")) throw new ValidationException($label . "ต้องมี {$min}–{$max} ตัวอักษร");
     return $value;
 }
 function positive_id(mixed $value): int {

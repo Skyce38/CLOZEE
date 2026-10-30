@@ -1,0 +1,62 @@
+name: PHP and MySQL acceptance
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  acceptance:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: 'yes' # isolated CI service only, never production
+          MYSQL_DATABASE: clozee_test
+        ports: ['3306:3306']
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s --health-timeout=5s --health-retries=10
+    env:
+      CLOZEE_DB_HOST: 127.0.0.1
+      CLOZEE_DB_PORT: 3306
+      CLOZEE_DB_USER: root
+      CLOZEE_DB_PASS: ''
+      CLOZEE_DB_NAME: clozee_demo
+      CLOZEE_TEST_DB: clozee_test
+      CLOZEE_SECURE_COOKIES: '0'
+      CLOZEE_BROWSER_CHANNEL: chromium
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: pdo_mysql, mbstring
+          coverage: none
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Syntax and isolated database setup
+        run: |
+          find app public scripts tests -name '*.php' -print0 | xargs -0 -n1 php -l
+          php -r '$p=new PDO("mysql:host=127.0.0.1;port=3306", "root", "");$p->exec("CREATE DATABASE clozee_demo CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");'
+          php scripts/migrate.php --empty-database
+          php scripts/seed.php --demo-only
+          php scripts/doctor.php
+      - name: Domain, database and concurrent checkout tests
+        run: php tests/run.php
+      - name: Browser acceptance
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+          php -S 127.0.0.1:8088 -t public >storage/php-stdout.log 2>storage/php-stderr.log &
+          for i in $(seq 1 30); do curl --fail --silent http://127.0.0.1:8088/ >/dev/null && break; sleep 1; done
+          npm run test:browser
+      - name: Upload non-secret test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: clozee-test-evidence
+          path: |
+            storage/test-results.json
+            storage/browser-results.json
+            docs/evidence/*.png

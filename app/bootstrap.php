@@ -26,6 +26,7 @@ require __DIR__ . '/auth/session.php';
 require __DIR__ . '/services/ShopService.php';
 require __DIR__ . '/services/ProductService.php';
 require __DIR__ . '/services/OrderService.php';
+require __DIR__ . '/services/ChatService.php';
 
 if (PHP_SAPI !== 'cli') {
     header('X-Content-Type-Options: nosniff');

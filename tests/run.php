@@ -75,6 +75,14 @@ test('LEFT JOIN retains shop with no orders',function()use($seller){$s=fixture_u
 test('INNER JOIN returns buyer shop and snapshot items',function()use($order){$r=query('SELECT u.full_name,s.shop_name,i.product_name_snapshot FROM orders o JOIN users u ON u.user_id=o.buyer_user_id JOIN shops s ON s.shop_id=o.shop_id JOIN order_items i ON i.order_id=o.order_id WHERE o.order_id=?',[$order])->fetch();check((bool)$r);});
 test('catalog has no duplicate products from variants',function(){ $rows=catalog([],100);check(count(array_unique(array_column($rows,'product_id')))===count($rows)); });
 
+$conversation=start_conversation($buyer,$pid2);
+test('chat start returns existing buyer/product thread',function()use($buyer,$pid2,$conversation){check(start_conversation($buyer,$pid2)===$conversation);});
+test('shop owner cannot start a buyer thread with self',fn()=>rejects(fn()=>start_conversation($otherSeller,$pid2)));
+test('chat sender stored from authenticated actor',function()use($buyer,$conversation){send_message($buyer,$conversation,'Fictional size question');check((int)query('SELECT sender_user_id FROM messages WHERE conversation_id=? ORDER BY message_id DESC LIMIT 1',[$conversation])->fetchColumn()===$buyer);});
+test('unrelated user cannot read or send to conversation',function()use($buyerTwo,$conversation){check(conversation_for($buyerTwo,$conversation)===null);rejects(fn()=>send_message($buyerTwo,$conversation,'forged'));});
+test('shop owner replies to authorized conversation',function()use($otherSeller,$conversation){send_message($otherSeller,$conversation,'Fictional seller reply');check((int)query('SELECT COUNT(*) FROM messages WHERE conversation_id=?',[$conversation])->fetchColumn()===2);});
+test('empty or oversized chat text rejected',function()use($buyer,$conversation){rejects(fn()=>send_message($buyer,$conversation,''));rejects(fn()=>send_message($buyer,$conversation,str_repeat('x',2001)));});
+
 $failed=count(array_filter($results,fn($r)=>$r['status']==='FAIL'));
 $report=['executed_at'=>gmdate('c'),'php'=>PHP_VERSION,'database'=>query('SELECT VERSION()')->fetchColumn(),'suite'=>'domain + real PDO database + multi-process concurrency','passed'=>count($results)-$failed,'failed'=>$failed,'results'=>$results];
 file_put_contents(ROOT.'/storage/test-results.json',json_encode($report,JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE));
