@@ -44,9 +44,10 @@ test('foreign owner product DELETE rejected',fn()=>rejects(fn()=>remove_product(
 test('owner product UPDATE persists',function()use($seller,$pid){$d=product_edit_input($pid);$d['product_name']='Edited shirt';save_product($seller,$pid,$d);check(query('SELECT product_name FROM products WHERE product_id=?',[$pid])->fetchColumn()==='Edited shirt');});
 test('unused product physical DELETE works',function()use($seller){$p=save_product($seller,null,product_input('Delete me'));remove_product($seller,$p,true);check(!query('SELECT product_id FROM products WHERE product_id=?',[$p])->fetch());});
 test('foreign key rejects orphan variant',fn()=>rejects(fn()=>query('INSERT INTO product_variants(product_id,size_label,price,stock_quantity) VALUES(999999999,?,?,?)',['M','1.00',1])));
-test('DB CHECK rejects zero order quantity',function()use($vid){$checks=query("SELECT COUNT(*) FROM information_schema.table_constraints WHERE constraint_schema=DATABASE() AND constraint_name='ck_order_quantity'")->fetchColumn();check((int)$checks===1);});
+
 
 $input=['fulfillment_method'=>'pickup','fulfillment_details'=>'Fictional test pickup point'];$key=bin2hex(random_bytes(32));$order=place_order($buyer,[$vid=>2],$input,$key);
+test('DB CHECK rejects actual zero quantity insert',function()use($order,$vid2){rejects(fn()=>query('INSERT INTO order_items(order_id,variant_id,product_name_snapshot,size_label_snapshot,quantity,unit_price) VALUES(?,?,?,?,0,?)',[$order,$vid2,'Invalid zero','M','1.00']));});
 test('pickup order deducts stock and uses server total',function()use($vid,$order){check((int)query('SELECT stock_quantity FROM product_variants WHERE variant_id=?',[$vid])->fetchColumn()===3);$o=query('SELECT * FROM orders WHERE order_id=?',[$order])->fetch();check($o['total_amount']==='580.00'&&$o['shipping_fee']==='0.00');});
 test('retry same key returns same order without extra stock deduction',function()use($buyer,$vid,$input,$key,$order){check(place_order($buyer,[$vid=>2],$input,$key)===$order);check((int)query('SELECT stock_quantity FROM product_variants WHERE variant_id=?',[$vid])->fetchColumn()===3);});
 test('same key different request rejected',fn()=>rejects(fn()=>place_order($buyer,[$vid=>1],$input,$key)));
