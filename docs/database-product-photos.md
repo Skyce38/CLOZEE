@@ -54,7 +54,7 @@ Local PHP 8.5.12 / MariaDB 11.4.9:
 
 ชุด browser เดิมเคยรอ `decode()` ของ lazy images ที่อยู่นอกหน้าจอจนค้าง จึงแก้ตัวทดสอบให้โหลดภาพทุกภาพก่อนจับ screenshot แล้วรันใหม่ผ่าน 24 ข้อ ไม่เปลี่ยน lazy loading ของเว็บไซต์ ใช้ Playwright เนื่องจากไม่มี Browser plugin สำหรับงานทดสอบนี้
 
-CI เพิ่ม matrix เปิด GD และปิด GD/EXIF โดยตรวจว่า extension ถูกปิดจริง แต่ต้องตรวจ run ของ commit นี้ก่อนสรุปผล CI ผล Local ไม่ใช่ผลทดสอบบน Angsila
+CI matrix ผ่านทั้งเปิด GD และปิด GD/EXIF โดยตรวจว่า extension ถูกปิดจริง บน PHP 8.3.36 / MySQL 8.4.13: **198 ข้อต่อ runtime, ไม่ผ่าน 0** ดู [run 41119656814](https://github.com/Skyce38/CLOZEE/actions/runs/41119656814), commit `fc45793` และ `evidence/database-product-photos/ci-verification.json` ผล Local/CI ไม่ใช่ผลทดสอบบน Angsila
 
 ## ผลกระทบและเงื่อนไขก่อนติดตั้ง
 
