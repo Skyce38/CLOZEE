@@ -1,119 +1,157 @@
 # CLOZEE
 
-**Local Clothing Marketplace & Delivery Platform** — ระบบซื้อขายเสื้อผ้าใหม่และมือสองสำหรับ BUU และบางแสน  
-89022167 Database Management · Final round target: **10 November 2026**
+**แพลตฟอร์มซื้อขายและจัดส่งเสื้อผ้าในพื้นที่** — เว็บแอปสำหรับเสื้อผ้ามือหนึ่งและมือสอง โดยเน้นนิสิตมหาวิทยาลัยบูรพา (BUU) และผู้คนในบางแสน  
+รายวิชา **89022167 Database Management** · กำหนดส่งงานรอบสุดท้าย **10 พฤศจิกายน 2569**
 
-**Local implementation and tests pass. NOT READY TO SUBMIT until the Angsila deployment is authorized and verified.** The user signed in to phpMyAdmin personally and authorized read-only environment inspection. No live database writes or uploads have occurred; no Google Sheets passwords were read or used.
+> **สถานะโครงการ:** พัฒนาระบบบนเครื่อง Local และผ่านการทดสอบแล้ว แต่ **ยังไม่พร้อมส่งงานฉบับสมบูรณ์** จนกว่าจะได้รับอนุญาตให้นำเว็บไซต์ขึ้น Angsila และตรวจสอบการใช้งานจริง ผู้ใช้ล็อกอิน phpMyAdmin ด้วยตัวเองและอนุญาตให้ตรวจสภาพแวดล้อมแบบอ่านอย่างเดียวแล้ว ยังไม่มีการแก้ฐานข้อมูลหรืออัปโหลดไฟล์จริง และไม่ได้อ่านหรือใช้รหัสผ่านจาก Google Sheets
 
-Angsila has existing Lab tables. Configure private `table_prefix = clozee_` and review [shared database tests](docs/shared-database-tests.md) and [deployment status](docs/deployment-verification.md) before installation. Local regression now passes 51 database/domain checks and 24 browser checks for both default and prefixed tables. The linked CI run below verifies the preceding code revision.
+ฐาน Angsila มีตาราง Lab เดิม จึงต้องตั้งค่าลับ `table_prefix = clozee_` ก่อนติดตั้ง ดู [ผลทดสอบฐานข้อมูลร่วม](docs/shared-database-tests.md) และ [สถานะการติดตั้ง](docs/deployment-verification.md) การทดสอบล่าสุดผ่าน 51 ข้อด้านระบบ/ฐานข้อมูล และ 24 ข้อผ่านเบราว์เซอร์ ทั้งแบบชื่อตารางปกติและแบบมี prefix ลิงก์ CI ด้านล่างเป็นผลของโค้ดรุ่นก่อนหน้า
 
-Source: [Skyce38/CLOZEE](https://github.com/Skyce38/CLOZEE) · [Verified MySQL CI run](https://github.com/Skyce38/CLOZEE/actions/runs/41034821401) · [Course requirements](docs/course-requirements.md) · [Final report](docs/CLOZEE-Final-Report-Round2.pdf)
+**ลิงก์สำคัญ:** [ซอร์สโค้ด CLOZEE](https://github.com/Skyce38/CLOZEE) · [ผลทดสอบ MySQL บน GitHub Actions](https://github.com/Skyce38/CLOZEE/actions/runs/41034821401) · [ข้อกำหนดรายวิชา](docs/course-requirements.md) · [รายงานฉบับสมบูรณ์ (PDF)](docs/CLOZEE-Final-Report-Round2.pdf)
 
-![CLOZEE running storefront](docs/evidence/catalog-desktop.png)
+![ภาพหน้าแสดงสินค้าจากเว็บไซต์ CLOZEE ที่รันจริง](docs/evidence/catalog-desktop.png)
 
-## Features
+## ฟังก์ชันหลักของระบบ
 
-- Register/login/logout, hashed passwords, session rotation/expiry, CSRF and owner-scoped operations.
-- One shop per account; shop create/edit/deactivate; clothing product CRUD with sizes, price, stock and stale-edit protection.
-- Search/filter new/preloved, category and size; product/shop details; single-shop server-side cart.
-- Atomic checkout, idempotent retries, stock row locks, pickup/delivery, server-calculated fee, immutable item snapshots.
-- Seller-only validated status transitions, cancellation restocking once, status audit and private buyer history.
-- Participant-only text chat with manual refresh, mobile/desktop UI and bundled original demo photographs.
+- **สมัครสมาชิก / เข้าสู่ระบบ / ออกจากระบบ:** จัดเก็บรหัสผ่านแบบ Hash, จัดการ Session, ป้องกัน CSRF และจำกัดการแก้ไขข้อมูลตามสิทธิ์เจ้าของ
+- **ร้านค้าและสินค้า:** หนึ่งบัญชีสร้างร้านได้หนึ่งร้าน พร้อมเพิ่ม แก้ไข และปิดใช้งานร้านหรือสินค้า (CRUD) รวมถึงจัดการไซซ์ ราคา สต็อก และป้องกันการแก้ไขทับข้อมูลเก่า
+- **เลือกซื้อเสื้อผ้า:** ค้นหาและกรองสินค้ามือหนึ่ง/มือสอง หมวดหมู่ และไซซ์ ดูรายละเอียดสินค้าและร้านค้า พร้อมตะกร้าสินค้าจากร้านเดียวต่อคำสั่งซื้อ
+- **สั่งซื้อและรับสินค้า:** Checkout ที่บันทึกข้อมูลแบบ Transaction, ป้องกันการส่งคำขอซ้ำ, ล็อกแถวสต็อก, เลือกนัดรับหรือจัดส่ง, คำนวณค่าจัดส่งฝั่งเซิร์ฟเวอร์ และเก็บข้อมูลสินค้า ณ เวลาสั่งซื้อ
+- **จัดการคำสั่งซื้อ:** ผู้ขายเปลี่ยนสถานะได้เฉพาะลำดับที่อนุญาต คืนสต็อกเมื่อยกเลิกเพียงครั้งเดียว มีประวัติการเปลี่ยนสถานะ และผู้ซื้อดูคำสั่งซื้อของตนเองได้
+- **แชทกับผู้ขาย:** สนทนาแบบข้อความระหว่างผู้ซื้อกับผู้ขาย โดยอนุญาตเฉพาะผู้เข้าร่วมสนทนาและใช้การรีเฟรชด้วยตนเอง
+- **รองรับมือถือและคอมพิวเตอร์:** Responsive UI พร้อมภาพสินค้าตัวอย่างที่จัดเตรียมไว้ในโครงการ
 
-No payment gateway, drivers/GPS, real courier integration, refunds, BUU SSO or customer-image upload. Multiple images and sales analytics remain deferred. Products with order history deactivate instead of being physically deleted. See [implementation decisions](docs/implementation-decisions.md).
+**ขอบเขตที่ยังไม่รองรับ:** ระบบชำระเงินออนไลน์, ไรเดอร์/GPS, การเชื่อมต่อบริษัทขนส่งจริง, การคืนเงิน, BUU Single Sign-On (SSO) และการอัปโหลดรูปภาพโดยลูกค้า ส่วนการแสดงรูปสินค้าหลายรูปและระบบวิเคราะห์ยอดขายยังเป็นฟีเจอร์ที่เลื่อนไปพัฒนาภายหลัง สินค้าที่มีประวัติคำสั่งซื้อจะถูกปิดใช้งานแทนการลบข้อมูลจริง ดูรายละเอียดที่ [บันทึกการตัดสินใจในการพัฒนา](docs/implementation-decisions.md)
 
-## Requirements
+## ความต้องการของระบบ
 
-- PHP **8.1+**, extensions `pdo_mysql`, `mbstring`, `session`.
-- MySQL **8.0.16+** or MariaDB **10.6+**, InnoDB/utf8mb4 with enforced CHECK constraints. Actual tests: PHP 8.5.12/MariaDB 11.4.9 locally; PHP 8.3.36/MySQL 8.4.13 on CI. Angsila runtime remains unknown.
-- Apache pointing to `public/`, or PHP development server for local use.
-- Node.js **22+** is needed only for optional browser tests/diagram/PDF tooling; production is PHP only. Python 3 is needed only to regenerate documentation from metadata.
+- **PHP 8.1 ขึ้นไป** พร้อม Extension `pdo_mysql`, `mbstring` และ `session`
+- **MySQL 8.0.16 ขึ้นไป** หรือ **MariaDB 10.6 ขึ้นไป** โดยรองรับ InnoDB, utf8mb4 และการบังคับใช้ข้อกำหนด `CHECK`
+- **Apache** ที่ตั้งค่า Document Root ไปยัง `public/` หรือใช้ PHP Development Server สำหรับทดสอบบน Local
+- **Node.js 22 ขึ้นไป** ใช้เฉพาะการทดสอบผ่านเบราว์เซอร์และเครื่องมือสร้าง Diagram/PDF (ไม่ต้องใช้บน Production)
+- **Python 3** ใช้เฉพาะสร้างเอกสารใหม่จาก Metadata
 
-## Install locally
+**เวอร์ชันที่ทดสอบแล้ว:** Local ใช้ PHP 8.5.12 / MariaDB 11.4.9 และ GitHub CI ใช้ PHP 8.3.36 / MySQL 8.4.13 ทั้งนี้ยังไม่ทราบเวอร์ชันที่ใช้จริงบน Angsila
 
-1. Clone into a directory OUTSIDE your public webroot:
+## วิธีติดตั้งและรันบนเครื่อง Local
 
-   ```sh
-   git clone https://github.com/Skyce38/CLOZEE.git
-   cd CLOZEE
-   ```
+### 1. ดาวน์โหลด Source Code
 
-2. Create a new, dedicated EMPTY database using an authorized local administrator account. Do not reuse a database with important data. Example SQL contains no credentials:
+Clone Repository ไปยังโฟลเดอร์ที่ **ไม่อยู่ภายใน Public Web Root**
 
-   ```sql
-   CREATE DATABASE clozee CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-   ```
+```sh
+git clone https://github.com/Skyce38/CLOZEE.git
+cd CLOZEE
+```
 
-3. Copy `app/config/example.php` to `app/config/local.php`. Fill in your private local connection configuration. `local.php` is ignored by Git and MUST remain outside `public/`. For local HTTP only, set `secure_cookies` to `false`; HTTPS deployments keep it `true`.
+### 2. สร้างฐานข้อมูลใหม่
 
-   Environment overrides: `CLOZEE_DB_HOST`, `CLOZEE_DB_PORT`, `CLOZEE_DB_NAME`, `CLOZEE_DB_USER`, `CLOZEE_DB_PASS`, `CLOZEE_BASE_PATH`, `CLOZEE_DELIVERY_FEE`, `CLOZEE_SECURE_COOKIES` (`1` or local-only `0`). The app does not automatically load `.env` files. `base_path` is empty at localhost root, or the deployed subdirectory prefix with no trailing slash.
+สร้างฐานข้อมูล **ใหม่และว่างเปล่า** ด้วยบัญชี Local ที่มีสิทธิ์ถูกต้อง ห้ามใช้ฐานข้อมูลที่มีข้อมูลสำคัญ ตัวอย่าง SQL นี้ไม่มีรหัสผ่าน
 
-4. Import schema into the selected empty DB with phpMyAdmin, or use the CLI guard:
+```sql
+CREATE DATABASE clozee CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
 
-   ```sh
-   php scripts/migrate.php --empty-database
-   php scripts/seed.php --demo-only
-   php scripts/doctor.php
-   ```
+### 3. ตั้งค่าการเชื่อมต่อฐานข้อมูล
 
-   `migrate.php` refuses any database containing existing tables. `seed.php` refuses existing users. Neither is an upgrade/reset script. The schema does not CREATE/DROP a database. DDL can auto-commit, so stop and review a failed import rather than rerunning over existing tables.
+คัดลอก `app/config/example.php` ไปเป็น `app/config/local.php` แล้วกรอกค่าการเชื่อมต่อที่ใช้ในเครื่องของตนเอง ไฟล์ `local.php` ถูกตั้งค่าให้ Git ไม่ติดตาม และต้องอยู่ **นอกโฟลเดอร์ `public/`** เสมอ
 
-   Seed uses fictional `example.test` accounts, 3 shops, 4 products and 10 variants. It generates fresh demo passwords into **`storage/demo-accounts.json`**, outside public and ignored by Git. Read that private file locally to try the demo; do not upload/share/commit it. Never use actual user/password sheets. For production, skip the demo seed.
+- หากทดสอบผ่าน HTTP บน Local ให้กำหนด `secure_cookies` เป็น `false` ได้เฉพาะในเครื่องทดสอบ
+- เมื่อ Deploy บน HTTPS ให้คงค่า `secure_cookies` เป็น `true`
+- ตัวแปร Environment ที่รองรับ: `CLOZEE_DB_HOST`, `CLOZEE_DB_PORT`, `CLOZEE_DB_NAME`, `CLOZEE_DB_USER`, `CLOZEE_DB_PASS`, `CLOZEE_BASE_PATH`, `CLOZEE_DELIVERY_FEE`, `CLOZEE_SECURE_COOKIES` (ใช้ `1` หรือ `0` เฉพาะ Local)
+- แอปไม่ได้โหลดไฟล์ `.env` โดยอัตโนมัติ
+- `base_path` เป็นค่าว่างเมื่อรันที่ Root ของ Localhost หรือกำหนดเป็น Prefix ของโฟลเดอร์ที่ Deploy โดย **ไม่ต้องมี `/` ปิดท้าย**
 
-5. Start a local server, leaving the terminal running:
+### 4. สร้างตารางและเพิ่มข้อมูลตัวอย่าง
 
-   ```sh
-   php -S 127.0.0.1:8088 -t public
-   ```
+สามารถ Import Schema ด้วย phpMyAdmin ลงฐานข้อมูลว่าง หรือใช้คำสั่งต่อไปนี้
 
-   Open [localhost CLOZEE](http://127.0.0.1:8088/). PHP's development server is for local testing, not public production hosting.
+```sh
+php scripts/migrate.php --empty-database
+php scripts/seed.php --demo-only
+php scripts/doctor.php
+```
 
-## Demonstrate the project
+**ข้อควรระวัง:** `migrate.php` จะไม่ทำงานหากพบตารางเดิมในฐานข้อมูล และ `seed.php` จะปฏิเสธการเพิ่มข้อมูลเมื่อมีผู้ใช้อยู่แล้ว ทั้งสองคำสั่งไม่ใช่เครื่องมืออัปเกรดหรือล้างฐานข้อมูล และ Schema ไม่มีคำสั่ง CREATE/DROP DATABASE หาก Import เกิดข้อผิดพลาดให้ตรวจสอบก่อนรันซ้ำ เพราะคำสั่ง DDL บางชนิด Commit โดยอัตโนมัติ
 
-Register a fictional buyer and a second account for a seller. Seller: Sell with us → create shop → add a product/size/price/stock. Buyer: Explore → product → cart → pickup/delivery checkout → private order. Seller: received orders → confirm/prepare/ready or delivery/complete. Demonstrate an unused product's DELETE, cancellation once and a size-question chat. Try the other account's product/order URL to show ownership rejection. See [manual tests](docs/manual-tests.md).
+ข้อมูลตัวอย่างประกอบด้วยบัญชีสมมติบนโดเมน `example.test`, ร้านค้า 3 ร้าน สินค้า 4 รายการ และตัวเลือกไซซ์/สต็อก 10 รายการ รหัสผ่านตัวอย่างจะถูกสร้างใหม่และบันทึกใน **`storage/demo-accounts.json`** ซึ่งอยู่ภายนอกโฟลเดอร์ Public และไม่ถูกติดตามโดย Git ให้เปิดอ่านเฉพาะในเครื่องเพื่อทดสอบเท่านั้น **ห้ามอัปโหลด แชร์ หรือ Commit ไฟล์นี้** และห้ามนำข้อมูลบัญชีจาก Google Sheets จริงมาใช้ สำหรับ Production ให้ข้ามขั้นตอนเพิ่ม Demo Seed
 
-The default primary images are bundled demo choices. File upload is not implemented. Local delivery is a record for seller coordination, not a courier service. Buyer/seller arrange payment directly.
+### 5. เปิดเว็บไซต์บน Local
 
-## Tests
+```sh
+php -S 127.0.0.1:8088 -t public
+```
 
-Create another EMPTY database whose name contains `test`, using an account with permissions only on your dedicated local databases. Tests never target production. They add fictional fixtures and preserve earlier test runs; no automatic DROP/reset.
+เปิด [CLOZEE บนเครื่อง Local](http://127.0.0.1:8088/) โดยต้องเปิด Terminal ที่รันเซิร์ฟเวอร์ค้างไว้
 
-PowerShell:
+> PHP Development Server ใช้สำหรับพัฒนาและทดสอบบน Local เท่านั้น ไม่ใช่เว็บเซิร์ฟเวอร์สำหรับให้บริการสาธารณะ
+
+## แนวทางสาธิตโปรเจกต์
+
+สร้างบัญชีสมมติ 2 บัญชี ได้แก่ **ผู้ซื้อ** และ **ผู้ขาย** แล้วทดลองตามลำดับ:
+
+1. ผู้ขายเข้าสู่ระบบ เลือกเมนูสำหรับเปิดร้าน สร้างร้านค้า แล้วลงขายเสื้อผ้าโดยกำหนดไซซ์ ราคา และสต็อก
+2. ผู้ซื้อเข้าสู่ระบบ ค้นหาสินค้า ดูรายละเอียด เพิ่มลงตะกร้า และเลือก **นัดรับ** หรือ **จัดส่ง** เมื่อสั่งซื้อ
+3. ผู้ขายเปิดรายการคำสั่งซื้อที่ได้รับ เปลี่ยนสถานะเป็นยืนยันคำสั่งซื้อ เตรียมสินค้า พร้อมรับหรือจัดส่ง และเสร็จสิ้นตามเงื่อนไข
+4. สาธิตการลบสินค้าที่ยังไม่มีประวัติออเดอร์ การยกเลิกคำสั่งซื้อเพื่อคืนสต็อกครั้งเดียว และแชทสอบถามไซซ์
+5. ทดลองใช้บัญชีอื่นเปิด URL สำหรับแก้ไขสินค้าหรือดูออเดอร์ที่ไม่ใช่ของตนเอง เพื่อยืนยันว่าระบบปฏิเสธการเข้าถึง
+
+ดูรายละเอียดที่ [คู่มือทดสอบด้วยตนเอง](docs/manual-tests.md)
+
+ภาพสินค้าที่แสดงเริ่มต้นเป็นไฟล์ภาพตัวอย่างที่รวมมากับโครงการ ยังไม่มีระบบอัปโหลดรูปใหม่ การจัดส่งในพื้นที่เป็นการบันทึกข้อมูลเพื่อให้ผู้ซื้อและผู้ขายประสานงานกัน ไม่ใช่บริการเรียกไรเดอร์จริง และผู้ซื้อกับผู้ขายตกลงวิธีชำระเงินกันโดยตรง
+
+## การทดสอบ (Testing)
+
+สร้างฐานข้อมูลใหม่ที่ **ว่างเปล่า** และมีคำว่า `test` ในชื่อ โดยใช้บัญชีที่มีสิทธิ์เฉพาะฐานข้อมูล Local ที่จัดเตรียมไว้ ห้ามนำชุดทดสอบไปรันกับฐานข้อมูล Production
+
+ชุดทดสอบเพิ่มข้อมูลสมมติ และเก็บข้อมูลจากการทดสอบก่อนหน้าไว้ ไม่สั่ง DROP หรือ Reset ฐานข้อมูลอัตโนมัติ
+
+**บน Windows PowerShell**
 
 ```powershell
 $env:CLOZEE_TEST_DB = 'clozee_test'
 php tests/run.php
 ```
 
-Bash:
+**บน Bash**
 
 ```sh
 CLOZEE_TEST_DB=clozee_test php tests/run.php
 ```
 
-This suite imports schema only if the test DB is empty and exercises real PDO/FK/transactions plus two independent PHP processes for stock/idempotency races. Current local result: **47 passed, 0 failed**.
+ชุดทดสอบนี้นำเข้า Schema เฉพาะเมื่อฐานข้อมูลทดสอบยังไม่มีตาราง และตรวจสอบการทำงานจริงของ PDO, Foreign Key, Transaction รวมถึงการจำลองคำขอพร้อมกันจาก PHP 2 Process เพื่อทดสอบสต็อกและการป้องกันคำสั่งซื้อซ้ำ
 
-Browser tests require a running loopback demo instance and create fictional users/products/orders in that demo DB:
+**ผลทดสอบ Local ที่บันทึกไว้: 47 ผ่าน / 0 ไม่ผ่าน**
+
+### ทดสอบผ่านเบราว์เซอร์
+
+ต้องเปิดเว็บจำลองบน Localhost ไว้ก่อน โดยการทดสอบจะสร้างผู้ใช้ สินค้า และคำสั่งซื้อสมมติลงฐานข้อมูล Demo
 
 ```sh
 npm ci
 npm run test:browser
 ```
 
-Default browser is installed Google Chrome. To use bundled Chromium, run `npx playwright install chromium`, then set `CLOZEE_BROWSER_CHANNEL=chromium`. `CLOZEE_URL` defaults to `http://127.0.0.1:8088` and tests reject non-loopback URLs. Current local result: **24 passed, 0 failed**; tested at 1536×1024, 1440×1000 and 390×844. [Results and limitations](docs/test-results.md).
+ค่าเริ่มต้นใช้ Google Chrome ที่ติดตั้งอยู่ หากต้องการใช้ Chromium ของ Playwright ให้สั่ง `npx playwright install chromium` แล้วกำหนด `CLOZEE_BROWSER_CHANNEL=chromium`
 
-GitHub Actions runs PHP 8.3, MySQL 8.4 and Chromium in isolated CI. The blank-root setting in the CI service is solely for its temporary disposable database, never production. Inspect the workflow for the exact version/commit and check the latest run before submission. Uploaded evidence excludes private config and demo credentials.
+ตัวแปร `CLOZEE_URL` มีค่าเริ่มต้นเป็น `http://127.0.0.1:8088` และชุดทดสอบปฏิเสธ URL ที่ไม่ใช่ Loopback
 
-## Documents and SQL evidence
+**ผลทดสอบผ่านเบราว์เซอร์ที่บันทึกไว้: 24 ผ่าน / 0 ไม่ผ่าน** โดยทดสอบหน้าจอ 1536×1024, 1440×1000 และ 390×844
 
-- [Course requirements and page references](docs/course-requirements.md)
-- [Final report source](docs/final-report.md), [PDF](docs/CLOZEE-Final-Report-Round2.pdf), [offline HTML](docs/final-report.html)
-- [ER Diagram](docs/diagrams/er-diagram.svg), [Use Case Diagram](docs/diagrams/use-cases.svg), [Architecture](docs/diagrams/architecture.svg), [Status flow](docs/diagrams/order-status.svg)
-- [75-field Data Dictionary](docs/data-dictionary.md), [Use cases](docs/use-cases.md)
-- [Executable JOIN examples](database/demo-joins.sql), [actual JOIN results](docs/sql-join-evidence.md)
-- [Angsila guide](docs/deployment.md), [verification record](docs/deployment-verification.md), [submission audit](docs/final-submission-checklist.md)
+**รวมผลทดสอบ Local ที่รายงาน: 71 รายการผ่าน** ดู [ผลทดสอบและข้อจำกัด](docs/test-results.md)
 
-Regeneration (after executing tests on a fictional local demo):
+GitHub Actions ใช้ PHP 8.3, MySQL 8.4 และ Chromium บน CI ที่แยกจากฐานข้อมูลจริง การตั้งค่า Root แบบไม่มีรหัสผ่านที่ใช้ใน CI จำกัดอยู่เฉพาะฐานข้อมูลชั่วคราวสำหรับทดสอบเท่านั้น ไม่ใช่ Production ควรตรวจเวอร์ชันและ Commit ของ Workflow รวมถึงสถานะการทดสอบล่าสุดก่อนส่งงาน หลักฐานที่อัปโหลดไม่รวมไฟล์ตั้งค่าส่วนตัวและรหัสผ่าน Demo
+
+## เอกสารประกอบและหลักฐาน SQL
+
+- [ข้อกำหนดรายวิชาพร้อมอ้างอิงหน้าสไลด์](docs/course-requirements.md)
+- [ต้นฉบับรายงาน](docs/final-report.md) · [รายงาน PDF](docs/CLOZEE-Final-Report-Round2.pdf) · [รายงาน HTML แบบออฟไลน์](docs/final-report.html)
+- [ER Diagram](docs/diagrams/er-diagram.svg) · [Use Case Diagram](docs/diagrams/use-cases.svg) · [Architecture](docs/diagrams/architecture.svg) · [แผนภาพสถานะออเดอร์](docs/diagrams/order-status.svg)
+- [Data Dictionary จำนวน 75 ฟิลด์](docs/data-dictionary.md) · [รายละเอียด Use Cases](docs/use-cases.md)
+- [ตัวอย่าง SQL JOIN ที่รันได้จริง](database/demo-joins.sql) · [ผลลัพธ์ SQL JOIN](docs/sql-join-evidence.md)
+- [คู่มือ Deploy บน Angsila](docs/deployment.md) · [บันทึกการตรวจสอบ Deployment](docs/deployment-verification.md) · [เช็กลิสต์ก่อนส่งงาน](docs/final-submission-checklist.md)
+
+หากต้องสร้างเอกสารใหม่หลังทดสอบบนฐานข้อมูล Local ที่มีแต่ข้อมูลสมมติ ให้ใช้คำสั่ง:
 
 ```sh
 php scripts/export-metadata.php
@@ -122,10 +160,18 @@ node scripts/render-diagrams.cjs
 node scripts/print-report.cjs
 ```
 
-The report uses actual schema/test JSON and screenshots. Do not regenerate it from guessed results. Cover placeholders remain for the author's full name, other members and instructor; student ID 68160207/course details were supplied by the user. Archive/reference planning files record the earlier design, not the current readiness state.
+รายงานจะอ้างอิง Schema, JSON ผลทดสอบ และภาพหน้าจอจริง **ห้ามสร้างรายงานด้วยผลลัพธ์ที่คาดเดา** หน้าปกยังมีช่องข้อมูลที่ต้องกรอก ได้แก่ ชื่อ-นามสกุลผู้จัดทำ สมาชิกอื่น (ถ้ามี) และชื่ออาจารย์ผู้สอน ส่วนรหัสนิสิต 68160207 และข้อมูลรายวิชาเป็นข้อมูลที่ผู้จัดทำให้ไว้ เอกสารวางแผนฉบับเก่าเป็นประวัติแนวทางการออกแบบ ไม่ใช่หลักฐานสถานะความพร้อมส่งล่าสุด
 
-## Deployment and privacy
+## การนำเว็บไซต์ขึ้น Angsila และความเป็นส่วนตัว
 
-Follow [deployment.md](docs/deployment.md). No actual Angsila target, directory, transfer method or runtime is known yet. Do not deploy or use credentials until the user verifies the target and approves. Only `public/` may be web-visible; never serve app/config, SQL, storage, tests, scripts, reports or setup files publicly. Runtime DB account needs DML only; use a separate authorized setup account for schema changes. Keep production errors/logs private and HTTPS Secure cookies enabled.
+อ่าน [คู่มือ Deployment](docs/deployment.md) ก่อนดำเนินการ ปัจจุบันยังไม่ทราบ URL, Directory, วิธีอัปโหลด และเวอร์ชันซอฟต์แวร์จริงของพื้นที่ Angsila ที่ได้รับอนุญาต **ห้าม Deploy หรือใช้ข้อมูลบัญชีเซิร์ฟเวอร์จนกว่าจะยืนยันเป้าหมายและได้รับอนุญาต**
 
-Source is versioned on GitHub; private `local.php`, runtime logs, generated passwords and DB dumps are excluded. [Design reference](docs/design-system.md) is separate from screenshots of the running application.
+**ข้อกำหนดด้านความปลอดภัย**
+
+- ให้เปิดเผยผ่านเว็บเฉพาะโฟลเดอร์ `public/` เท่านั้น
+- ห้ามเปิด `app/config`, SQL, `storage`, `tests`, `scripts`, เอกสารรายงาน หรือไฟล์ติดตั้งให้เข้าถึงจากเว็บสาธารณะ
+- บัญชี Database ของระบบจริงควรใช้สิทธิ์สำหรับการทำงานกับข้อมูล (DML) เท่านั้น ส่วนการแก้ Schema ให้ใช้บัญชีติดตั้งที่ได้รับอนุญาตแยกต่างหาก
+- เก็บ Log และ Error ของ Production เป็นความลับ และเปิดใช้ HTTPS Secure Cookies
+- ไฟล์ `local.php`, Log, รหัสผ่านที่ระบบสร้าง และ Database Dump ต้องไม่ถูก Commit ขึ้น GitHub
+
+**โค้ดของโครงการจัดเก็บบน GitHub** ส่วน [คู่มือออกแบบ UI](docs/design-system.md) แยกจากภาพหน้าจอของเว็บไซต์ที่ทดสอบรันจริง
