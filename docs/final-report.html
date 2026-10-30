@@ -169,7 +169,7 @@
 <p>จำกัด login ผิดจาก bucket account+IP และ IP ในช่วง 15 นาที เก็บ hash ไม่เก็บรหัสผ่าน/IP ดิบ private config และ demo passwords ถูก gitignore และอยู่นอก public การทดสอบใช้บัญชี example.test ที่สร้างขึ้นเท่านั้น ไม่อ่านหรือใช้ชีต User/Password</p>
 <h2>10 Testing และผลที่ได้</h2>
 <p>Local: <strong>47 / 47 domain/database/concurrency tests ผ่าน</strong>, <strong>24 / 24 browser tests ผ่าน</strong> Environment PHP 8.5.12, 11.4.9-MariaDB, installed Chrome via Playwright ที่ desktop และ 390×844</p>
-<p>CI: <a href="https://github.com/Skyce38/CLOZEE/actions/runs/41032288293">GitHub Actions run 41032288293</a> ยืนยัน PHP 8.3.36 + MySQL 8.4.13 และ Chromium ขั้น syntax/schema/seed, domain/concurrency และ browser ผ่านสำหรับ commit <code>c7783c5</code> หลักฐานแยก revision ชัดเจน ไม่ใช้ CI เก่าอ้างว่า commit ใหม่ผ่านอัตโนมัติ</p>
+<p>CI: <a href="https://github.com/Skyce38/CLOZEE/actions/runs/41034821401">GitHub Actions run 41034821401</a> ยืนยัน PHP 8.3.36 + MySQL 8.4.13 และ Chromium ขั้น syntax/schema/seed, domain/concurrency และ browser ผ่านสำหรับ commit <code>7f27ff6</code> หลักฐานแยก revision ชัดเจน ไม่ใช้ CI เก่าอ้างว่า commit ใหม่ผ่านอัตโนมัติ</p>
 <p>Concurrency test ใช้สอง PHP processes เชื่อม DB อิสระแย่งซื้อ item ชิ้นสุดท้าย ผลสำเร็จเพียงหนึ่งคำขอ stock เหลือศูนย์ ส่วนสองคำขอ key เดียวได้ order เดียว stock ลดครั้งเดียว ทดสอบ rollback, stale edit, cancel คืน stock, snapshot, ownership, CSRF, SQL injection และ XSS chat เพิ่มด้วย</p>
 <p>รายละเอียดชื่อ test และผลจริงทั้งหมดใน test-results.md และ JSON ใน evidence/ การทดสอบนี้ไม่ใช่ penetration/load test และยังไม่ใช่ผลบน Angsila</p>
 <h2>11 Deployment และสถานะส่งงาน</h2>

@@ -5,7 +5,7 @@
 
 **Local implementation and tests pass. NOT READY TO SUBMIT until the Angsila deployment is authorized and verified.** The user explicitly requested local completion first. No Angsila credentials/server or Google Sheets passwords have been used.
 
-Source: [Skyce38/CLOZEE](https://github.com/Skyce38/CLOZEE) · [Verified MySQL CI run](https://github.com/Skyce38/CLOZEE/actions/runs/41032288293) · [Course requirements](docs/course-requirements.md) · [Final report](docs/CLOZEE-Final-Report-Round2.pdf)
+Source: [Skyce38/CLOZEE](https://github.com/Skyce38/CLOZEE) · [Verified MySQL CI run](https://github.com/Skyce38/CLOZEE/actions/runs/41034821401) · [Course requirements](docs/course-requirements.md) · [Final report](docs/CLOZEE-Final-Report-Round2.pdf)
 
 ![CLOZEE running storefront](docs/evidence/catalog-desktop.png)
 
