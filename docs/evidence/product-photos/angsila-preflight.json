@@ -1,0 +1,16 @@
+{
+  "executed_at": "2026-10-30T19:42:04.657644+00:00",
+  "scope": "Actual Angsila PHP web process before upgrade",
+  "php": "8.4.27",
+  "gd_loaded": false,
+  "exif": true,
+  "fileinfo": true,
+  "private_storage_writable": false,
+  "storage_mode": "755",
+  "home_writable": false,
+  "database_migration_executed": false,
+  "application_files_replaced": false,
+  "backup_created": false,
+  "temporary_helper_public_status_after_cleanup": 404,
+  "decision": "Stopped before upgrade; runtime/storage design requires review"
+}
