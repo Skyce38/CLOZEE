@@ -10,7 +10,7 @@ const crypto = require('node:crypto');
 const base = process.env.CLOZEE_URL || 'http://127.0.0.1:8088';
 if (!/^http:\/\/(127\.0\.0\.1|localhost)(:\d+)?(\/[^?#]*)?$/.test(base)) throw Error('Browser tests are restricted to a local demo URL.');
 const root = path.resolve(__dirname, '..');
-const evidence = path.join(root, 'docs', 'evidence');
+const evidence = process.env.CLOZEE_BROWSER_PREFIX_TEST ? path.join(root,'storage','prefix-evidence') : path.join(root, 'docs', 'evidence');
 fs.mkdirSync(evidence, {recursive:true});
 const results=[];
 const suffix=Date.now().toString(36);
@@ -135,5 +135,5 @@ async function checkout(page,productId,variant,quantity,method) {
 })().catch(e=>{console.error(e.stack);process.exitCode=1;}).finally(async()=>{
   if(browser)await browser.close();
   const report={executed_at:new Date().toISOString(),url:base,browser:'Playwright with installed Chrome (Browser plugin not available)',viewports:['1536x1024','1440x1000','390x844'],passed:results.filter(x=>x.status==='PASS').length,failed:results.filter(x=>x.status==='FAIL').length,results};
-  fs.writeFileSync(path.join(root,'storage','browser-results.json'),JSON.stringify(report,null,2));
+  fs.writeFileSync(path.join(root,'storage',process.env.CLOZEE_BROWSER_PREFIX_TEST?'browser-results-prefix.json':'browser-results.json'),JSON.stringify(report,null,2));
 });

@@ -9,11 +9,11 @@ if($_SERVER['REQUEST_METHOD']==='POST') {
         if($action==='remove') unset($_SESSION['cart'][$variant]);
         else {
             $qty=integer_value($_POST['quantity']??null,1,99,'จำนวน');
-            $v=query('SELECT v.*,p.shop_id,p.is_active AS product_active,s.is_active AS shop_active,s.owner_user_id FROM product_variants v JOIN products p ON p.product_id=v.product_id JOIN shops s ON s.shop_id=p.shop_id WHERE v.variant_id=?',[$variant])->fetch();
+            $v=query('SELECT v.*,p.shop_id,p.is_active AS product_active,s.is_active AS shop_active,s.owner_user_id FROM {{product_variants}} v JOIN {{products}} p ON p.product_id=v.product_id JOIN {{shops}} s ON s.shop_id=p.shop_id WHERE v.variant_id=?',[$variant])->fetch();
             if(!$v||!(int)$v['is_active']||!(int)$v['product_active']||!(int)$v['shop_active']) throw new ValidationException('สินค้านี้ไม่เปิดขายแล้ว');
             if((int)$v['owner_user_id']===$actor) throw new ValidationException('ไม่สามารถซื้อสินค้าจากร้านของตนเองได้');
             foreach($_SESSION['cart'] as $other=>$unused) {
-                $shopId=query('SELECT p.shop_id FROM product_variants v JOIN products p ON p.product_id=v.product_id WHERE v.variant_id=?',[$other])->fetchColumn();
+                $shopId=query('SELECT p.shop_id FROM {{product_variants}} v JOIN {{products}} p ON p.product_id=v.product_id WHERE v.variant_id=?',[$other])->fetchColumn();
                 if($shopId&&(int)$shopId!==(int)$v['shop_id']) throw new ValidationException('ตะกร้ามีสินค้าจากร้านอื่น กรุณาสั่งซื้อหรือลบสินค้าก่อนเปลี่ยนร้าน');
             }
             $new=$action==='add'?($_SESSION['cart'][$variant]??0)+$qty:$qty;
@@ -26,7 +26,7 @@ if($_SERVER['REQUEST_METHOD']==='POST') {
 }
 $cartRows=[];$subtotal=0;
 foreach($_SESSION['cart'] as $id=>$qty) {
-    $row=query('SELECT v.*,p.product_name,p.image_path,s.shop_name FROM product_variants v JOIN products p ON p.product_id=v.product_id JOIN shops s ON s.shop_id=p.shop_id WHERE v.variant_id=?',[$id])->fetch();
+    $row=query('SELECT v.*,p.product_name,p.image_path,s.shop_name FROM {{product_variants}} v JOIN {{products}} p ON p.product_id=v.product_id JOIN {{shops}} s ON s.shop_id=p.shop_id WHERE v.variant_id=?',[$id])->fetch();
     if($row) { $row['quantity']=$qty;$row['line_cents']=cents((string)$row['price'])*$qty;$subtotal+=$row['line_cents'];$cartRows[]=$row; }
 }
 require ROOT.'/app/templates/header.php'; ?>

@@ -18,7 +18,7 @@ $_SESSION['checkout_attempts']??=[];$_SESSION['checkout_attempts'][$key]=$_SESSI
 while(count($_SESSION['checkout_attempts'])>5)array_shift($_SESSION['checkout_attempts']);
 $rows=[];$sum=0;$shopName='';
 foreach($_SESSION['cart'] as $id=>$qty) {
-    $row=query('SELECT v.*,p.product_name,s.shop_name,s.pickup_location FROM product_variants v JOIN products p ON p.product_id=v.product_id JOIN shops s ON s.shop_id=p.shop_id WHERE v.variant_id=?',[$id])->fetch();
+    $row=query('SELECT v.*,p.product_name,s.shop_name,s.pickup_location FROM {{product_variants}} v JOIN {{products}} p ON p.product_id=v.product_id JOIN {{shops}} s ON s.shop_id=p.shop_id WHERE v.variant_id=?',[$id])->fetch();
     if(!$row) { flash('สินค้าบางรายการไม่มีแล้ว กรุณาปรับตะกร้า');redirect('cart.php'); }
     $row['quantity']=$qty;$sum+=cents((string)$row['price'])*$qty;$rows[]=$row;$shopName=$row['shop_name'];
 }

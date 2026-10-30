@@ -3,7 +3,9 @@
 **Local Clothing Marketplace & Delivery Platform** — ระบบซื้อขายเสื้อผ้าใหม่และมือสองสำหรับ BUU และบางแสน  
 89022167 Database Management · Final round target: **10 November 2026**
 
-**Local implementation and tests pass. NOT READY TO SUBMIT until the Angsila deployment is authorized and verified.** The user explicitly requested local completion first. No Angsila credentials/server or Google Sheets passwords have been used.
+**Local implementation and tests pass. NOT READY TO SUBMIT until the Angsila deployment is authorized and verified.** The user signed in to phpMyAdmin personally and authorized read-only environment inspection. No live database writes or uploads have occurred; no Google Sheets passwords were read or used.
+
+Angsila has existing Lab tables. Configure private `table_prefix = clozee_` and review [shared database tests](docs/shared-database-tests.md) and [deployment status](docs/deployment-verification.md) before installation. Local regression now passes 51 database/domain checks and 24 browser checks for both default and prefixed tables. The linked CI run below verifies the preceding code revision.
 
 Source: [Skyce38/CLOZEE](https://github.com/Skyce38/CLOZEE) · [Verified MySQL CI run](https://github.com/Skyce38/CLOZEE/actions/runs/41034821401) · [Course requirements](docs/course-requirements.md) · [Final report](docs/CLOZEE-Final-Report-Round2.pdf)
 

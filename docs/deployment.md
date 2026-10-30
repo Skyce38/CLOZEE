@@ -1,15 +1,21 @@
 # CLOZEE Angsila deployment guide
 
-**Status: PREPARED, NOT DEPLOYED.** No Angsila account, server, filesystem or production database has been accessed or modified. The user requires explicit approval before using credentials or changing the live system. Never use Google Sheets account/password data.
+**Status: PREPARED, NOT DEPLOYED.** Read-only phpMyAdmin inspection was authorized after the user signed in personally. No live database changes or file uploads have occurred. Specific deployment approval is still required. Never use Google Sheets account/password data.
 
-User update, 30 October 2026: the instructor's phpMyAdmin portal appears unavailable to the user; CLOZEE's assigned URL/directory, PHP/DB versions and permitted transfer method remain unknown. This is user-reported, not a server outage diagnosis. The user explicitly instructed local completion first and no access to the real server until environment and permissions are confirmed. No server probes or logins were performed for this build.
+Verified 30 October 2026: the portal works with the university VPN. It reports PHP 8.4.27, Apache and MySQL 8.0.46. The assigned database contains five existing Lab tables, including `users`. Use the `clozee_` namespace; do not import the unprefixed schema over the Lab database. SFTP is available in the user's FileZilla session. Website directory, public URL, app runtime/PDO support and private-file placement still require verification. See `deployment-verification.md`.
+
+## Shared database installation
+
+Set `'table_prefix' => 'clozee_'` in private configuration. All runtime table references and foreign keys then use that namespace. For CLI installation, `php scripts/migrate.php --empty-namespace` refuses an empty prefix or any existing table in that namespace; it preserves unrelated tables. Do not use `--empty-database` on the assigned shared database.
+
+For a reviewed phpMyAdmin import, generate SQL locally using `CLOZEE_TABLE_PREFIX=clozee_ php scripts/export-sql.php schema.sql` and inspect the output before approval/import. The canonical `database/schema.sql` remains for dedicated empty databases. The namespace SQL contains no DROP statements. Do not run the fictional demo seeder on production; create real accounts through registration after installation. DDL is not transactional: if an import partially fails, stop and inspect rather than deleting or reimporting tables.
 
 ## Information required before an approval request
 
 - Exact owner-approved Angsila URL and filesystem target; existing files and rollback owner.
 - Permitted upload method (SFTP/SSH or another administrator-approved method); no assumption that SSH is available.
 - Actual PHP version (application needs 8.1+), PDO MySQL, mbstring, sessions, HTTPS and cookie configuration.
-- Actual MySQL/MariaDB version, utf8mb4/InnoDB and CHECK support, assigned database and permissions. Local tests used MariaDB 11.4.9; Angsila/MySQL has not been verified.
+- Assigned DB/permissions were inspected; application queries and CHECK enforcement on Angsila still require verification. Local tests used MariaDB 11.4.9; the prior code revision also passed MySQL 8.4 CI.
 - Webroot mapping, private config location, session writable area, server error log location and backup method. Assigned DBs may not allow CREATE DATABASE.
 - Sanitized connection configuration (host/port/database/user names as appropriate); password must be supplied privately through the approved server mechanism, never chat, source or shared sheets.
 

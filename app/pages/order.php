@@ -8,8 +8,8 @@ if($_SERVER['REQUEST_METHOD']==='POST') {
     catch(ValidationException $e) { $error=$e->getMessage();http_response_code(422); }
     $o=visible_order($actor,$id);
 }
-$items=query('SELECT * FROM order_items WHERE order_id=? ORDER BY order_item_id',[$id])->fetchAll();
-$history=query('SELECT * FROM order_status_history WHERE order_id=? ORDER BY history_id',[$id])->fetchAll();
+$items=query('SELECT * FROM {{order_items}} WHERE order_id=? ORDER BY order_item_id',[$id])->fetchAll();
+$history=query('SELECT * FROM {{order_status_history}} WHERE order_id=? ORDER BY history_id',[$id])->fetchAll();
 $title='คำสั่งซื้อ #'.$id;require ROOT.'/app/templates/header.php'; ?>
 <section class="page-heading"><div><a class="back-link" href="<?=h(url((int)$o['owner_user_id']===$actor?'seller/orders.php':'orders.php'))?>">← คำสั่งซื้อทั้งหมด</a><h1>Order #<?=$id?></h1><p><?=h($o['shop_name'])?> · <span class="status <?=h($o['status'])?>"><?=h(STATUS_LABELS[$o['status']])?></span></p></div></section>
 <?php if($error): ?><div class="error" role="alert"><?=h($error)?></div><?php endif; ?>

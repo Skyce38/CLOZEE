@@ -10,7 +10,7 @@ function config(): array
     if (is_array($values)) return $values;
     $values = require __DIR__ . '/config/example.php';
     if (is_file(__DIR__ . '/config/local.php')) $values = array_replace($values, require __DIR__ . '/config/local.php');
-    foreach (['db_host','db_port','db_name','db_user','db_pass','base_path','delivery_fee'] as $key) {
+    foreach (['db_host','db_port','db_name','db_user','db_pass','base_path','delivery_fee','table_prefix'] as $key) {
         $env = getenv('CLOZEE_' . strtoupper($key));
         if ($env !== false) $values[$key] = $env;
     }
@@ -20,6 +20,7 @@ function config(): array
     return $values;
 }
 
+require __DIR__ . '/config/tables.php';
 require __DIR__ . '/config/db.php';
 require __DIR__ . '/validation.php';
 require __DIR__ . '/auth/session.php';

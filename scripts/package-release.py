@@ -13,9 +13,9 @@ assert not any(p in forbidden or p.startswith('node_modules/') or p.endswith('.e
 out=root/'output';out.mkdir(exist_ok=True)
 bundles={
     'source':paths,
-    'angsila-package':[p for p in paths if p.startswith(('app/','public/','database/')) or p in ['scripts/doctor.php','scripts/migrate.php','scripts/seed.php','docs/deployment.md','docs/deployment-verification.md','README.md']]
+    'angsila-package':[p for p in paths if p.startswith(('app/','public/','database/')) or p in ['scripts/doctor.php','scripts/migrate.php','scripts/seed.php','scripts/export-sql.php','docs/deployment.md','docs/deployment-verification.md','README.md']]
 }
-manifest={'commit':sha,'deployment_status':'PREPARED ONLY - no target approved, no live access','packages':[]}
+manifest={'commit':sha,'deployment_status':'PREPARED ONLY - read-only inspection completed; target not yet approved; no live writes','packages':[]}
 for kind,files in bundles.items():
     target=out/f'CLOZEE-round2-{sha[:7]}-{kind}.zip'
     with zipfile.ZipFile(target,'w',zipfile.ZIP_DEFLATED) as z:

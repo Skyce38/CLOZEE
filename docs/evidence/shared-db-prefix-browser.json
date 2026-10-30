@@ -1,0 +1,110 @@
+{
+  "executed_at": "2026-10-30T13:36:46.704Z",
+  "url": "http://127.0.0.1:8089",
+  "browser": "Playwright with installed Chrome (Browser plugin not available)",
+  "viewports": [
+    "1536x1024",
+    "1440x1000",
+    "390x844"
+  ],
+  "passed": 24,
+  "failed": 0,
+  "results": [
+    {
+      "test": "catalog renders real PHP data and all product assets",
+      "status": "PASS"
+    },
+    {
+      "test": "new/preloved filter and empty search update results",
+      "status": "PASS"
+    },
+    {
+      "test": "mobile catalog has no horizontal page overflow",
+      "status": "PASS"
+    },
+    {
+      "test": "protected pages redirect anonymous users; logout is POST only",
+      "status": "PASS"
+    },
+    {
+      "test": "seller registers with HttpOnly and SameSite session cookie",
+      "status": "PASS"
+    },
+    {
+      "test": "seller creates and edits own shop",
+      "status": "PASS"
+    },
+    {
+      "test": "seller creates multi-size product using real form",
+      "status": "PASS"
+    },
+    {
+      "test": "malformed variant keys cannot inject HTML on validation errors",
+      "status": "PASS"
+    },
+    {
+      "test": "buyer registers, adds item, places pickup order",
+      "status": "PASS"
+    },
+    {
+      "test": "buyer cannot mutate seller order status",
+      "status": "PASS"
+    },
+    {
+      "test": "CSRF rejected before product mutation",
+      "status": "PASS"
+    },
+    {
+      "test": "other account cannot edit product or read private order",
+      "status": "PASS"
+    },
+    {
+      "test": "seller progresses pickup order; buyer sees completion",
+      "status": "PASS"
+    },
+    {
+      "test": "delivery checkout records fee and cancellation returns stock",
+      "status": "PASS"
+    },
+    {
+      "test": "seller edit persists while historical price/name stay unchanged",
+      "status": "PASS"
+    },
+    {
+      "test": "buyer asks a size question and seller replies in private chat",
+      "status": "PASS"
+    },
+    {
+      "test": "unrelated account cannot read or forge chat messages",
+      "status": "PASS"
+    },
+    {
+      "test": "chat content is escaped instead of executing HTML",
+      "status": "PASS"
+    },
+    {
+      "test": "referenced product cannot be deleted; deactivation hides public item",
+      "status": "PASS"
+    },
+    {
+      "test": "mobile seller table does not overflow the page",
+      "status": "PASS"
+    },
+    {
+      "test": "logout invalidates session and protects routes again",
+      "status": "PASS"
+    },
+    {
+      "test": "wrong login rejected then correct login restores access",
+      "status": "PASS"
+    },
+    {
+      "test": "SQL injection string cannot bypass login",
+      "status": "PASS"
+    },
+    {
+      "test": "no unexpected console, asset or page errors",
+      "status": "PASS"
+    }
+  ]
+}

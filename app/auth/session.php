@@ -29,7 +29,7 @@ function register_user(array $data): array {
     $password=$data['password']??'';
     if (!is_string($password)||strlen($password)<10||strlen($password)>72||str_contains($password,"\0")) throw new ValidationException('รหัสผ่านต้องมี 10–72 ไบต์');
     if ($password!==($data['password_confirmation']??'')) throw new ValidationException('รหัสผ่านทั้งสองช่องไม่ตรงกัน');
-    try { query('INSERT INTO users(full_name,email,password_hash) VALUES(?,?,?)',[$name,$email,password_hash($password,PASSWORD_DEFAULT)]); }
+    try { query('INSERT INTO {{users}}(full_name,email,password_hash) VALUES(?,?,?)',[$name,$email,password_hash($password,PASSWORD_DEFAULT)]); }
     catch (PDOException $e) { if (($e->errorInfo[1]??0)===1062) throw new ValidationException('ไม่สามารถสมัครด้วยอีเมลนี้ได้'); throw $e; }
     return ['user_id'=>(int)db()->lastInsertId(),'full_name'=>$name];
 }
@@ -38,17 +38,17 @@ function authenticate(string $email, string $password, string $ip): array {
     $bucket=hash('sha256',$ip . '|' . $email);
     $ipBucket=hash('sha256',$ip);
     // Persistent per-account/IP and per-IP limits; no raw IP or password stored.
-    $count=query('SELECT COUNT(*) FROM login_attempts WHERE (bucket=? OR ip_bucket=?) AND attempted_at > UTC_TIMESTAMP() - INTERVAL 15 MINUTE',[$bucket,$ipBucket])->fetchColumn();
-    $accountCount=query('SELECT COUNT(*) FROM login_attempts WHERE bucket=? AND attempted_at > UTC_TIMESTAMP() - INTERVAL 15 MINUTE',[$bucket])->fetchColumn();
+    $count=query('SELECT COUNT(*) FROM {{login_attempts}} WHERE (bucket=? OR ip_bucket=?) AND attempted_at > UTC_TIMESTAMP() - INTERVAL 15 MINUTE',[$bucket,$ipBucket])->fetchColumn();
+    $accountCount=query('SELECT COUNT(*) FROM {{login_attempts}} WHERE bucket=? AND attempted_at > UTC_TIMESTAMP() - INTERVAL 15 MINUTE',[$bucket])->fetchColumn();
     if ((int)$accountCount>=5 || (int)$count>=40) throw new ValidationException('ลองเข้าสู่ระบบหลายครั้งเกินไป กรุณารอ 15 นาที');
-    $row=query('SELECT user_id,full_name,password_hash FROM users WHERE email=?',[$email])->fetch();
+    $row=query('SELECT user_id,full_name,password_hash FROM {{users}} WHERE email=?',[$email])->fetch();
     $dummy='$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2uheWG/igi.';
     if (!password_verify($password,$row['password_hash']??$dummy)||!$row) {
-        query('INSERT INTO login_attempts(bucket,ip_bucket) VALUES(?,?)',[$bucket,$ipBucket]);
+        query('INSERT INTO {{login_attempts}}(bucket,ip_bucket) VALUES(?,?)',[$bucket,$ipBucket]);
         throw new ValidationException('อีเมลหรือรหัสผ่านไม่ถูกต้อง');
     }
-    query('DELETE FROM login_attempts WHERE bucket=?',[$bucket]);
-    query('DELETE FROM login_attempts WHERE attempted_at < UTC_TIMESTAMP() - INTERVAL 1 DAY');
-    if(password_needs_rehash($row['password_hash'],PASSWORD_DEFAULT)) query('UPDATE users SET password_hash=? WHERE user_id=?',[password_hash($password,PASSWORD_DEFAULT),$row['user_id']]);
+    query('DELETE FROM {{login_attempts}} WHERE bucket=?',[$bucket]);
+    query('DELETE FROM {{login_attempts}} WHERE attempted_at < UTC_TIMESTAMP() - INTERVAL 1 DAY');
+    if(password_needs_rehash($row['password_hash'],PASSWORD_DEFAULT)) query('UPDATE {{users}} SET password_hash=? WHERE user_id=?',[password_hash($password,PASSWORD_DEFAULT),$row['user_id']]);
     return $row;
 }

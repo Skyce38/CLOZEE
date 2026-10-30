@@ -48,6 +48,10 @@ jobs:
           php scripts/doctor.php
       - name: Domain, database and concurrent checkout tests
         run: php tests/run.php
+      - name: Shared database namespace acceptance
+        env:
+          CLOZEE_TABLE_PREFIX: clozee_
+        run: php tests/run.php
       - name: Browser acceptance
         run: |
           npm ci
@@ -62,5 +66,6 @@ jobs:
           name: clozee-test-evidence
           path: |
             storage/test-results.json
+            storage/test-results-clozee_.json
             storage/browser-results.json
             docs/evidence/*.png

@@ -11,8 +11,8 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
     }catch(ValidationException $e){$error=$e->getMessage();http_response_code(422);}
 }
 $thread=$id?conversation_for($actor,$id):null;if($id&&!$thread)fail(404,'ไม่พบการสนทนาหรือไม่มีสิทธิ์เข้าถึง');
-$threads=query('SELECT c.*,s.shop_name,u.full_name AS buyer_name,s.owner_user_id FROM conversations c JOIN shops s ON s.shop_id=c.shop_id JOIN users u ON u.user_id=c.buyer_user_id WHERE c.buyer_user_id=? OR s.owner_user_id=? ORDER BY COALESCE(c.last_message_at,c.created_at) DESC,c.conversation_id DESC LIMIT 100',[$actor,$actor])->fetchAll();
-$messages=$thread?array_reverse(query('SELECT * FROM messages WHERE conversation_id=? ORDER BY message_id DESC LIMIT 100',[$id])->fetchAll()):[];
+$threads=query('SELECT c.*,s.shop_name,u.full_name AS buyer_name,s.owner_user_id FROM {{conversations}} c JOIN {{shops}} s ON s.shop_id=c.shop_id JOIN {{users}} u ON u.user_id=c.buyer_user_id WHERE c.buyer_user_id=? OR s.owner_user_id=? ORDER BY COALESCE(c.last_message_at,c.created_at) DESC,c.conversation_id DESC LIMIT 100',[$actor,$actor])->fetchAll();
+$messages=$thread?array_reverse(query('SELECT * FROM {{messages}} WHERE conversation_id=? ORDER BY message_id DESC LIMIT 100',[$id])->fetchAll()):[];
 require ROOT.'/app/templates/header.php'; ?>
 <section class="page-heading"><div><h1>A little conversation.</h1><p class="muted">ถามไซซ์หรือสภาพเสื้อผ้ากับร้านโดยตรง ข้อความเห็นเฉพาะผู้ร่วมสนทนา</p></div></section>
 <?php if($error):?><div class="error" role="alert"><?=h($error)?></div><?php endif;?>

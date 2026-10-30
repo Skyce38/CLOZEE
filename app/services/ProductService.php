@@ -27,9 +27,9 @@ function save_product(int $actor, ?int $id, array $input): int {
         $shop=own_shop($actor,true);
         if(!$shop) throw new ValidationException('กรุณาสร้างร้านก่อนเพิ่มสินค้า');
         if($id) {
-            $p=query('SELECT * FROM products WHERE product_id=? AND shop_id=? FOR UPDATE',[$id,$shop['shop_id']])->fetch();
+            $p=query('SELECT * FROM {{products}} WHERE product_id=? AND shop_id=? FOR UPDATE',[$id,$shop['shop_id']])->fetch();
             if(!$p) throw new ValidationException('ไม่พบสินค้าหรือไม่มีสิทธิ์แก้ไข');
-            $old=query('SELECT * FROM product_variants WHERE product_id=? ORDER BY variant_id FOR UPDATE',[$id])->fetchAll();
+            $old=query('SELECT * FROM {{product_variants}} WHERE product_id=? ORDER BY variant_id FOR UPDATE',[$id])->fetchAll();
             $oldById=array_column($old,null,'variant_id'); $kept=[];
             foreach($d['variants'] as $v) {
                 if($v['id']) {
@@ -42,15 +42,15 @@ function save_product(int $actor, ?int $id, array $input): int {
                 }
             }
             if(count($kept)!==count($old)) throw new ValidationException('กรุณาเก็บไซซ์เดิมไว้และปิดขายแทนการลบ');
-            query('UPDATE products SET product_name=?,description=?,category=?,condition_type=?,image_path=?,is_active=? WHERE product_id=? AND shop_id=?',[$d['name'],$d['description'],$d['category'],$d['condition'],$d['image'],$d['active'],$id,$shop['shop_id']]);
+            query('UPDATE {{products}} SET product_name=?,description=?,category=?,condition_type=?,image_path=?,is_active=? WHERE product_id=? AND shop_id=?',[$d['name'],$d['description'],$d['category'],$d['condition'],$d['image'],$d['active'],$id,$shop['shop_id']]);
         } else {
             foreach($d['variants'] as $v) if($v['id']) throw new ValidationException('สินค้าใหม่ต้องใช้ไซซ์ใหม่');
-            query('INSERT INTO products(shop_id,product_name,description,category,condition_type,image_path,is_active) VALUES(?,?,?,?,?,?,?)',[$shop['shop_id'],$d['name'],$d['description'],$d['category'],$d['condition'],$d['image'],$d['active']]);
+            query('INSERT INTO {{products}}(shop_id,product_name,description,category,condition_type,image_path,is_active) VALUES(?,?,?,?,?,?,?)',[$shop['shop_id'],$d['name'],$d['description'],$d['category'],$d['condition'],$d['image'],$d['active']]);
             $id=(int)db()->lastInsertId();
         }
         foreach($d['variants'] as $v) {
-            if($v['id']) query('UPDATE product_variants SET price=?,stock_quantity=?,is_active=?,version=version+1 WHERE variant_id=? AND product_id=?',[$v['price'],$v['stock'],$v['active'],$v['id'],$id]);
-            else query('INSERT INTO product_variants(product_id,size_label,price,stock_quantity,is_active) VALUES(?,?,?,?,?)',[$id,$v['size'],$v['price'],$v['stock'],$v['active']]);
+            if($v['id']) query('UPDATE {{product_variants}} SET price=?,stock_quantity=?,is_active=?,version=version+1 WHERE variant_id=? AND product_id=?',[$v['price'],$v['stock'],$v['active'],$v['id'],$id]);
+            else query('INSERT INTO {{product_variants}}(product_id,size_label,price,stock_quantity,is_active) VALUES(?,?,?,?,?)',[$id,$v['size'],$v['price'],$v['stock'],$v['active']]);
         }
         return $id;
     });
@@ -59,14 +59,14 @@ function remove_product(int $actor, int $id, bool $hard): void {
     transaction(function() use($actor,$id,$hard) {
         $shop=own_shop($actor,true);
         if(!$shop) throw new ValidationException('ไม่มีสิทธิ์จัดการร้านนี้');
-        $p=query('SELECT product_id FROM products WHERE product_id=? AND shop_id=? FOR UPDATE',[$id,$shop['shop_id']])->fetch();
+        $p=query('SELECT product_id FROM {{products}} WHERE product_id=? AND shop_id=? FOR UPDATE',[$id,$shop['shop_id']])->fetch();
         if(!$p) throw new ValidationException('ไม่พบสินค้าหรือไม่มีสิทธิ์จัดการ');
-        if(!$hard) { query('UPDATE products SET is_active=0 WHERE product_id=?',[$id]); return; }
-        query('SELECT variant_id FROM product_variants WHERE product_id=? ORDER BY variant_id FOR UPDATE',[$id])->fetchAll();
-        $used=query('SELECT COUNT(*) FROM order_items oi JOIN product_variants v ON v.variant_id=oi.variant_id WHERE v.product_id=?',[$id])->fetchColumn();
+        if(!$hard) { query('UPDATE {{products}} SET is_active=0 WHERE product_id=?',[$id]); return; }
+        query('SELECT variant_id FROM {{product_variants}} WHERE product_id=? ORDER BY variant_id FOR UPDATE',[$id])->fetchAll();
+        $used=query('SELECT COUNT(*) FROM {{order_items}} oi JOIN {{product_variants}} v ON v.variant_id=oi.variant_id WHERE v.product_id=?',[$id])->fetchColumn();
         if((int)$used>0) throw new ValidationException('สินค้านี้มีประวัติคำสั่งซื้อ ใช้ปิดขายแทนการลบถาวร');
-        query('DELETE FROM product_variants WHERE product_id=?',[$id]);
-        query('DELETE FROM products WHERE product_id=? AND shop_id=?',[$id,$shop['shop_id']]);
+        query('DELETE FROM {{product_variants}} WHERE product_id=?',[$id]);
+        query('DELETE FROM {{products}} WHERE product_id=? AND shop_id=?',[$id,$shop['shop_id']]);
     });
 }
 function catalog(array $filters, int $limit=24, int $offset=0): array {
@@ -76,6 +76,6 @@ function catalog(array $filters, int $limit=24, int $offset=0): array {
     if(!empty($filters['q'])) { $where[]='(p.product_name LIKE ? OR s.shop_name LIKE ?)';$term='%'.mb_substr((string)$filters['q'],0,120).'%';array_push($params,$term,$term); }
     if(!empty($filters['shop_id'])) { $where[]='p.shop_id=?';$params[]=(int)$filters['shop_id']; }
     if(!empty($filters['size'])) { $where[]='v.size_label=?';$params[]=mb_substr((string)$filters['size'],0,50); }
-    $sql='SELECT p.*,s.shop_name,MIN(v.price) AS min_price,SUM(v.stock_quantity) AS total_stock,GROUP_CONCAT(v.size_label ORDER BY v.variant_id SEPARATOR \' · \') AS sizes FROM products p JOIN shops s ON s.shop_id=p.shop_id JOIN product_variants v ON v.product_id=p.product_id WHERE '.implode(' AND ',$where).' GROUP BY p.product_id,s.shop_id ORDER BY p.product_id LIMIT '.max(1,min($limit,100)).' OFFSET '.max(0,$offset);
+    $sql='SELECT p.*,s.shop_name,MIN(v.price) AS min_price,SUM(v.stock_quantity) AS total_stock,GROUP_CONCAT(v.size_label ORDER BY v.variant_id SEPARATOR \' · \') AS sizes FROM {{products}} p JOIN {{shops}} s ON s.shop_id=p.shop_id JOIN {{product_variants}} v ON v.product_id=p.product_id WHERE '.implode(' AND ',$where).' GROUP BY p.product_id,s.shop_id ORDER BY p.product_id LIMIT '.max(1,min($limit,100)).' OFFSET '.max(0,$offset);
     return query($sql,$params)->fetchAll();
 }

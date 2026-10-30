@@ -18,7 +18,7 @@ function db(): PDO
 
 function query(string $sql, array $params = []): PDOStatement
 {
-    $statement = db()->prepare($sql);
+    $statement = db()->prepare(resolve_sql($sql));
     $statement->execute($params);
     return $statement;
 }
