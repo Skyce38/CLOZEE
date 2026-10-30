@@ -1,6 +1,6 @@
 # CLOZEE Angsila deployment guide
 
-**Status: PREPARED, NOT DEPLOYED.** Read-only phpMyAdmin inspection was authorized after the user signed in personally. No live database changes or file uploads have occurred. Specific deployment approval is still required. Never use Google Sheets account/password data.
+**Status: INSTALLATION IN PROGRESS, NOT VERIFIED.** The user approved the exact targets and schema plan. Public/private files and ten new tables have been installed; private DB password configuration and live acceptance tests remain pending. Never use Google Sheets account/password data. See `deployment-verification.md` for evidence and current limitations.
 
 Verified 30 October 2026: the portal works with the university VPN. It reports PHP 8.4.27, Apache and MySQL 8.0.46. The assigned database contains five existing Lab tables, including `users`. Use the `clozee_` namespace; do not import the unprefixed schema over the Lab database. SFTP, home/webroot and the existing Lab URL are verified. New CLOZEE directories await approval; app runtime/PDO support and access to the proposed private directory still require live verification. See `angsila-install-plan.md` and `deployment-verification.md`.
 

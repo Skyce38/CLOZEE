@@ -1,6 +1,6 @@
-# Proposed Angsila installation — approval pending
+# Angsila installation plan — approved, in progress
 
-30 October 2026. This plan makes no server changes by itself.
+30 October 2026. The user approved the exact targets with “ทำเลย” after reviewing the plan. Follow `deployment-verification.md` for actual progress; approval alone does not mean installation or tests passed.
 
 | Component | Exact proposed target |
 | --- | --- |

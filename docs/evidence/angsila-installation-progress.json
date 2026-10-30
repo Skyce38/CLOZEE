@@ -1,0 +1,20 @@
+{
+  "recorded_date": "2026-10-30",
+  "source_commit": "d2dea676d63e7d56454c54b7bedda7a65e5c9e18",
+  "approved_targets": true,
+  "public_directory": "/home/BUU/68160207/public_html/clozee",
+  "private_directory": "/home/BUU/68160207/clozee-private",
+  "public_files_uploaded": 25,
+  "private_code_files_uploaded": 24,
+  "database": "s68160207",
+  "application_tables": 10,
+  "application_columns": 75,
+  "foreign_keys": 14,
+  "enforced_check_constraints": 5,
+  "original_lab_row_counts_after_schema_install": {"education": 3,"profile": 1,"skill": 5,"training": 2,"users": 0},
+  "login_php_renders_private_bootstrap": true,
+  "private_database_configuration": "PENDING_USER_ENTRY",
+  "live_functional_acceptance": "NOT_TESTED",
+  "submission_ready": false,
+  "evidence_source": "User-authenticated FileZilla transfers, phpMyAdmin CREATE results and explicit information_schema counts, actual Angsila login page"
+}
