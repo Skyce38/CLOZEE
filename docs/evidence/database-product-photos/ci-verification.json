@@ -1,0 +1,33 @@
+{
+  "scope": "Isolated MySQL CI for database product images; not an Angsila deployment",
+  "head_sha": "fc45793d94cff57c79b70a183ed93a0a79d71977",
+  "run_id": 41119656814,
+  "run_url": "https://github.com/Skyce38/CLOZEE/actions/runs/41119656814",
+  "status": "completed",
+  "conclusion": "success",
+  "completed_at": "2026-10-30T20:00:46Z",
+  "php": "8.3.36",
+  "mysql": "8.4.13",
+  "jobs": [
+    {
+      "job_id": 124282844836,
+      "runtime": "gd",
+      "passed": 198,
+      "failed": 0
+    },
+    {
+      "job_id": 124282845294,
+      "runtime": "no-gd-no-exif",
+      "passed": 198,
+      "failed": 0
+    }
+  ],
+  "suites_per_job": {
+    "domain_default": 57,
+    "domain_clozee_prefix": 57,
+    "migration": 14,
+    "image_validation": 23,
+    "browser_regression": 24,
+    "browser_photos": 23
+  }
+}

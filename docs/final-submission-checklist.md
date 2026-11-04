@@ -1,12 +1,12 @@
 # CLOZEE Final Submission Audit — 10 November 2026
 
-Audit date: 30 October 2026. **Technical core deployed and verified; final submission metadata remains incomplete.** Angsila was tested directly via university VPN; off-VPN reachability and backup restoration remain unverified. Fill report-cover names and confirm final submission/reservation details before declaring the complete submission ready.
+Audit date: 4 November 2026. **Technical core deployed and verified; final submission metadata remains incomplete.** Angsila was tested directly via university VPN; off-VPN reachability and backup restoration remain unverified. Fill report-cover names and confirm final submission/reservation details before declaring the complete submission ready.
 
 ## Lecturer requirements (Database-authen.pdf pp.33–36)
 
 - [x] Problem Statement, objectives, target audience and hypothesized Pain Point in report.
 - [x] Requirements, Use Cases and actual Use Case Diagram.
-- [x] ER Diagram, reviewed schema and 75-field Data Dictionary.
+- [x] ER Diagram, reviewed schema and 89-field Data Dictionary.
 - [x] PHP relational DB CRUD tested locally and on MySQL CI; physical DELETE for unreferenced products.
 - [x] Login/Logout, session, basic authorization and ownership tested.
 - [x] GitHub repository/source/README/history prepared at https://github.com/Skyce38/CLOZEE (verify latest pushed revision below before handoff).
@@ -45,3 +45,11 @@ Registration and detailed JOIN evidence below are CLOZEE kit requirements; do no
 Local suite: 51 domain/DB/concurrency/install-guard tests and 24 browser tests passed for both table namespaces. Angsila passed 30 functional checkpoints and 17 anonymous HTTP/security checks; a fresh browser independently captured desktop/mobile views. Physical DELETE and concurrent races were tested in isolated local/MySQL CI databases, not repeated on live. Exact times, scope and cases are in test-results.md and evidence JSON. Final report PDF is CLOZEE-Final-Report-Round2.pdf, with HTML/Markdown source. Screenshots show actual PHP pages; design/concept.png is not test proof.
 
 Before final submission: fill report metadata, confirm the final submission/reservation details and recheck the live URL via VPN. Do not export private configuration/passwords or claim unperformed penetration/load/restore/off-VPN tests. Actual live checks, rather than localhost or CI, support the checked Angsila gate above.
+
+## Product-photo update
+
+- [x] BLOB images deployed on Angsila without GD or writable private uploads.
+- [x] Live photo flows 13/13; HTTP/security 17/17; 47/47 file hashes.
+- [x] Backed up before additive SQL; preserved original data and Labs.
+- [x] Test shops/products closed; temporary installers moved outside webroot.
+- [ ] Database quota and backup restore rehearsal remain unverified.

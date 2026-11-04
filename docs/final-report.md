@@ -13,7 +13,7 @@
 อาจารย์ผู้สอน: **[ยังไม่ได้รับชื่ออาจารย์]**  
 กำหนดส่ง: **10 พฤศจิกายน 2569**  
 จัดทำหลักฐานการพัฒนา: 30 ตุลาคม 2569<br>
-ปรับปรุงรายงานและชุดส่งงาน: 31 ตุลาคม 2569
+ปรับปรุงรายงานและชุดส่งงาน: 4 พฤศจิกายน 2569
 
 **สถานะ: ระบบ Local, MySQL CI และระบบหลักบน Angsila ผ่านการตรวจแล้ว; ยังต้องเติมข้อมูลหน้าปกและยืนยันรายละเอียดการส่งก่อนส่งฉบับสมบูรณ์ การเข้าถึงนอก VPN ยังไม่ยืนยัน**
 
@@ -29,7 +29,7 @@
 
 ## 2 ขอบเขตและ Requirements
 
-P0 ประกอบด้วยบัญชีผู้ใช้ ร้านค้า สินค้าใหม่/มือสอง ไซซ์ ราคา สต็อก ค้นหา/กรอง ตะกร้าร้านเดียว คำสั่งซื้อ นัดรับ/จัดส่ง ประวัติและการเปลี่ยนสถานะ P1 ที่ทำเพิ่มหลังทดสอบระบบหลักคือแชทข้อความ ส่วนหลายรูปและรายงานยอดขายยังไม่ได้ทำ
+P0 ประกอบด้วยบัญชีผู้ใช้ ร้านค้า สินค้าใหม่/มือสอง ไซซ์ ราคา สต็อก ค้นหา/กรอง ตะกร้าร้านเดียว คำสั่งซื้อ นัดรับ/จัดส่ง ประวัติและการเปลี่ยนสถานะ P1 ที่ทำเพิ่มหลังทดสอบระบบหลักคือแชทข้อความ รูปสินค้าสูงสุด 4 รูปติดตั้งบน Angsila แล้ว ส่วนรายงานยอดขายยังไม่ได้ทำ
 
 การจัดส่งเป็นการบันทึกตัวเลือกและรายละเอียดเพื่อให้ร้านดำเนินการโดยตรง ค่าจัดส่งตัวอย่างตั้งที่ server 30 บาทต่อ order; นัดรับฟรี ไม่มีระบบรับเงินออนไลน์ rider dispatch, GPS, shipping API, refund/dispute, rating หรือ checkout หลายร้าน
 
@@ -43,7 +43,8 @@ P0 ประกอบด้วยบัญชีผู้ใช้ ร้าน�
 | FR-10/11 | สถานะ/ประวัติ | shop owner state machine, buyer-owned history, status audit |
 | FR-12 | ตรวจสิทธิ์ทุก mutation | actor จาก session; scoped DB checks; tests สองบัญชี |
 | FR-13 | ข้อความผู้ซื้อ–ร้าน | ทำแล้ว: participant-only text chat, manual refresh |
-| FR-14/15 | หลายรูป/สรุปยอดขาย | ยังไม่ทำ เป็น P1 ที่เลื่อนได้ |
+| FR-14 | หลายรูป | ทำแล้ว: browser normalize → PNG → MEDIUMBLOB, ปก/ลบรูป, max 4 |
+| FR-15 | สรุปยอดขาย | ยังไม่ทำ เป็น P1 ที่เลื่อนได้ |
 
 
 NFR เน้น prepared statements, output escaping, CSRF, session/cookie, ownership, FK/unique/check, atomic transactions และ responsive design ดู functional-requirements.md และ implementation-decisions.md รายละเอียดครบ
@@ -64,9 +65,9 @@ UC-05 flow: เจ้าของร้าน login → เพิ่มสิน
 
 ![ER Diagram](diagrams/er-diagram.svg)
 
-โมเดลจริงมี **10 ตาราง 75 คอลัมน์ 14 Foreign Keys** รวม users, shops, products, product_variants, orders, order_items, conversations, messages, order_status_history และ login_attempts ใช้ InnoDB/utf8mb4, BIGINT UNSIGNED สำหรับคีย์ และ DECIMAL สำหรับเงิน
+โมเดลจริงมี **11 ตาราง 89 คอลัมน์ 15 Foreign Keys** รวม users, shops, products, product_variants, orders, order_items, conversations, messages, order_status_history login_attempts และ product_images ใช้ InnoDB/utf8mb4, BIGINT UNSIGNED สำหรับคีย์ และ DECIMAL สำหรับเงิน
 
-users 1:0..1 shops บังคับด้วย UNIQUE owner; shops 1:N products/orders; products 1:N variants; orders 1:N items; variants 1:N historical items; conversations 1:N messages; order 1:N status history ส่วน login_attempts เป็นข้อมูลจำกัดการลอง login ชั่วคราวที่ไม่ผูก FK กับผู้ใช้ เพราะคำขออาจไม่ใช่บัญชีจริง
+users 1:0..1 shops บังคับด้วย UNIQUE owner; shops 1:N products/orders; products 1:N variants และ product_images; orders 1:N items; variants 1:N historical items; conversations 1:N messages; order 1:N status history ส่วน login_attempts เป็นข้อมูลจำกัดการลอง login ชั่วคราวที่ไม่ผูก FK กับผู้ใช้ เพราะคำขออาจไม่ใช่บัญชีจริง
 
 ER แสดง cardinality ที่ schema อนุญาต (0..N) แต่ service บังคับสินค้าต้องมีอย่างน้อยหนึ่ง variant และ order อย่างน้อยหนึ่ง item ภายใน transaction FK product ของ conversation เป็น nullable และ SET NULL เมื่อสินค้าไม่มีแล้ว ส่วนประวัติคำสั่งซื้อใช้ RESTRICT ป้องกันการทำลายความสัมพันธ์
 
@@ -109,6 +110,24 @@ Create/Read/Update persist ลง DB จริง ส่วน DELETE สิน�
 ![Participant-only chat](evidence/chat.png)
 
 เริ่มจากหน้าสินค้า ใช้ thread เดิมของ buyer/product คู่เดิม ส่งได้เฉพาะ buyer หรือเจ้าของร้าน แสดงล่าสุด 100 ข้อความและ refresh ด้วยตนเอง ไม่มีการอ้างว่า realtime
+
+### 6.5 รูปสินค้าและรายละเอียดเสื้อผ้า - Angsila 4 พฤศจิกายน 2569
+
+ผู้ขายอัปโหลด JPG/PNG/WebP ได้สูงสุด 4 รูป เลือกภาพหลักและลบภาพได้ Browser ย่อและแปลงเป็น PNG ไม่เกิน 1600 พิกเซล/1.5 MiB แล้ว PHP ตรวจ PNG signature/chunk CRC/ขนาดและข้อมูลก่อนบันทึก MEDIUMBLOB ใน transaction เดียวกับสินค้า เพิ่มแบรนด์ รอบอก ความยาว และตำหนิที่ไม่บังคับกรอก
+
+Angsila ไม่มี GD และ PHP เขียน private storage ไม่ได้ จึงไม่ใช้ directory สำหรับเก็บภาพ ระบบให้ image.php ตรวจสิทธิ์และส่ง binary พร้อม nosniff/CSP รูปของสินค้าหรือร้านที่ปิดขายเห็นได้เฉพาะเจ้าของ
+
+![Live product photos - Angsila desktop, fictional QA data](evidence/database-product-photos/live-gallery-desktop.png)
+
+ภาพหน้าจอมือถือ 390px: [gallery](evidence/database-product-photos/live-gallery-mobile.png) และ [แบบฟอร์มรูปสินค้า](evidence/database-product-photos/live-editor-mobile.png)
+
+ผล live browser ผ่าน 13/13 และ HTTP/security 17/17 บน PHP 8.4.27 / MySQL 8.0.46 ผ่าน VPN: อัปโหลดและแสดงรูป, thumbnail, ปก/ลบภาพ, invalid PNG/CSRF, สิทธิ์ผู้ขาย, pickup checkout และ stock 5 → 4, mobile overflow, ปิดขาย/owner-only image, logout/login และ runtime errors ไม่มี
+
+ตัวทดสอบรอบแรกแก้ locator ชื่อสินค้า การนับ gallery รูปเดียว และสร้างร้านให้บัญชีที่สองก่อนตรวจ ownership แล้วรันครบผ่าน หลักฐาน JSON แยกใน evidence/database-product-photos/live-results.json ส่วน Local/CI ของรูปสินค้าอยู่ใน database-product-photos.md: CI PHP 8.3.36/MySQL 8.4.13 ผ่าน 198 ข้อต่อ runtime ทั้งเปิด GD และปิด GD/EXIF
+
+สำรอง 10 ตารางและไฟล์เดิม 52 ไฟล์ก่อน migration ตรวจค่าแถวเดิมและ Lab ไม่เปลี่ยน ตรวจ hash รุ่นใหม่ 47/47 ไฟล์ ย้ายตัวติดตั้งออกนอก webroot แล้วตรวจ 404 ปิด QA ทั้ง 5 ร้าน/3 สินค้าหลังทดสอบ เก็บบัญชีและ order สมมติไว้เป็นประวัติ ไม่เกิดการจัดส่งจริง
+
+ข้อจำกัด: ยังไม่ทราบ quota DB, ยังไม่ซ้อม restore, ไม่ทดสอบนอก VPN, Safari/Firefox หรือมือถือจริง รูปเต็ม 4 รูปอาจใช้ DB สูงสุดประมาณ 6 MiB ต่อสินค้า โครงสร้างใหม่ทดสอบในเครื่อง/CI ก่อนติดตั้ง; ตัวเลขผลระบบหลักในบทต่อไปเป็นหลักฐานรอบเดิม ไม่ใช่การรันซ้ำทั้งหมดในวันที่ 4 พฤศจิกายน
 
 ## 7 CRUD และ Data Integrity
 
@@ -165,9 +184,9 @@ Repository: [Skyce38/CLOZEE](https://github.com/Skyce38/CLOZEE)
 Local URL: http://127.0.0.1:8088 (เฉพาะเครื่องพัฒนา ไม่ใช่ URL ส่งงาน)  
 Angsila URL: **https://angsila.informatics.buu.ac.th/~68160207/clozee/**
 
-ผู้ใช้ยืนยันว่าต้องเปิด VPN มหาวิทยาลัย และล็อกอิน phpMyAdmin/FileZilla ด้วยตนเอง จากนั้นอนุมัติปลายทางและแผน SQL ก่อนเขียนจริง แยก public_html/clozee ออกจาก clozee-private นอกเว็บ ใช้ฐาน s68160207 โดยสร้างเฉพาะตาราง clozee_ 10 ตาราง เก็บตาราง Lab เดิมทั้งห้าไว้ครบ รหัสผ่านกรอกโดยผู้ใช้ในไฟล์ส่วนตัวที่ Git ไม่ติดตามและไม่อยู่ใน public_html ไม่อ่านหรือใช้รหัสผ่านจาก Google Sheets
+ผู้ใช้ยืนยันว่าต้องเปิด VPN มหาวิทยาลัย และล็อกอิน phpMyAdmin/FileZilla ด้วยตนเอง จากนั้นอนุมัติปลายทางและแผน SQL ก่อนเขียนจริง แยก public_html/clozee ออกจาก clozee-private นอกเว็บ ใช้ฐาน s68160207 โดยสร้างเฉพาะตาราง clozee_ เดิม 10 ตาราง และเพิ่ม product_images เป็นตารางที่ 11 เมื่อ 4 พฤศจิกายน เก็บตาราง Lab เดิมทั้งห้าไว้ครบ รหัสผ่านกรอกโดยผู้ใช้ในไฟล์ส่วนตัวที่ Git ไม่ติดตามและไม่อยู่ใน public_html ไม่อ่านหรือใช้รหัสผ่านจาก Google Sheets
 
-ตรวจ schema จริงได้ 75 คอลัมน์, 14 Foreign Keys, 5 enforced CHECK; หน้าเว็บ PHP/PDO เชื่อมต่อและทำงานกับ MySQL 8.0.46 ได้จริง HTTP protection ผ่านและเว็บ Lab เดิมยังเปิดได้ ดู deployment-verification.md สำหรับหลักฐานและขอบเขตการตรวจ การเปิดด้วยเบราว์เซอร์ใหม่ผ่านในเครือข่าย/VPN เดียวกัน ไม่อ้างว่าทดสอบจากอินเทอร์เน็ตภายนอก VPN แล้ว
+หลังอัปเดตรูปสินค้า ตรวจ schema จริงได้ 89 คอลัมน์, 15 Foreign Keys, 9 enforced CHECK; หน้าเว็บ PHP/PDO เชื่อมต่อและทำงานกับ MySQL 8.0.46 ได้จริง HTTP protection ผ่านและเว็บ Lab เดิมยังเปิดได้ ดู deployment-verification.md สำหรับหลักฐานและขอบเขตการตรวจ การเปิดด้วยเบราว์เซอร์ใหม่ผ่านในเครือข่าย/VPN เดียวกัน ไม่อ้างว่าทดสอบจากอินเทอร์เน็ตภายนอก VPN แล้ว
 
 ![Angsila desktop — actual fresh anonymous browser](evidence/angsila-catalog-desktop.png)
 
@@ -193,7 +212,7 @@ Angsila URL: **https://angsila.informatics.buu.ac.th/~68160207/clozee/**
 
 ## ภาคผนวก Data Dictionary
 
-สร้างจาก information_schema ของ schema ที่นำเข้าจริงบน MariaDB 11.4.9 ไม่ใช่การเดาจากชื่อฟิลด์ รวม 10 ตาราง 75 คอลัมน์ 14 Foreign Keys เวลาในฐานข้อมูลเป็น UTC ส่วน UI ระบุ UTC ไว้ชัดเจน
+ฐานเดิมอ้าง information_schema บน MariaDB 11.4.9 และปรับตาม migration 002 ที่ติดตั้งจริงบน Angsila วันที่ 4 พฤศจิกายน 2569 รวม 11 ตาราง 89 คอลัมน์ 15 Foreign Keys และ 9 CHECK ชนิดตัวเลขอาจแสดง display width ต่างกันระหว่าง MariaDB/MySQL เวลาในฐานข้อมูลเป็น UTC ส่วน UI ระบุ UTC ไว้ชัดเจน
 
 ## conversations
 
@@ -280,6 +299,25 @@ Angsila URL: **https://angsila.informatics.buu.ac.th/~68160207/clozee/**
 | is_active | tinyint(1) | NO | 1 | - | 1 เปิดใช้งาน / 0 ปิดใช้งาน |
 | created_at | timestamp | NO | current_timestamp() | - | เวลาสร้าง (UTC) |
 | updated_at | timestamp | NO | current_timestamp() | -; on update current_timestamp() | เวลาแก้ไขล่าสุด (UTC) |
+| brand | varchar(100) | YES | NULL | - | แบรนด์ (ไม่บังคับ) |
+| chest_cm | decimal(4,1) | YES | NULL | CHECK > 0 และ <= 300 | รอบอก ซม. |
+| length_cm | decimal(4,1) | YES | NULL | CHECK > 0 และ <= 300 | ความยาว ซม. |
+| condition_notes | varchar(1000) | YES | NULL | - | สภาพและตำหนิ |
+
+## product_images
+
+| Column | Type | NULL? | Default | Key / rule | Meaning |
+| --- | --- | --- | --- | --- | --- |
+| image_id | bigint unsigned | NO | NULL | PRI; auto_increment | รหัสรูป |
+| product_id | bigint unsigned | NO | NULL | FK → products.product_id; ON DELETE CASCADE | สินค้าเจ้าของรูป |
+| storage_name | varchar(64) | NO | NULL | UNIQUE | รหัสสุ่ม ไม่ใช่ path ไฟล์ |
+| mime_type | varchar(32) | NO | NULL | server allowlist | MIME รูป; รูปใหม่เป็น image/png |
+| byte_size | int unsigned | NO | NULL | CHECK 1..1572864 และเท่ากับ OCTET_LENGTH(image_data) | ขนาดไบต์จริง |
+| image_data | mediumblob | NO | NULL | CHECK ขนาดร่วมกับ byte_size | ข้อมูลภาพ binary ที่ตรวจแล้ว |
+| width | smallint unsigned | NO | NULL | CHECK 1..1600 | ความกว้างพิกเซล |
+| height | smallint unsigned | NO | NULL | CHECK 1..1600 | ความสูงพิกเซล |
+| sort_order | tinyint unsigned | NO | 0 | composite index product_id,sort_order,image_id | ลำดับภาพ; ลำดับแรกเป็นปก |
+| created_at | timestamp | NO | CURRENT_TIMESTAMP | - | เวลาสร้าง UTC |
 
 ## product_variants
 
@@ -333,6 +371,8 @@ Angsila URL: **https://angsila.informatics.buu.ac.th/~68160207/clozee/**
 | order_items | uq_order_variant | order_id,variant_id |
 | order_status_history | PRIMARY | history_id |
 | products | PRIMARY | product_id |
+| product_images | PRIMARY | image_id |
+| product_images | ux_product_images_storage | storage_name |
 | product_variants | PRIMARY | variant_id |
 | product_variants | uq_variants_product_size | product_id,size_label |
 | shops | PRIMARY | shop_id |
@@ -343,3 +383,5 @@ Angsila URL: **https://angsila.informatics.buu.ac.th/~68160207/clozee/**
 ## กติกาที่ต้องตรวจใน PHP
 
 ทุก order item ต้องอยู่ในร้านของ order, ผู้ส่งแชทต้องเป็นผู้ร่วมสนทนา, สินค้าต้องมีอย่างน้อยหนึ่ง variant, order ต้องมีอย่างน้อยหนึ่ง item, สต็อกต้องไม่ถูกขายเกิน, state transition ต้องตรงวิธีรับสินค้า และราคาต้องมาจาก server ดู implementation-decisions.md สำหรับ CHECK และ business rules ฉบับเต็ม
+
+รูปสินค้าไม่เกิน 4 รูปต่อสินค้า บังคับใน service ภายใต้ row lock ของสินค้า; image endpoint ตรวจสถานะสินค้า/ร้านและสิทธิ์เจ้าของก่อนส่ง bytes ไม่ดึง BLOB ในรายการสินค้าทุกแถว

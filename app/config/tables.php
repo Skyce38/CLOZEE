@@ -23,7 +23,7 @@ function application_tables(): array {
 }
 
 function application_sql_file(string $file): string {
-    if(!in_array($file,['schema.sql','seed.sql','demo-joins.sql','migrations/001-product-photos.sql'],true))throw new LogicException('Unknown SQL source');
+    if(!in_array($file,['schema.sql','seed.sql','demo-joins.sql','migrations/001-product-photos.sql','migrations/002-database-product-photos.sql'],true))throw new LogicException('Unknown SQL source');
     $sql=file_get_contents(ROOT.'/database/'.$file);
     // SQL sources are trusted repository files. Rewrite explicit table declarations/references,
     // never bound data values. Runtime queries use explicit {{logical_name}} slots instead.

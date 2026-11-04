@@ -1,6 +1,6 @@
 # CLOZEE Data Dictionary
 
-สร้างจาก information_schema ของ schema ที่นำเข้าจริงบน MariaDB 11.4.9 ไม่ใช่การเดาจากชื่อฟิลด์ รวม 10 ตาราง 75 คอลัมน์ 14 Foreign Keys เวลาในฐานข้อมูลเป็น UTC ส่วน UI ระบุ UTC ไว้ชัดเจน
+ฐานเดิมอ้าง information_schema บน MariaDB 11.4.9 และปรับตาม migration 002 ที่ติดตั้งจริงบน Angsila วันที่ 4 พฤศจิกายน 2569 รวม 11 ตาราง 89 คอลัมน์ 15 Foreign Keys และ 9 CHECK ชนิดตัวเลขอาจแสดง display width ต่างกันระหว่าง MariaDB/MySQL เวลาในฐานข้อมูลเป็น UTC ส่วน UI ระบุ UTC ไว้ชัดเจน
 
 ## conversations
 
@@ -87,6 +87,25 @@
 | is_active | tinyint(1) | NO | 1 | - | 1 เปิดใช้งาน / 0 ปิดใช้งาน |
 | created_at | timestamp | NO | current_timestamp() | - | เวลาสร้าง (UTC) |
 | updated_at | timestamp | NO | current_timestamp() | -; on update current_timestamp() | เวลาแก้ไขล่าสุด (UTC) |
+| brand | varchar(100) | YES | NULL | - | แบรนด์ (ไม่บังคับ) |
+| chest_cm | decimal(4,1) | YES | NULL | CHECK > 0 และ <= 300 | รอบอก ซม. |
+| length_cm | decimal(4,1) | YES | NULL | CHECK > 0 และ <= 300 | ความยาว ซม. |
+| condition_notes | varchar(1000) | YES | NULL | - | สภาพและตำหนิ |
+
+## product_images
+
+| Column | Type | NULL? | Default | Key / rule | Meaning |
+| --- | --- | --- | --- | --- | --- |
+| image_id | bigint unsigned | NO | NULL | PRI; auto_increment | รหัสรูป |
+| product_id | bigint unsigned | NO | NULL | FK → products.product_id; ON DELETE CASCADE | สินค้าเจ้าของรูป |
+| storage_name | varchar(64) | NO | NULL | UNIQUE | รหัสสุ่ม ไม่ใช่ path ไฟล์ |
+| mime_type | varchar(32) | NO | NULL | server allowlist | MIME รูป; รูปใหม่เป็น image/png |
+| byte_size | int unsigned | NO | NULL | CHECK 1..1572864 และเท่ากับ OCTET_LENGTH(image_data) | ขนาดไบต์จริง |
+| image_data | mediumblob | NO | NULL | CHECK ขนาดร่วมกับ byte_size | ข้อมูลภาพ binary ที่ตรวจแล้ว |
+| width | smallint unsigned | NO | NULL | CHECK 1..1600 | ความกว้างพิกเซล |
+| height | smallint unsigned | NO | NULL | CHECK 1..1600 | ความสูงพิกเซล |
+| sort_order | tinyint unsigned | NO | 0 | composite index product_id,sort_order,image_id | ลำดับภาพ; ลำดับแรกเป็นปก |
+| created_at | timestamp | NO | CURRENT_TIMESTAMP | - | เวลาสร้าง UTC |
 
 ## product_variants
 
@@ -140,6 +159,8 @@
 | order_items | uq_order_variant | order_id,variant_id |
 | order_status_history | PRIMARY | history_id |
 | products | PRIMARY | product_id |
+| product_images | PRIMARY | image_id |
+| product_images | ux_product_images_storage | storage_name |
 | product_variants | PRIMARY | variant_id |
 | product_variants | uq_variants_product_size | product_id,size_label |
 | shops | PRIMARY | shop_id |
@@ -150,3 +171,5 @@
 ## กติกาที่ต้องตรวจใน PHP
 
 ทุก order item ต้องอยู่ในร้านของ order, ผู้ส่งแชทต้องเป็นผู้ร่วมสนทนา, สินค้าต้องมีอย่างน้อยหนึ่ง variant, order ต้องมีอย่างน้อยหนึ่ง item, สต็อกต้องไม่ถูกขายเกิน, state transition ต้องตรงวิธีรับสินค้า และราคาต้องมาจาก server ดู implementation-decisions.md สำหรับ CHECK และ business rules ฉบับเต็ม
+
+รูปสินค้าไม่เกิน 4 รูปต่อสินค้า บังคับใน service ภายใต้ row lock ของสินค้า; image endpoint ตรวจสถานะสินค้า/ร้านและสิทธิ์เจ้าของก่อนส่ง bytes ไม่ดึง BLOB ในรายการสินค้าทุกแถว

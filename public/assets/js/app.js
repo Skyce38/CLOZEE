@@ -8,12 +8,35 @@ if(addVariant) addVariant.addEventListener('click',()=>{
   list.append(row);
 });
 
+async function normalizeProductPhoto(file, maxBytes) {
+  if(!['image/jpeg','image/png','image/webp'].includes(file.type)||file.size>8*1048576)throw Error('เลือกภาพ JPG, PNG หรือ WebP ต้นฉบับไม่เกิน 8 MB');
+  let bitmap;
+  try{bitmap=await createImageBitmap(file,{imageOrientation:'from-image'});}catch{throw Error('เปิดรูปไม่ได้ กรุณาเลือกไฟล์ภาพที่สมบูรณ์');}
+  try{
+    if(bitmap.width>6000||bitmap.height>6000||bitmap.width*bitmap.height>12000000)throw Error('ภาพต้องไม่เกิน 6,000 พิกเซลต่อด้านและ 12 ล้านพิกเซล');
+    const canvas=document.createElement('canvas');const context=canvas.getContext('2d');
+    if(!context)throw Error('เบราว์เซอร์นี้ปรับรูปไม่ได้ กรุณาใช้เบราว์เซอร์รุ่นปัจจุบัน');
+    let scale=Math.min(1,1600/Math.max(bitmap.width,bitmap.height));
+    for(let attempt=0;attempt<9;attempt++){
+      canvas.width=Math.max(1,Math.round(bitmap.width*scale));canvas.height=Math.max(1,Math.round(bitmap.height*scale));
+      context.clearRect(0,0,canvas.width,canvas.height);context.drawImage(bitmap,0,0,canvas.width,canvas.height);
+      const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));
+      if(!blob)throw Error('ปรับภาพไม่สำเร็จ กรุณาเลือกรูปใหม่');
+      if(blob.size<=maxBytes)return new File([blob],'product.png',{type:'image/png'});
+      scale*=0.8;
+    }
+    throw Error('ภาพยังมีขนาดใหญ่เกินกำหนด กรุณาเลือกภาพเล็กลง');
+  }finally{bitmap.close();}
+}
+
 const photoEditor=document.querySelector('[data-photo-editor]');
 if(photoEditor){
   const input=photoEditor.querySelector('[data-photo-input]');
   const previews=photoEditor.querySelector('[data-photo-previews]');
   const message=photoEditor.querySelector('[data-photo-message]');
-  let objectUrls=[];
+  let objectUrls=[];let sequence=0;let processing=false;
+  const form=photoEditor.closest('form');
+  form.addEventListener('submit',event=>{if(processing){event.preventDefault();message.textContent='กำลังปรับรูป กรุณารอสักครู่';}});
   const redrawPhotos=()=>{
     const previous=photoEditor.querySelector('[name="cover_image"]:checked')?.value;
     objectUrls.forEach(url=>URL.revokeObjectURL(url));objectUrls=[];previews.replaceChildren();
@@ -37,7 +60,19 @@ if(photoEditor){
       label.append(radio,document.createTextNode('ใช้เป็นภาพหลัก'));card.append(img,label);previews.append(card);
     });
   };
-  input.addEventListener('change',redrawPhotos);
+  input.addEventListener('change',async()=>{
+    const current=++sequence;const originals=[...input.files];processing=true;input.dataset.processing='true';
+    const buttons=[...form.querySelectorAll('button[type="submit"],button:not([type])')];buttons.forEach(button=>button.disabled=true);
+    input.setCustomValidity('กำลังปรับรูป');message.textContent='กำลังหมุนและย่อรูปก่อนอัปโหลด…';
+    try{
+      if(originals.length>4)throw Error('เพิ่มรูปใหม่ได้ครั้งละไม่เกิน 4 รูป');
+      const transfer=new DataTransfer();
+      for(const file of originals)transfer.items.add(await normalizeProductPhoto(file,Number(photoEditor.dataset.maxBytes)));
+      if(current!==sequence)return;
+      input.files=transfer.files;redrawPhotos();
+    }catch(error){if(current===sequence){input.value='';previews.replaceChildren();input.setCustomValidity(error.message);message.textContent=error.message;message.classList.add('error');}}
+    finally{if(current===sequence){processing=false;input.dataset.processing='false';buttons.forEach(button=>button.disabled=false);}}
+  });
   photoEditor.querySelectorAll('[name="remove_images[]"]').forEach(box=>box.addEventListener('change',redrawPhotos));
   window.addEventListener('pagehide',()=>objectUrls.forEach(url=>URL.revokeObjectURL(url)));
 }

@@ -1,6 +1,6 @@
 # CLOZEE Angsila deployment guide
 
-**Product photos branch:** the deployed site below is the previous version. See `product-photos.md` for the tested local changes and upgrade checklist. Existing installations must use the reviewed additive `database/angsila-product-photos-migration.sql`, never the full schema. Verify GD/EXIF and private upload permissions and obtain approval before changing the server.
+**Database product photos deployed 4 November 2026:** see `database-product-photos.md`. The approved additive migration upgraded the application namespace to 11 tables / 89 columns / 15 foreign keys / 9 checks. New code uses `/home/BUU/68160207/clozee-dbphotos-fc45793`; its private configuration bridge reuses the original private configuration. Backup integrity and all 47 release file hashes were verified. Live browser 13/13 and HTTP/security 17/17 passed. Temporary helpers are outside the webroot. Quota and backup restoration remain unverified. Do not re-import the migration on the upgraded database.
 
 **Status: DEPLOYED; CORE FLOWS VERIFIED VIA UNIVERSITY VPN.** The user approved exact targets and the schema plan. Public/private files, ten new tables and private configuration are installed. Thirty functional and seventeen anonymous HTTP/security checks passed. Never use Google Sheets account/password data. See `deployment-verification.md` for evidence, untested cases and remaining submission metadata.
 
@@ -60,4 +60,4 @@ If schema import fails on a new empty DB, stop and inspect errors privately; do 
 
 ## Approval boundary
 
-Once the actual target and private configuration are available, present the exact file mapping, SQL diff/import plan, backup/rollback and smoke-test plan. Ask permission for that concrete target. Current status remains **NOT READY TO SUBMIT** until this happens and Angsila verification succeeds.
+For future deployments, present the exact file mapping, SQL diff, backup/rollback and smoke-test plan before obtaining approval. The current Angsila release is deployed and verified; final submission still needs the missing cover metadata and confirmation of submission details.

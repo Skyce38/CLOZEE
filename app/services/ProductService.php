@@ -36,7 +36,7 @@ function save_product(int $actor, ?int $id, array $input,array $files=[]): int {
     $own=own_shop($actor);
     if(!$own||($id&&!query('SELECT product_id FROM {{products}} WHERE product_id=? AND shop_id=?',[$id,$own['shop_id']])->fetchColumn()))throw new ValidationException('ไม่พบสินค้าหรือไม่มีสิทธิ์แก้ไข');
     $photos=stage_product_photos($files);
-    try{ $result=transaction(function() use($actor,$id,$d,$input,$photos) {
+    $result=transaction(function() use($actor,$id,$d,$input,$photos) {
         $shop=own_shop($actor,true);
         if(!$shop) throw new ValidationException('กรุณาสร้างร้านก่อนเพิ่มสินค้า');
         if($id) {
@@ -66,13 +66,13 @@ function save_product(int $actor, ?int $id, array $input,array $files=[]): int {
             else query('INSERT INTO {{product_variants}}(product_id,size_label,price,stock_quantity,is_active) VALUES(?,?,?,?,?)',[$id,$v['size'],$v['price'],$v['stock'],$v['active']]);
         }
         query('UPDATE {{products}} SET brand=?,chest_cm=?,length_cm=?,condition_notes=? WHERE product_id=?',[$d['brand']===''?null:$d['brand'],$d['chest'],$d['length'],$d['condition_notes']===''?null:$d['condition_notes'],$id]);
-        return ['id'=>$id,'retired'=>sync_product_photos($id,$input,$photos)];
-    }); }catch(Throwable $e){foreach($photos as $photo)discard_photo($photo['storage_name']);throw $e;}
-    foreach($result['retired'] as $name)discard_photo($name);
-    return $result['id'];
+        sync_product_photos($id,$input,$photos);
+        return $id;
+    });
+    return $result;
 }
 function remove_product(int $actor, int $id, bool $hard): void {
-    $retired=transaction(function() use($actor,$id,$hard) {
+    transaction(function() use($actor,$id,$hard) {
         $shop=own_shop($actor,true);
         if(!$shop) throw new ValidationException('ไม่มีสิทธิ์จัดการร้านนี้');
         $p=query('SELECT product_id FROM {{products}} WHERE product_id=? AND shop_id=? FOR UPDATE',[$id,$shop['shop_id']])->fetch();
@@ -82,11 +82,9 @@ function remove_product(int $actor, int $id, bool $hard): void {
         $used=query('SELECT COUNT(*) FROM {{order_items}} oi JOIN {{product_variants}} v ON v.variant_id=oi.variant_id WHERE v.product_id=?',[$id])->fetchColumn();
         if((int)$used>0) throw new ValidationException('สินค้านี้มีประวัติคำสั่งซื้อ ใช้ปิดขายแทนการลบถาวร');
         query('DELETE FROM {{product_variants}} WHERE product_id=?',[$id]);
-        $images=array_column(product_images($id),'storage_name');
         query('DELETE FROM {{products}} WHERE product_id=? AND shop_id=?',[$id,$shop['shop_id']]);
-        return $images;
+        return [];
     });
-    foreach($retired as $name)discard_photo($name);
 }
 function catalog(array $filters, int $limit=24, int $offset=0): array {
     $where=['p.is_active=1','s.is_active=1','v.is_active=1']; $params=[];
