@@ -12,3 +12,8 @@
 | F Angsila | Exact targets approved; files/schema/private configuration installed; Lab preserved; 30 functional and 17 anonymous HTTP checks plus independent desktop/mobile capture | Core technical acceptance PASS via university VPN; cover metadata/submission details pending |
 
 Local result counts are in test-results.md and JSON evidence, rather than assuming every listed manual test was executed. GitHub CI verifies an exact revision; docs-only changes do not rerun the unchanged code suite. Overall final-coursework status is NOT READY TO SUBMIT until Angsila is deployed/verified and required final metadata/links are complete. No actual credentials or Google Sheets passwords were read or used.
+
+
+## 4 November 2026 - database photo deployment
+
+Resumed the partial private release upload: all 27 private files already matched. Verified backup integrity before the additive SQL; original table values and Lab counts preserved. Switched public routes/assets, verified 47 release hashes, ran 13 live browser checks and 17 HTTP/security checks, then closed fictional QA shops/products and disabled both temporary helpers outside the webroot. Updated the 11-table ER diagram, 89-field dictionary and rendered/reviewed the 25-page round-2 report. No application code changes were needed during deployment; initial smoke-script selector/fixture corrections are recorded in deployment evidence. CI remains the verified fc45793 run; later changes are documentation only.

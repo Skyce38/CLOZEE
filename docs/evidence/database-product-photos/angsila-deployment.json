@@ -1,0 +1,154 @@
+{
+  "date": "2026-11-04",
+  "source_commit": "7b7f3ac4badcbc6a8f56fed8c59fbaec766b183e",
+  "preflight": {
+    "action": "preflight",
+    "php": "8.4.27",
+    "database": "8.0.46-0ubuntu0.24.04.4",
+    "fileinfo": true,
+    "zlib": true,
+    "memory_limit": "128M",
+    "upload_max_filesize": "2M",
+    "post_max_size": "8M",
+    "max_file_uploads": "20",
+    "max_allowed_packet": 67108864,
+    "gd": false,
+    "ready": true,
+    "application_tables": 10,
+    "database_usage_bytes": 655360,
+    "quota_known": false
+  },
+  "backup": {
+    "counts": {
+      "clozee_users": 3,
+      "clozee_shops": 2,
+      "clozee_products": 1,
+      "clozee_product_variants": 2,
+      "clozee_orders": 3,
+      "clozee_order_items": 3,
+      "clozee_conversations": 1,
+      "clozee_messages": 2,
+      "clozee_order_status_history": 12,
+      "clozee_login_attempts": 1
+    },
+    "lab_counts": {
+      "education": 3,
+      "profile": 1,
+      "skill": 5,
+      "training": 2,
+      "users": 0
+    },
+    "data_hash": "ac3db62f2b22875afcf405cf1973554ac6fd0144ce1f9e16d78da46b124173a5",
+    "files": 52,
+    "archive_sha256": "ffc2b2d2c1c4aa5b4e06746988839e65370fcb5a30050fbedb0ca8d24cddbd8e",
+    "archive_bytes": 1603646,
+    "verified_files": 52,
+    "tables": 10
+  },
+  "migration": {
+    "action": "migrate",
+    "applied": true,
+    "counts": {
+      "clozee_users": 3,
+      "clozee_shops": 2,
+      "clozee_products": 1,
+      "clozee_product_variants": 2,
+      "clozee_orders": 3,
+      "clozee_order_items": 3,
+      "clozee_conversations": 1,
+      "clozee_messages": 2,
+      "clozee_order_status_history": 12,
+      "clozee_login_attempts": 1
+    },
+    "lab_counts": {
+      "education": 3,
+      "profile": 1,
+      "skill": 5,
+      "training": 2,
+      "users": 0
+    },
+    "application_columns": 89,
+    "foreign_keys": 15,
+    "checks": 9
+  },
+  "release_files_verified": 47,
+  "release_files_expected": 47,
+  "post_test": {
+    "action": "verify",
+    "file_sha256": {
+      "app/services/ProductImageService.php": "d39199395cefa50327172174e5b0d680a4654f5cfc8417a2a60b5f8c59d5f033",
+      "app/services/ProductService.php": "5bf9bef6f4083f80ecdc2ebcf4acf5af0bca6533d935617e78b01cf68039033e",
+      "app/templates/product-photo-fields.php": "90f7a6ace9cc2034c8aed4ff2451839d32215b3c055f5922d7c25fa43e476651",
+      "app/config/tables.php": "76d6a1ff25fbe93a5013a44e7ec94c10d732474db61f98d65ac1993dcdded0de",
+      "app/bootstrap.php": "7ee3c92372b152a2d8dff913c385415977131ecab14d4419f130020e6d5cbfdb",
+      "app/pages/seller.php": "d39bed8643009aa2ee424cfa383757f634f4b6f065bd40b7898cf8b0089f6c34",
+      "app/pages/product.php": "c778015ee5d36d2108587f18276a204c55f359ef023e20c6910d6ddf0dafc70f",
+      "app/templates/product-card.php": "ea51dbc0293014b899836b1011241fb2ea74af0424498618445bb784be831cc9",
+      "public/image.php": "ca7b804fb60f496226893c61cbdb4f5cfa3b4b2f1aa6c197727fbf49e0ee489b",
+      "public/assets/css/app.css": "0c4bc0cd0447ba3e5d8766f88adb1ccf92ea016698a59eeaef6d98f18f674b7b",
+      "public/assets/js/app.js": "c2abab43d459e86af607650c71cfa1a09da862873766381d07f327c19967da4f"
+    },
+    "counts": {
+      "clozee_users": 9,
+      "clozee_shops": 7,
+      "clozee_products": 4,
+      "clozee_product_variants": 5,
+      "clozee_orders": 4,
+      "clozee_order_items": 4,
+      "clozee_conversations": 1,
+      "clozee_messages": 2,
+      "clozee_order_status_history": 13,
+      "clozee_login_attempts": 0
+    },
+    "lab_counts": {
+      "education": 3,
+      "profile": 1,
+      "skill": 5,
+      "training": 2,
+      "users": 0
+    },
+    "image_count": 3,
+    "invalid_image_lengths": 0
+  },
+  "qa_cleanup": {
+    "action": "close_qa",
+    "closed_products": 2,
+    "closed_shops": 5,
+    "retained_test_history": true
+  },
+  "temporary_helpers_removed": true,
+  "helper_http_checks": [
+    {
+      "helper": "install-ec60ae2c5aa5858cdf0c6b32.php",
+      "authenticated_post": false,
+      "status": 404
+    },
+    {
+      "helper": "install-ec60ae2c5aa5858cdf0c6b32.php",
+      "authenticated_post": true,
+      "status": 404
+    },
+    {
+      "helper": "install-3b9c70bb7be8ff388c06d47b.php",
+      "authenticated_post": false,
+      "status": 404
+    },
+    {
+      "helper": "install-3b9c70bb7be8ff388c06d47b.php",
+      "authenticated_post": true,
+      "status": 404
+    }
+  ],
+  "limitations": [
+    "University VPN only",
+    "Backup integrity checked; restoration not rehearsed",
+    "Database quota unknown",
+    "Chrome desktop and mobile viewport only; no physical phone/Safari/Firefox"
+  ],
+  "test_harness_corrections": [
+    "Product input is named product_name",
+    "One-photo gallery has no thumbnail controls; inspect main image",
+    "Buyer without a shop redirects to shop setup; ownership rejection tested after creating a shop"
+  ],
+  "qa_data_retained": "6 fictional accounts, 5 closed shops, 3 closed products, 1 fictional order; no real orders or Lab rows changed"
+}

@@ -1,0 +1,69 @@
+{
+  "executed_at": "2026-11-04T15:17:57.550Z",
+  "url": "https://angsila.informatics.buu.ac.th/~68160207/clozee",
+  "browser": "Chrome / Playwright; Browser plugin not available",
+  "viewports": [
+    "1440x1000",
+    "390x844"
+  ],
+  "product_id": "4",
+  "order_id": "4",
+  "test_data": "Fictional QA accounts; product closed after checks. No real delivery.",
+  "passed": 13,
+  "failed": 0,
+  "results": [
+    {
+      "name": "live page identity and existing catalog",
+      "status": "PASS"
+    },
+    {
+      "name": "fictional seller registration and shop creation",
+      "status": "PASS"
+    },
+    {
+      "name": "JPG normalization, two-photo upload and garment details",
+      "status": "PASS"
+    },
+    {
+      "name": "image bytes and safe response headers",
+      "status": "PASS"
+    },
+    {
+      "name": "gallery thumbnail interaction",
+      "status": "PASS"
+    },
+    {
+      "name": "invalid PNG and missing CSRF rejected",
+      "status": "PASS"
+    },
+    {
+      "name": "saved cover and image removal persist",
+      "status": "PASS"
+    },
+    {
+      "name": "buyer registration and seller authorization",
+      "status": "PASS"
+    },
+    {
+      "name": "pickup checkout and stock decrement",
+      "status": "PASS"
+    },
+    {
+      "name": "mobile gallery and editor fit viewport",
+      "status": "PASS"
+    },
+    {
+      "name": "QA product closed and owner-only image access",
+      "status": "PASS"
+    },
+    {
+      "name": "logout and login persist account",
+      "status": "PASS"
+    },
+    {
+      "name": "no browser runtime errors",
+      "status": "PASS"
+    }
+  ],
+  "errors": []
+}

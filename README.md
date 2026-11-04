@@ -13,7 +13,7 @@
 
 ![CLOZEE บน Angsila จากเบราว์เซอร์ใหม่](docs/evidence/angsila-catalog-desktop.png)
 
-> **รูปสินค้าในฐานข้อมูล:** ปรับระบบให้ไม่ต้องใช้ GD และ private upload directory ที่เขียนได้แล้ว ทดสอบในเครื่องทั้งเปิด/ปิด GD แต่ยังไม่ติดตั้งบน Angsila กำลังเสนอ SQL ใหม่ให้ตรวจ ดู [แบบใหม่ ผลทดสอบ และ SQL ที่เสนอ](docs/database-product-photos.md) รายงาน PDF และหลักฐาน Angsila ยังอธิบายรุ่นเดิมที่ Deploy อยู่
+> **รูปสินค้าในฐานข้อมูล:** ติดตั้งบน Angsila แล้ว 4 พฤศจิกายน 2569 ใช้ BLOB โดยไม่ต้องมี GD หรือโฟลเดอร์อัปโหลดที่ PHP เขียนได้ ทดสอบ live browser 13/13 และ HTTP/security 17/17 พร้อมสำรองข้อมูล ตรวจไฟล์ 47/47 และเก็บ Lab เดิม ดู [ผลติดตั้งและข้อจำกัด](docs/database-product-photos.md)
 
 ## ฟังก์ชันหลักของระบบ
 
@@ -25,7 +25,7 @@
 - **แชทกับผู้ขาย:** สนทนาแบบข้อความระหว่างผู้ซื้อกับผู้ขาย โดยอนุญาตเฉพาะผู้เข้าร่วมสนทนาและใช้การรีเฟรชด้วยตนเอง
 - **รองรับมือถือและคอมพิวเตอร์:** Responsive UI พร้อมภาพสินค้าตัวอย่างที่จัดเตรียมไว้ในโครงการ
 
-**ขอบเขตที่ยังไม่รองรับ:** ระบบชำระเงินออนไลน์, ไรเดอร์/GPS, การเชื่อมต่อบริษัทขนส่งจริง, การคืนเงิน, BUU Single Sign-On (SSO) และระบบวิเคราะห์ยอดขาย ส่วนรูปสินค้าหลายรูปพร้อมอัปโหลดโดยผู้ขายพัฒนาในสาขานี้แล้ว ยังไม่ติดตั้งบน Angsila สินค้าที่มีประวัติคำสั่งซื้อจะถูกปิดใช้งานแทนการลบข้อมูลจริง ดูรายละเอียดที่ [บันทึกการตัดสินใจในการพัฒนา](docs/implementation-decisions.md)
+**ขอบเขตที่ยังไม่รองรับ:** ระบบชำระเงินออนไลน์, ไรเดอร์/GPS, การเชื่อมต่อบริษัทขนส่งจริง, การคืนเงิน, BUU Single Sign-On (SSO) และระบบวิเคราะห์ยอดขาย ผู้ขายอัปโหลดรูปสินค้าได้สูงสุด 4 รูปแล้ว สินค้าที่มีประวัติคำสั่งซื้อจะถูกปิดใช้งานแทนการลบข้อมูลจริง ดูรายละเอียดที่ [บันทึกการตัดสินใจในการพัฒนา](docs/implementation-decisions.md)
 
 ## ความต้องการของระบบ
 
@@ -35,7 +35,7 @@
 - **Node.js 22 ขึ้นไป** ใช้เฉพาะการทดสอบผ่านเบราว์เซอร์และเครื่องมือสร้าง Diagram/PDF (ไม่ต้องใช้บน Production)
 - **Python 3** ใช้เฉพาะสร้างเอกสารใหม่จาก Metadata
 
-**เวอร์ชันที่ทดสอบแล้ว:** Local ใช้ PHP 8.5.12 / MariaDB 11.4.9 และ GitHub CI ใช้ PHP 8.3.36 / MySQL 8.4.13 Angsila ตรวจพบ MySQL 8.0.46 และ PHP 8.4.27 จาก phpMyAdmin แต่แบบ BLOB ใหม่ต้องตรวจ zlib, upload/post limits, quota และ max_allowed_packet เพิ่มเติม
+**เวอร์ชันที่ทดสอบแล้ว:** Local ใช้ PHP 8.5.12 / MariaDB 11.4.9 และ GitHub CI ใช้ PHP 8.3.36 / MySQL 8.4.13 Angsila ตรวจพบ MySQL 8.0.46 และ PHP 8.4.27 จาก phpMyAdmin ตรวจ BLOB บน Angsila แล้ว: zlib พร้อม, upload 2 MiB / POST 8 MiB / packet 64 MiB; ยังไม่ทราบ quota ฐานข้อมูล
 
 ## วิธีติดตั้งและรันบนเครื่อง Local
 
@@ -102,7 +102,7 @@ php -S 127.0.0.1:8088 -t public
 
 ดูรายละเอียดที่ [คู่มือทดสอบด้วยตนเอง](docs/manual-tests.md)
 
-ภาพเริ่มต้นใช้ไฟล์ตัวอย่างในโครงการ สาขานี้เพิ่มรูปจริงโดยผู้ขายได้หลังติดตั้ง schema ใหม่ ดู `docs/database-product-photos.md` การจัดส่งในพื้นที่เป็นการบันทึกข้อมูลเพื่อให้ผู้ซื้อและผู้ขายประสานงานกัน ไม่ใช่บริการเรียกไรเดอร์จริง และผู้ซื้อกับผู้ขายตกลงวิธีชำระเงินกันโดยตรง
+ภาพเริ่มต้นใช้ไฟล์ตัวอย่างในโครงการ ผู้ขายเพิ่มรูปจริงได้แล้วบน Angsila หลังติดตั้ง schema ใหม่ ดู `docs/database-product-photos.md` การจัดส่งในพื้นที่เป็นการบันทึกข้อมูลเพื่อให้ผู้ซื้อและผู้ขายประสานงานกัน ไม่ใช่บริการเรียกไรเดอร์จริง และผู้ซื้อกับผู้ขายตกลงวิธีชำระเงินกันโดยตรง
 
 ## การทดสอบ (Testing)
 
@@ -142,7 +142,7 @@ npm run test:browser
 
 **ผลทดสอบผ่านเบราว์เซอร์ที่บันทึกไว้: 24 ผ่าน / 0 ไม่ผ่าน** โดยทดสอบหน้าจอ 1536×1024, 1440×1000 และ 390×844
 
-**รวมผลทดสอบ Local: 75 รายการผ่านต่อ namespace** (51 ด้านระบบ/ฐานข้อมูล + 24 ผ่านเบราว์เซอร์) ดู [ผลทดสอบและข้อจำกัด](docs/test-results.md) Angsila แยกเป็น 30 functional checkpoints และ 17 anonymous HTTP/security checks ไม่รวมการทดสอบ race หรือ physical DELETE บนระบบจริง
+**ผลทดสอบระบบหลักรอบเดิม: 75 รายการผ่านต่อ namespace** (51 ด้านระบบ/ฐานข้อมูล + 24 ผ่านเบราว์เซอร์) ดู [ผลทดสอบและข้อจำกัด](docs/test-results.md) Angsila แยกเป็น 30 functional checkpoints และ 17 anonymous HTTP/security checks ไม่รวมการทดสอบ race หรือ physical DELETE บนระบบจริง
 
 GitHub Actions ใช้ PHP 8.3, MySQL 8.4 และ Chromium บน CI ที่แยกจากฐานข้อมูลจริง การตั้งค่า Root แบบไม่มีรหัสผ่านที่ใช้ใน CI จำกัดอยู่เฉพาะฐานข้อมูลชั่วคราวสำหรับทดสอบเท่านั้น ไม่ใช่ Production ควรตรวจเวอร์ชันและ Commit ของ Workflow รวมถึงสถานะการทดสอบล่าสุดก่อนส่งงาน หลักฐานที่อัปโหลดไม่รวมไฟล์ตั้งค่าส่วนตัวและรหัสผ่าน Demo
 
@@ -151,7 +151,7 @@ GitHub Actions ใช้ PHP 8.3, MySQL 8.4 และ Chromium บน CI ที�
 - [ข้อกำหนดรายวิชาพร้อมอ้างอิงหน้าสไลด์](docs/course-requirements.md)
 - [ต้นฉบับรายงาน](docs/final-report.md) · [รายงาน PDF](docs/CLOZEE-Final-Report-Round2.pdf) · [รายงาน HTML แบบออฟไลน์](docs/final-report.html)
 - [ER Diagram](docs/diagrams/er-diagram.svg) · [Use Case Diagram](docs/diagrams/use-cases.svg) · [Architecture](docs/diagrams/architecture.svg) · [แผนภาพสถานะออเดอร์](docs/diagrams/order-status.svg)
-- [Data Dictionary จำนวน 75 ฟิลด์](docs/data-dictionary.md) · [รายละเอียด Use Cases](docs/use-cases.md)
+- [Data Dictionary จำนวน 89 ฟิลด์](docs/data-dictionary.md) · [รายละเอียด Use Cases](docs/use-cases.md)
 - [ตัวอย่าง SQL JOIN ที่รันได้จริง](database/demo-joins.sql) · [ผลลัพธ์ SQL JOIN](docs/sql-join-evidence.md)
 - [คู่มือ Deploy บน Angsila](docs/deployment.md) · [บันทึกการตรวจสอบ Deployment](docs/deployment-verification.md) · [เช็กลิสต์ก่อนส่งงาน](docs/final-submission-checklist.md)
 
@@ -168,7 +168,7 @@ node scripts/print-report.cjs
 
 ## การนำเว็บไซต์ขึ้น Angsila และความเป็นส่วนตัว
 
-อ่าน [คู่มือ Deployment](docs/deployment.md) ก่อนดำเนินการ เว็บไซต์รุ่นเดิมติดตั้งแล้วตามบันทึก Deployment สำหรับสาขารูปสินค้า ต้องสำรองฐานข้อมูล ตรวจ zlib, upload/post limits และขนาด packet ฐานข้อมูล แล้วขออนุมัติ migration และอัปโหลดก่อนเปลี่ยนระบบจริง
+อ่าน [คู่มือ Deployment](docs/deployment.md) ก่อนดำเนินการ ระบบหลักและรูปสินค้าแบบ BLOB ติดตั้งแล้วตามบันทึก Deployment การอัปเดตครั้งถัดไปต้องสำรอง ตรวจผลกระทบ และได้รับอนุมัติก่อนเปลี่ยนระบบจริง
 
 **ข้อกำหนดด้านความปลอดภัย**
 

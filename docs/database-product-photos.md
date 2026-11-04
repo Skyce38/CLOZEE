@@ -1,6 +1,6 @@
-# รูปสินค้าในฐานข้อมูล — SQL สำหรับตรวจอนุมัติ
+# รูปสินค้าในฐานข้อมูล — ติดตั้งบน Angsila แล้ว
 
-สถานะ 31 ตุลาคม 2569: ปรับโค้ดและทดสอบ Local แล้ว ยังไม่ติดตั้งบน Angsila และยังไม่รัน SQL ใหม่บนฐานจริง ใช้เอกสารนี้แทนขั้นตอน private-file uploads ใน `product-photos.md`
+สถานะ 4 พฤศจิกายน 2569: ติดตั้งและทดสอบบน Angsila ผ่าน VPN แล้ว หลังได้รับอนุมัติ สำรองข้อมูลล่าสุดและตรวจความสมบูรณ์ก่อนใช้ SQL ใหม่ ใช้เอกสารนี้แทนขั้นตอน private-file uploads ใน `product-photos.md`
 
 ## แบบที่ปรับแล้ว
 
@@ -17,7 +17,7 @@ Angsila ตรวจพบ PHP 8.4.27 ไม่มี GD และบัญช�
 
 เมื่อปิด JavaScript จะไม่แปลง JPG/WebP อัตโนมัติ ฟอร์มแจ้งให้เปิด JavaScript หรือใช้ PNG ที่ตรงรูปแบบจำกัดข้างต้น ไม่รับ JPEG/WebP ตรงเข้า endpoint อัปโหลด รุ่นนี้ทดสอบ Chrome/Chromium; Safari, Firefox และมือถือจริงยังไม่ทดสอบ
 
-## SQL ที่เสนอสำหรับ Angsila
+## SQL ที่ใช้ติดตั้งบน Angsila
 
 ไฟล์ **`database/angsila-database-product-photos-migration.sql`** ใช้กับฐาน `s68160207` ที่ยังมี CLOZEE เดิม 10 ตารางเท่านั้น ตรวจชื่อฐานใน phpMyAdmin ก่อน import
 
@@ -65,4 +65,15 @@ CI matrix ผ่านทั้งเปิด GD และปิด GD/EXIF โ
 - MySQL DDL อาจ auto-commit หากล้มเหลวให้หยุดตรวจ ไม่รันซ้ำอัตโนมัติ ไม่ลบตาราง/คอลัมน์หรือ restore ทับข้อมูลจริงโดยไม่ได้รับอนุมัติ
 - หลัง SQL ใหม่ได้รับอนุมัติ จึงสำรอง ติดตั้งโค้ดที่ผ่าน CI และทดสอบอัปโหลด/เปลี่ยน/ลบรูป สองบัญชี checkout สต็อก และมือถือบน URL จริง ก่อนอัปเดตรายงาน PDF และประกาศใช้ฟีเจอร์นี้
 
-**ขอบเขตการอนุมัติรอบนี้คือปรับในเครื่อง ทดสอบ และเสนอ SQL ใหม่ จึงยังไม่เปลี่ยนไฟล์หรือฐานข้อมูล Angsila**
+## ผลติดตั้งจริง 4 พฤศจิกายน 2569
+
+- ตรวจ PHP 8.4.27 / MySQL 8.0.46, fileinfo/zlib พร้อม, ไม่มี GD, memory 128 MiB, upload 2 MiB, POST 8 MiB และ packet 64 MiB
+- สำรองฐานเดิม 10 ตารางและไฟล์ 52 ไฟล์ลงพื้นที่ private ในเครื่อง ตรวจ SHA-256 ทุกไฟล์และ archive; ยังไม่ซ้อม restore
+- เพิ่ม schema เป็น 11 ตาราง / 89 คอลัมน์ / 15 Foreign Keys / 9 CHECK ตรวจค่าแถวเดิมครบทุกคอลัมน์ก่อนและหลัง migration และจำนวนแถว Lab เท่าเดิม
+- ตรวจ SHA-256 ไฟล์รุ่นใหม่ 47/47 ไฟล์ ใช้ private release `clozee-dbphotos-fc45793` นอก webroot และ bridge ไป configuration เดิม ไม่คัดลอกรหัสผ่านเข้า source
+- Live browser ผ่าน 13/13 ข้อ: สมัครและสร้างร้าน, JPG → PNG และบันทึก 2 รูป, gallery/headers, ปฏิเสธไฟล์ผิดรูปแบบ/CSRF, เปลี่ยนภาพหลัก/ลบรูป, สิทธิ์เจ้าของ, pickup checkout และสต็อกจาก 5 เป็น 4, mobile viewport, ปิดขายและสิทธิ์ดูรูป, logout/login, ไม่มี runtime errors
+- HTTP/security ผ่าน 17/17 ข้อ รวม Lab URL ยังเปิดได้ ตัวติดตั้งชั่วคราวทั้งเก่า/ใหม่ย้ายออกนอก webroot และ URL ตอบ 404 ทั้ง GET และ authenticated POST
+- ตัวทดสอบรอบแรกแก้ selector ชื่อสินค้า, วิธีนับ gallery รูปเดียว และเตรียมร้านของบัญชีที่สองก่อนตรวจ ownership จึงรันครบ 13 ข้อผ่าน ไม่ใช่ข้อผิดพลาดโค้ดแอป
+- เก็บประวัติ QA สมมติไว้: เพิ่ม 6 บัญชี, 5 ร้าน, 3 สินค้า, 1 order; ปิดร้านและสินค้าทดสอบทั้งหมดแล้ว ไม่ hard-delete ประวัติหรือแตะรายการเดิม
+
+หลักฐาน: `evidence/database-product-photos/angsila-deployment.json`, `live-results.json` และภาพ `live-*.png` ข้อจำกัดที่ยังเหลือคือ quota, restore rehearsal, นอก VPN, Safari/Firefox และมือถือจริง ผลทดสอบ viewport ไม่แทนการทดสอบเครื่องจริง

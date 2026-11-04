@@ -42,3 +42,8 @@ Orders #1 and #3 reached completed via pickup and delivery respectively; order #
 `evidence/angsila-http-results.json` records 17 anonymous HTTP/security checks, including the existing Lab homepage, private paths and CSRF. `evidence/angsila-visual-results.json` and `angsila-catalog-desktop.png` / `angsila-catalog-mobile.png` come from an independent fresh Chrome context with no saved user session, using regular Playwright because the Browser plugin was not available. Manual authenticated flows used CUA/Chrome.
 
 No actual payment, courier delivery, penetration/load test, live concurrency race, live physical DELETE, backup restoration or off-VPN access is claimed. Technical core acceptance passed within the verified scope. Names on the report cover and final submission/reservation details still require the author's input.
+
+
+## 4 November 2026: database product photos
+
+Approved migration and versioned private release installed. Schema is now 11 tables / 89 columns / 15 foreign keys / 9 checks; original row values and Lab counts preserved during migration. All 47 deployed file hashes match. Browser 13/13 and HTTP/security 17/17 passed. See [photo deployment](database-product-photos.md) and [sanitized evidence](evidence/database-product-photos/angsila-deployment.json). Earlier checkpoints below/above describe the original core release.
