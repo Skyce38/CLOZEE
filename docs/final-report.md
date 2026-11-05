@@ -1,230 +1,456 @@
-# CLOZEE
+<div class="cover">
+<div class="cover-title">รายงานโครงงาน</div>
+<div class="cover-title">CLOZEE ระบบซื้อขายเสื้อผ้ามือหนึ่ง</div>
+<div class="cover-title">และมือสองในพื้นที่</div>
+<div class="cover-sub">(CLOZEE: Local Clothing Marketplace Web Application using PHP and MySQL)</div>
+<div class="cover-label">เสนอ</div>
+<div>[กรอกชื่ออาจารย์ผู้สอน]</div>
+<div class="cover-label">จัดทำโดย</div>
+<div>68160207 นายเมทนี สีเสน่หา</div>
+<div>[กรอกชื่อสมาชิกเพิ่มเติม หรือลบบรรทัดนี้หากทำเดี่ยว]</div>
+<div class="cover-foot">รายงานนี้เป็นส่วนหนึ่งของวิชา 89022167 Database Management</div>
+<div>คณะวิทยาการสารสนเทศ สาขาวิชาปัญญาประดิษฐ์ประยุกต์และเทคโนโลยีอัจฉริยะ</div>
+<div>ภาคเรียนที่ 1 ปีการศึกษา 2569</div>
+</div>
 
-## Local Clothing Marketplace & Delivery Platform
+<div class="front-title">คำนำ</div>
 
-ระบบซื้อขายและจัดส่งเสื้อผ้ามือหนึ่งและมือสองสำหรับนิสิตมหาวิทยาลัยบูรพาและคนในพื้นที่บางแสน
+รายงานฉบับนี้เป็นส่วนหนึ่งของวิชา 89022167 Database Management จัดทำขึ้นเพื่อนำเสนอโครงงาน CLOZEE ซึ่งเป็นเว็บแอปพลิเคชันสำหรับซื้อขายเสื้อผ้ามือหนึ่งและมือสอง โดยมีกลุ่มเป้าหมายเป็นนิสิตมหาวิทยาลัยบูรพาและผู้คนในพื้นที่บางแสน
 
-**รายงาน Final Project รอบ 2**  
-รายวิชา 89022167 Database Management  
-มหาวิทยาลัยบูรพา คณะวิทยาการสารสนเทศ  
-รหัสนิสิต: **68160207**  
-ผู้จัดทำ: **[กรอกชื่อ–นามสกุล]**  
-สมาชิกเพิ่มเติม: **[กรอกชื่อสมาชิก หรือลบบรรทัดนี้หากทำเดี่ยว]**  
-อาจารย์ผู้สอน: **[กรอกชื่ออาจารย์]**  
-กำหนดส่ง: 10 พฤศจิกายน 2569
+เนื้อหาในรายงานครอบคลุมที่มาของปัญหา ความต้องการของระบบ การออกแบบฐานข้อมูล สถาปัตยกรรม การทำ CRUD การเข้าสู่ระบบ ความปลอดภัย การใช้คำสั่ง SQL JOIN ผลการทดสอบ และข้อจำกัดของระบบ โดยตัวเลขผลทดสอบทั้งหมดมาจากการรันจริงและมีหลักฐานเก็บไว้ใน GitHub Repository
 
-เว็บไซต์: https://angsila.informatics.buu.ac.th/~68160207/clozee/ (ต้องเชื่อมต่อ VPN มหาวิทยาลัย)  
-GitHub: https://github.com/Skyce38/CLOZEE
+หวังว่ารายงานฉบับนี้จะช่วยให้ผู้อ่านเข้าใจการนำความรู้ด้านฐานข้อมูลเชิงสัมพันธ์ไปใช้กับเว็บแอปพลิเคชันจริง
 
-<div class="page-break"></div>
+<div class="front-title front-break">สารบัญ</div>
 
-## 1 บทนำและ Problem Statement
+<!-- TOC -->
 
-นิสิต BUU และคนในบางแสนอาจซื้อขายเสื้อผ้าใหม่/มือสองผ่านหลายช่องทาง ทำให้ข้อมูลไซซ์ สภาพ สต็อก และจุดนัดรับกระจัดกระจาย CLOZEE เสนอพื้นที่เดียวสำหรับค้นหาเสื้อผ้าท้องถิ่น เปิดร้าน จัดการตัวเลือกไซซ์ สั่งซื้อ และบันทึกวิธีรับสินค้า แนวปัญหานี้เป็นสมมติฐานของโครงการ ยังไม่ได้สำรวจหรือสัมภาษณ์กลุ่มเป้าหมายจริง
+## 1. บทนำ
 
-วัตถุประสงค์คือประยุกต์ PHP และฐานข้อมูลเชิงสัมพันธ์ให้ผู้ซื้อเลือกเสื้อผ้าและเห็นสถานะ ส่วนผู้ขายควบคุมข้อมูลและสต็อกของร้านตนเอง พร้อมแสดงหลักฐาน CRUD, Authentication, Authorization, JOIN และ transaction ตามเนื้อหารายวิชา
+CLOZEE เป็นเว็บแอปพลิเคชันสำหรับซื้อขายเสื้อผ้ามือหนึ่งและมือสองในพื้นที่ ผู้ใช้หนึ่งบัญชีสามารถเป็นทั้งผู้ซื้อและเจ้าของร้านได้หนึ่งร้าน ผู้ขายลงสินค้าพร้อมไซซ์ ราคา สต็อก และรูปภาพ ส่วนผู้ซื้อค้นหาสินค้า สั่งซื้อจากร้านเดียวต่อหนึ่งคำสั่งซื้อ เลือกนัดรับหรือจัดส่งในพื้นที่ และติดตามสถานะคำสั่งซื้อได้
 
-กลุ่มเป้าหมายคือผู้ซื้อที่เป็นนิสิตมหาวิทยาลัยบูรพาและคนในบางแสน และผู้ขายรายย่อย/ร้านเสื้อผ้าในพื้นที่ บัญชีเดียวเป็นผู้ซื้อและเปิดร้านได้หนึ่งร้าน ไม่มีการยืนยันสถานภาพนิสิตหรือกำหนด BUU SSO ในรุ่นนี้
+ระบบพัฒนาด้วย PHP และ MySQL ติดตั้งใช้งานจริงบนเซิร์ฟเวอร์ Angsila ของคณะ และเก็บซอร์สโค้ดไว้บน GitHub ผู้ซื้อและผู้ขายตกลงเรื่องการชำระเงินกันโดยตรง เพราะระบบบันทึกเฉพาะคำสั่งซื้อและสถานะ ไม่ได้รับเงินออนไลน์
 
-## 2 ขอบเขตและ Requirements
+## 2. ที่มาและปัญหาที่พบ
 
-P0 ประกอบด้วยบัญชีผู้ใช้ ร้านค้า สินค้าใหม่/มือสอง ไซซ์ ราคา สต็อก ค้นหา/กรอง ตะกร้าร้านเดียว คำสั่งซื้อ นัดรับ/จัดส่ง ประวัติและการเปลี่ยนสถานะ P1 ที่ทำเพิ่มหลังทดสอบระบบหลักคือแชทข้อความและรูปสินค้าสูงสุด 4 รูปต่อสินค้า ส่วนรายงานยอดขายยังไม่ได้ทำ
+### 2.1 ที่มาของโครงงาน
 
-การจัดส่งเป็นการบันทึกตัวเลือกและรายละเอียดเพื่อให้ร้านดำเนินการโดยตรง ค่าจัดส่งตัวอย่างตั้งที่ server 30 บาทต่อ order; นัดรับฟรี ไม่มีระบบรับเงินออนไลน์ rider dispatch, GPS, shipping API, refund/dispute, rating หรือ checkout หลายร้าน
+ตลาดสินค้ามือสองในประเทศไทยมีแนวโน้มเติบโต โดยผู้บริหารร้านแฟชั่นมือสอง Bagnifique ประเมินกับหนังสือพิมพ์ The Nation เมื่อเดือนกุมภาพันธ์ 2568 ว่าตลาดมีมูลค่าราว 40,000 ล้านบาทในปีก่อนหน้า และมีคนรุ่นใหม่เป็นแรงขับเคลื่อนสำคัญ ตัวเลขนี้เป็นการประเมินของผู้ประกอบการ ไม่ใช่สถิติทางการ แต่ก็สะท้อนว่าเสื้อผ้ามือสองเป็นตลาดที่น่าสนใจ
 
-| ID | Requirement | Implementation |
-| --- | --- | --- |
-| FR-01/02 | สมัคร/เข้าสู่ระบบ/ออกจากระบบ | Register, hash/verify, session, guard, POST+CSRF logout |
-| FR-03 | ร้านของผู้ใช้ | สร้างและแก้ไขร้านหนึ่งร้านต่อบัญชี |
-| FR-04/05 | สินค้า/ไซซ์/ราคา/สต็อก | C/R/U, deactivate และ DELETE เฉพาะสินค้ายังไม่มีประวัติ; version กัน stale stock |
-| FR-06/07 | ค้นหา/กรอง/รายละเอียด | GET filters condition/category/size/query, product/shop pages |
-| FR-08/09 | checkout ร้านเดียว/นัดรับ/จัดส่ง | server cart, row locks, idempotency, snapshots, server fee |
-| FR-10/11 | สถานะ/ประวัติ | shop owner state machine, buyer-owned history, status audit |
-| FR-12 | ตรวจสิทธิ์ทุก mutation | actor จาก session; scoped DB checks; tests สองบัญชี |
-| FR-13 | ข้อความผู้ซื้อ–ร้าน | ทำแล้ว: participant-only text chat, manual refresh |
-| FR-14 | หลายรูป | ทำแล้ว: browser normalize → PNG → MEDIUMBLOB, ปก/ลบรูป, max 4 |
-| FR-15 | สรุปยอดขาย | ยังไม่ทำ เป็น P1 ที่เลื่อนได้ |
+ในระดับพื้นที่ นิสิตมหาวิทยาลัยบูรพาและผู้คนในบางแสนอยู่ใกล้กันจนสามารถนัดรับสินค้าได้สะดวก โครงงานนี้จึงตั้งคำถามว่า หากมีเว็บไซต์เฉพาะพื้นที่ที่รวมข้อมูลเสื้อผ้าไว้ในที่เดียว การซื้อขายจะง่ายขึ้นหรือไม่
 
+### 2.2 ปัญหาที่พบ
 
-NFR เน้น prepared statements, output escaping, CSRF, session/cookie, ownership, FK/unique/check, atomic transactions และ responsive design ดู functional-requirements.md และ implementation-decisions.md รายละเอียดครบ
+ปัญหาต่อไปนี้เป็นสมมติฐานของโครงงาน ยังไม่ได้สำรวจหรือสัมภาษณ์กลุ่มเป้าหมายจริง
 
-ข้อกำหนดอาจารย์อ้าง `Database-authen.pdf` หน้า 31–36 โดยเฉพาะหน้า 33 องค์ประกอบขั้นต่ำ หน้า 34 วันส่ง หน้า 35 รายงาน หน้า 36 checklist ไม่ใช้เกณฑ์คะแนน Lab แทน Final ดู course-requirements.md สำหรับ traceability
+- ข้อมูลกระจัดกระจาย เพราะการซื้อขายเกิดขึ้นในหลายช่องทาง ผู้ซื้อจึงต้องเปิดหาหลายที่
+- ผู้ซื้อต้องถามซ้ำหลายครั้งเรื่องไซซ์ สภาพสินค้า และจุดนัดรับก่อนตัดสินใจ
+- ผู้ขายรายย่อยไม่มีระบบเดียวสำหรับจัดการสินค้า ไซซ์ สต็อก และสถานะคำสั่งซื้อ
+- สินค้ามือสองมักมีจำนวนน้อย ถ้าไม่ตรวจสต็อกให้ดีอาจขายชิ้นเดียวกันซ้ำให้หลายคน
 
-## 3 Use Cases และสิทธิ์
+### 2.3 แนวทางแก้ไข
 
-![Use Case Diagram](diagrams/use-cases.svg)
+**ตารางที่ 1** ปัญหาและแนวทางที่ระบบเข้าไปแก้ไข
 
-ผู้เยี่ยมชมค้นหา/ดูสินค้าและสมัครสมาชิก ผู้ซื้อ checkout ดูประวัติของตนและคุยกับร้าน ผู้ขายสร้าง/แก้ร้านและสินค้า ดู order ของร้านและเปลี่ยนสถานะ บัญชีเดียวเล่นบทบาท buyer/seller ได้ตามบริบท ไม่ใช่ role ที่ผู้ใช้ส่งมาแล้วได้รับสิทธิ์เอง
-
-UC-06 flow: login → เลือกไซซ์และจำนวน → cart ร้านเดียว → เลือก pickup/delivery และข้อมูลจำลอง → server ตรวจราคา/stock/สิทธิ์ → transaction lock → สร้าง order/items/snapshots → ลด stock และ audit → commit → แสดง order เฉพาะผู้มีสิทธิ์ ถ้า stock ไม่พอหรือผิดร้านจะ rollback ทั้งชุด
-
-UC-05 flow: เจ้าของร้าน login → เพิ่มสินค้าพร้อม variants → อ่าน/แก้ไขข้อมูล → ปิดขายหรือ DELETE เฉพาะรายการที่ไม่มีประวัติการซื้อ การเปลี่ยน ID ของร้านอื่นต้องถูกปฏิเสธ
-
-## 4 ER Diagram และการออกแบบฐานข้อมูล
-
-![ER Diagram](diagrams/er-diagram.svg)
-
-โมเดลจริงมี **11 ตาราง 89 คอลัมน์ 15 Foreign Keys** รวม users, shops, products, product_variants, orders, order_items, conversations, messages, order_status_history login_attempts และ product_images ใช้ InnoDB/utf8mb4, BIGINT UNSIGNED สำหรับคีย์ และ DECIMAL สำหรับเงิน
-
-users 1:0..1 shops บังคับด้วย UNIQUE owner; shops 1:N products/orders; products 1:N variants และ product_images; orders 1:N items; variants 1:N historical items; conversations 1:N messages; order 1:N status history ส่วน login_attempts เป็นข้อมูลจำกัดการลอง login ชั่วคราวที่ไม่ผูก FK กับผู้ใช้ เพราะคำขออาจไม่ใช่บัญชีจริง
-
-ER แสดง cardinality ที่ schema อนุญาต (0..N) แต่ service บังคับสินค้าต้องมีอย่างน้อยหนึ่ง variant และ order อย่างน้อยหนึ่ง item ภายใน transaction FK product ของ conversation เป็น nullable และ SET NULL เมื่อสินค้าไม่มีแล้ว ส่วนประวัติคำสั่งซื้อใช้ RESTRICT ป้องกันการทำลายความสัมพันธ์
-
-## 5 Architecture และ Project Structure
-
-![Architecture](diagrams/architecture.svg)
-
-Browser ได้ HTML/CSS/vanilla JS จาก PHP หลัง Apache ประมวลผล route ใน public/ ทุก mutation ผ่าน session/CSRF และ service ที่ตรวจ ownership แล้วใช้ PDO native prepared statements ติดต่อ MySQL/MariaDB config และ storage อยู่ภายนอก webroot ไม่มี password บน browser หรือ repo สไลด์รายวิชาสอนด้วย mysqli ส่วนโครงการนี้ใช้ PDO แต่หลักการ prepared statement เหมือนกัน
-
-public/ แยก route สำหรับ catalog/auth/shop/product/cart/checkout/orders/messages และ seller ส่วน app/ มี bootstrap, validation, auth, services และ templates; database/ เก็บ schema/seed/JOIN; scripts/ ใช้ CLI ติดตั้งและตรวจ; docs/ เก็บรายงานและหลักฐาน Node/Python ใช้เฉพาะ test/document tooling ไม่ต้องใช้ขณะเสิร์ฟ PHP
-
-## 6 การทำงานจริงและ UI
-
-หน้าร้านใช้สีขาว/เขียว สไตล์ editorial ภาพสินค้าเป็นภาพสาธิต มิใช่สินค้า/ลูกค้าจริง รูปด้านล่างเป็น screenshot จากเว็บ PHP ที่รันจริง
-
-### 6.1 หน้าร้านและมือถือ
-
-![Desktop catalog](evidence/catalog-desktop.png)
-
-![Mobile catalog](evidence/catalog-mobile.png)
-
-### 6.2 Login และ Product CRUD
-
-![Login](evidence/login.png)
-
-![Seller product form](evidence/product-create.png)
-
-Create/Read/Update persist ลง DB จริง ส่วน DELETE สินค้าที่ไม่มีประวัติทดสอบใน service suite ถ้ามี order อ้างอิงจะปฏิเสธและใช้ deactivate แทน
-
-### 6.3 Checkout และสถานะ
-
-![Pickup checkout](evidence/checkout-pickup.png)
-
-![Completed order](evidence/seller-order-completed.png)
-
-ข้อมูลนัดรับ/ที่อยู่ในหลักฐานเป็นข้อความจำลอง ไม่มีข้อมูลผู้ซื้อจริง
-
-### 6.4 แชทข้อความ
-
-![Participant-only chat](evidence/chat.png)
-
-เริ่มจากหน้าสินค้า ใช้ thread เดิมของ buyer/product คู่เดิม ส่งได้เฉพาะ buyer หรือเจ้าของร้าน แสดงล่าสุด 100 ข้อความและ refresh ด้วยตนเอง ไม่มีการอ้างว่า realtime
-
-### 6.5 รูปสินค้าและรายละเอียดเสื้อผ้า
-
-ผู้ขายอัปโหลด JPG/PNG/WebP ได้สูงสุด 4 รูป เลือกภาพหลักและลบภาพได้ Browser ย่อและแปลงเป็น PNG ไม่เกิน 1600 พิกเซล/1.5 MiB แล้ว PHP ตรวจ PNG signature/chunk CRC/ขนาดและข้อมูลก่อนบันทึก MEDIUMBLOB ใน transaction เดียวกับสินค้า เพิ่มแบรนด์ รอบอก ความยาว และตำหนิที่ไม่บังคับกรอก
-
-Angsila ไม่มี GD และ PHP เขียน private storage ไม่ได้ จึงไม่ใช้ directory สำหรับเก็บภาพ ระบบให้ image.php ตรวจสิทธิ์และส่ง binary พร้อม nosniff/CSP รูปของสินค้าหรือร้านที่ปิดขายเห็นได้เฉพาะเจ้าของ
-
-![Live product photos - Angsila desktop, fictional QA data](evidence/database-product-photos/live-gallery-desktop.png)
-
-ภาพหน้าจอมือถือ 390px: [gallery](evidence/database-product-photos/live-gallery-mobile.png) และ [แบบฟอร์มรูปสินค้า](evidence/database-product-photos/live-editor-mobile.png)
-
-ผล live browser ผ่าน 13/13 และ HTTP/security 17/17 บน PHP 8.4.27 / MySQL 8.0.46 ผ่าน VPN: อัปโหลดและแสดงรูป, thumbnail, ปก/ลบภาพ, invalid PNG/CSRF, สิทธิ์ผู้ขาย, pickup checkout และ stock 5 → 4, mobile overflow, ปิดขาย/owner-only image, logout/login และ runtime errors ไม่มี
-
-รอบแรกต้องแก้สคริปต์ทดสอบสามจุด ซึ่งไม่ใช่โค้ดของเว็บ แล้วรันใหม่จนผ่านครบ หลักฐานอยู่ใน evidence/database-product-photos/live-results.json และผล Local/CI สรุปไว้ในบทที่ 10
-
-ก่อน migration สำรอง 10 ตารางและไฟล์เดิม 52 ไฟล์ หลังติดตั้งตรวจแล้วว่าค่าแถวเดิมและตาราง Lab ไม่เปลี่ยน hash รุ่นใหม่ตรง 47/47 ไฟล์ และตัวติดตั้งถูกย้ายออกนอก webroot (URL เดิมตอบ 404) ร้าน QA 5 ร้านและสินค้า QA 3 รายการถูกปิดขายหลังทดสอบ ส่วนบัญชีและ order สมมติเก็บไว้เป็นประวัติ ไม่เกิดการจัดส่งจริง
-
-ข้อจำกัด: ยังไม่ทราบ quota DB และรูปครบ 4 รูปอาจใช้พื้นที่สูงสุดประมาณ 6 MiB ต่อสินค้า ข้อจำกัดอื่นสรุปไว้ในบทที่ 12
-
-## 7 CRUD และ Data Integrity
-
-ProductService ทำ CREATE/UPDATE product+variants ใน transaction, ตรวจเจ้าของร้านจาก session, ราคา/ไซซ์/stock จาก server และ version ของ variant หาก checkout เปลี่ยน stock ระหว่างเปิด form จะปฏิเสธ stale edit
-
-OrderService ใช้ lock ตาม buyer → shop → products → variants; ตรวจร้าน/สินค้ายัง active และ stock อีกครั้ง; สร้าง order/items และลด stock/audit พร้อมกัน เงินคิดเป็นสตางค์ integer ก่อนบันทึก DECIMAL request key unique ต่อผู้ซื้อและ payload hash กัน retry ที่ไม่ตรงกัน ทำให้ส่งซ้ำไม่หัก stock ซ้ำ
-
-![Order status state machine](diagrams/order-status.svg)
-
-Seller เปลี่ยนสถานะตามวิธีรับสินค้าเท่านั้น Cancel อนุญาตก่อนพร้อมรับ/ออกส่งและคืน stock ครั้งเดียวภายใต้ order lock Terminal states เปลี่ยนซ้ำไม่ได้ snapshots ชื่อ/ไซซ์/ราคายังคงเดิมเมื่อแก้ product
-
-## 8 SQL JOIN และผลจริง
-
-ตัวอย่าง SQL อยู่ใน database/demo-joins.sql และผลรันอยู่ sql-join-evidence.md / evidence/join-results.json INNER JOIN เชื่อมผู้ซื้อ–order–ร้าน–snapshot items ส่วน LEFT JOIN คงร้านที่ไม่มี order โดยใช้ COUNT(o.order_id) ไม่ใช่ COUNT(*) ตารางด้านล่างเป็นผลจากฐานข้อมูลทดสอบที่มีเฉพาะข้อมูลสมมติ
-
-| Order | Buyer | Shop | Item | Qty |
-| --- | --- | --- | --- | --- |
-| 1 | Demo buyer | Browser Demo Wardrobe mvuqxv5p | Browser linen mvuqxv5p | 2 |
-| 2 | Demo buyer | Browser Demo Wardrobe mvuqypuh | Browser linen mvuqypuh | 2 |
-| 3 | Demo buyer | Browser Demo Wardrobe mvuqypuh | Browser linen mvuqypuh | 1 |
-| 4 | Demo buyer | Browser Demo Wardrobe mvur03vx | Browser linen mvur03vx | 2 |
-
-
-| Shop | Order count |
+| ปัญหา | แนวทางของ CLOZEE |
 | --- | --- |
-| Bangsaen Closet | 0 |
-| BUU Rewear | 0 |
-| The Next Wardrobe | 0 |
+| ข้อมูลกระจัดกระจาย | รวมสินค้าไว้ในหน้าเดียว ค้นหาและกรองตามสภาพ หมวดหมู่ และไซซ์ได้ |
+| ต้องถามข้อมูลซ้ำ | หน้าสินค้าแสดงไซซ์ ราคา รูป รอบอก ความยาว และตำหนิ พร้อมแชทกับร้าน |
+| ผู้ขายไม่มีระบบจัดการ | มีหน้าจัดการร้าน สินค้า สต็อก และคำสั่งซื้อ |
+| เสี่ยงขายสินค้าซ้ำ | ตัดสต็อกใน Transaction พร้อมล็อกแถวข้อมูล |
 
+## 3. วัตถุประสงค์และขอบเขต
 
-JOIN หนึ่งต่อหลายเพิ่มจำนวนแถวได้ จึงไม่ SUM(total_amount) หลัง JOIN items โดยตรง Product catalog aggregate variants ให้เหลือหนึ่งแถวต่อ product ก่อน pagination หลักการอ้าง Data-base-join.pdf หน้า 9, 16, 28–30
+### 3.1 วัตถุประสงค์
 
-## 9 Authentication และ Security
+- เพื่อออกแบบฐานข้อมูลเชิงสัมพันธ์สำหรับผู้ใช้ ร้านค้า สินค้า ไซซ์ คำสั่งซื้อ และบทสนทนา
+- เพื่อพัฒนาการสมัครสมาชิก เข้าสู่ระบบ ออกจากระบบ และการตรวจสิทธิ์ตามความเป็นเจ้าของ
+- เพื่อพัฒนาหน้าเว็บที่ทำ CRUD กับ MySQL ได้จริง
+- เพื่อให้ผู้ซื้อสั่งซื้อ เลือกวิธีรับสินค้า และติดตามสถานะได้
+- เพื่อติดตั้งระบบบน Angsila และทดสอบบนเซิร์ฟเวอร์จริง
 
-ใช้ password_hash/password_verify, normalized unique email, session_regenerate_id หลัง login/register, strict session mode และ idle timeout 30 นาที Cookie มี HttpOnly/SameSite=Lax; Secure default true แต่ปิดเฉพาะ Local HTTP การตรวจ HTTPS บน Angsila ยืนยัน Secure/HttpOnly/SameSite=Lax และ no-store แล้ว ไม่มีการส่งออก cookie value หรือรหัสผ่าน
+### 3.2 กลุ่มเป้าหมาย
 
-ทุก form เปลี่ยนข้อมูลรวม logout ใช้ POST+CSRF ทุกคำสั่ง SQL รับค่าผ่าน prepared statements Escape output ด้วย htmlspecialchars CSP จำกัด source ของ asset/form และห้าม framing DB errors ไม่เผยต่อผู้ใช้ ผู้ใช้ A ถูกตรวจทั้ง URL และ POST ว่าแก้ข้อมูล B ไม่ได้
+ผู้ซื้อคือนิสิตมหาวิทยาลัยบูรพาและผู้คนในบางแสน ส่วนผู้ขายคือนิสิต ผู้ขายเสื้อผ้ามือสอง และร้านเสื้อผ้าขนาดเล็กในพื้นที่ ระบบไม่ได้ตรวจสถานะการเป็นนิสิต
 
-จำกัด login ผิดจาก bucket account+IP และ IP ในช่วง 15 นาที เก็บ hash ไม่เก็บรหัสผ่าน/IP ดิบ private config และ demo passwords ถูก gitignore และอยู่นอก public การทดสอบใช้เฉพาะบัญชีสมมติ ไม่ใช้บัญชีจริงของบุคคลอื่นหรือข้อมูลบัญชีจาก Google Sheets
+### 3.3 ขอบเขตของระบบ
 
-## 10 Testing และผลที่ได้
+- หนึ่งบัญชีเปิดได้หนึ่งร้าน และหนึ่งคำสั่งซื้อมีสินค้าจากร้านเดียว
+- สินค้าหนึ่งรายการมีได้หลายไซซ์ แต่ละไซซ์มีราคาและสต็อกของตนเอง และมีรูปได้ไม่เกิน 4 รูป
+- นัดรับไม่มีค่าใช้จ่าย ส่วนจัดส่งในพื้นที่คิดค่าจัดส่ง 30 บาทต่อคำสั่งซื้อ โดยคำนวณที่เซิร์ฟเวอร์
+- การจัดส่งเป็นเพียงการบันทึกตัวเลือกให้ร้านดำเนินการเอง
+- ระบบไม่มีการชำระเงินออนไลน์ ไรเดอร์ GPS การเชื่อมต่อบริษัทขนส่ง การคืนเงิน การให้คะแนนร้าน และแอปบนมือถือ
+
+## 4. ทฤษฎีและความรู้ที่เกี่ยวข้อง
+
+### 4.1 สถาปัตยกรรมเว็บและฐานข้อมูล
+
+เมื่อผู้ใช้เปิดหน้าเว็บ เบราว์เซอร์จะส่งคำขอไปยัง Apache จากนั้น PHP จะทำงานที่เซิร์ฟเวอร์ ส่งคำสั่ง SQL ไปยัง MySQL แล้วสร้าง HTML กลับมาแสดงผล ส่วน phpMyAdmin เป็นเพียงเครื่องมือจัดการฐานข้อมูล ไม่ใช่ตัวฐานข้อมูลเอง
+
+### 4.2 ฐานข้อมูลเชิงสัมพันธ์
+
+ฐานข้อมูลเชิงสัมพันธ์เก็บข้อมูลเป็นตาราง Primary Key ใช้ระบุแต่ละแถวไม่ให้ซ้ำ ส่วน Foreign Key ใช้เชื่อมความสัมพันธ์ระหว่างตาราง โครงงานนี้ยังใช้ UNIQUE และ CHECK เพื่อให้ฐานข้อมูลช่วยป้องกันข้อมูลที่ไม่ถูกต้อง
+
+### 4.3 CRUD และ Prepared Statement
+
+CRUD คือการทำงานพื้นฐานกับข้อมูล 4 อย่าง ได้แก่ เพิ่ม อ่าน แก้ไข และลบ ซึ่งตรงกับคำสั่ง INSERT, SELECT, UPDATE และ DELETE ส่วน Prepared Statement แยกคำสั่ง SQL ออกจากค่าที่ผู้ใช้กรอกเพื่อป้องกัน SQL Injection สไลด์รายวิชาสอนด้วย mysqli แต่โครงงานนี้ใช้ PDO ซึ่งมีหลักการเดียวกัน
+
+### 4.4 SQL JOIN
+
+JOIN ใช้รวมข้อมูลจากหลายตาราง INNER JOIN คืนเฉพาะแถวที่จับคู่ได้ ส่วน LEFT JOIN เก็บทุกแถวของตารางซ้ายไว้ แม้ไม่มีข้อมูลที่จับคู่ได้ในตารางขวา ความสัมพันธ์แบบหนึ่งต่อหลายทำให้จำนวนแถวเพิ่มขึ้นได้ จึงต้องระวังเมื่อนับหรือรวมยอดหลัง JOIN
+
+### 4.5 Authentication, Authorization และ Session
+
+Authentication คือการยืนยันว่าผู้ใช้เป็นใคร ส่วน Authorization คือการตรวจว่าผู้ใช้คนนั้นมีสิทธิ์ทำสิ่งใด PHP Session เก็บสถานะการเข้าสู่ระบบไว้ที่เซิร์ฟเวอร์ และให้เบราว์เซอร์เก็บเพียง Session ID ใน Cookie
+
+### 4.6 Transaction และการล็อกแถวข้อมูล
+
+Transaction ทำให้คำสั่งหลายคำสั่งสำเร็จพร้อมกันทั้งหมดหรือยกเลิกทั้งหมด ส่วนคำสั่ง SELECT ... FOR UPDATE ล็อกแถวไว้จนกว่า Transaction จะจบ จึงป้องกันไม่ให้สองคำขอตัดสต็อกแถวเดียวกันพร้อมกัน
+
+## 5. การวิเคราะห์ความต้องการ
+
+### 5.1 ความต้องการด้านการทำงาน
+
+**ตารางที่ 2** ความต้องการด้านการทำงานและการดำเนินการในระบบ
+
+| รหัส | ความต้องการ | การทำงานในระบบ |
+| --- | --- | --- |
+| FR-01/02 | สมัคร เข้าสู่ระบบ และออกจากระบบ | เก็บรหัสผ่านแบบ Hash ใช้ Session และออกจากระบบด้วย POST พร้อม CSRF Token |
+| FR-03 | จัดการร้านของตนเอง | สร้างและแก้ไขได้หนึ่งร้านต่อบัญชี |
+| FR-04/05 | จัดการสินค้า ไซซ์ ราคา และสต็อก | เพิ่ม อ่าน แก้ไข ปิดขาย และลบสินค้าที่ไม่มีประวัติการซื้อ |
+| FR-06/07 | ค้นหา กรอง และดูรายละเอียด | กรองตามสภาพ หมวดหมู่ ไซซ์ และคำค้นหา |
+| FR-08/09 | สั่งซื้อและเลือกวิธีรับสินค้า | สั่งได้ร้านเดียวต่อคำสั่งซื้อ เลือกนัดรับหรือจัดส่ง |
+| FR-10/11 | สถานะและประวัติคำสั่งซื้อ | ร้านเปลี่ยนสถานะตามลำดับ ผู้ซื้อดูประวัติของตนเองได้ |
+| FR-12 | ตรวจสิทธิ์ทุกครั้งที่แก้ไขข้อมูล | ใช้ผู้ใช้จาก Session ไม่เชื่อรหัสที่ส่งมาจากฟอร์ม |
+| FR-13 | แชทระหว่างผู้ซื้อกับร้าน | ทำแล้ว อ่านและส่งได้เฉพาะคู่สนทนา ต้องรีเฟรชเอง |
+| FR-14 | รูปสินค้าหลายรูป | ทำแล้ว ไม่เกิน 4 รูปต่อสินค้า |
+| FR-15 | สรุปยอดขาย | ยังไม่ได้ทำ เป็นงานเสริมที่เลื่อนได้ |
+
+### 5.2 ความต้องการด้านอื่น
+
+**ตารางที่ 3** ความต้องการที่ไม่ใช่ด้านการทำงาน
+
+| ด้าน | ข้อกำหนด |
+| --- | --- |
+| ความปลอดภัย | Hash รหัสผ่าน, Prepared Statement, Escape ข้อมูล, CSRF Token และตรวจสิทธิ์ |
+| ความถูกต้องของข้อมูล | Foreign Key, UNIQUE, CHECK และ Transaction |
+| การใช้งาน | รองรับทั้งคอมพิวเตอร์และมือถือ และแสดงข้อผิดพลาดที่เข้าใจง่าย |
+| การดูแลโค้ด | ใช้ Git/GitHub มี README และไม่เก็บรหัสผ่านใน Repository |
+
+### 5.3 Use Case
+
+ผู้เยี่ยมชมค้นหาสินค้าและสมัครสมาชิกได้ เมื่อเข้าสู่ระบบแล้วจึงสั่งซื้อ ดูประวัติ และแชทกับร้านได้ ผู้ขายจัดการร้าน สินค้า และคำสั่งซื้อของร้านตนเอง บทบาทผู้ซื้อและผู้ขายขึ้นกับบริบทของบัญชีเดียวกัน ดังภาพที่ 1
+
+![ภาพที่ 1 Use Case Diagram ของระบบ](diagrams/use-cases.svg)
+
+ตัวอย่างขั้นตอนการสั่งซื้อคือ ผู้ซื้อเข้าสู่ระบบ เลือกไซซ์และจำนวน เพิ่มลงตะกร้า แล้วเลือกนัดรับหรือจัดส่ง จากนั้นเซิร์ฟเวอร์จะตรวจราคา สต็อก และสิทธิ์อีกครั้ง ล็อกข้อมูล สร้างคำสั่งซื้อ และตัดสต็อกใน Transaction เดียวกัน หากสต็อกไม่พอหรือสินค้าปนหลายร้าน ระบบจะยกเลิกทั้งชุด
+
+## 6. การออกแบบระบบ
+
+### 6.1 ER Diagram และฐานข้อมูล
+
+ฐานข้อมูลมี 11 ตาราง 89 คอลัมน์ 15 Foreign Keys และ 9 CHECK Constraints ใช้ InnoDB และ utf8mb4 ดังภาพที่ 2 และตารางที่ 4 ส่วนรายละเอียดทุกคอลัมน์อยู่ในภาคผนวก
+
+![ภาพที่ 2 ER Diagram ของระบบ](diagrams/er-diagram.svg)
+
+**ตารางที่ 4** ตารางในฐานข้อมูลและหน้าที่
+
+| ตาราง | หน้าที่ |
+| --- | --- |
+| users | บัญชีผู้ใช้และรหัสผ่านแบบ Hash |
+| shops | ร้านค้า ผูกกับเจ้าของแบบหนึ่งบัญชีต่อหนึ่งร้าน |
+| products | ข้อมูลสินค้าและรายละเอียดเสื้อผ้า |
+| product_variants | ไซซ์ ราคา และสต็อกของสินค้า |
+| product_images | รูปสินค้าที่เก็บเป็น MEDIUMBLOB |
+| orders | คำสั่งซื้อ วิธีรับสินค้า ยอดรวม และสถานะ |
+| order_items | รายการสินค้าในคำสั่งซื้อ พร้อมชื่อ ไซซ์ และราคา ณ วันที่สั่ง |
+| order_status_history | ประวัติการเปลี่ยนสถานะคำสั่งซื้อ |
+| conversations | ห้องสนทนาระหว่างผู้ซื้อกับร้าน |
+| messages | ข้อความในห้องสนทนา |
+| login_attempts | บันทึกการเข้าสู่ระบบผิดเพื่อจำกัดการลองซ้ำ |
+
+ความสัมพันธ์สำคัญคือ หนึ่งผู้ใช้มีร้านได้ไม่เกินหนึ่งร้าน หนึ่งร้านมีได้หลายสินค้าและหลายคำสั่งซื้อ หนึ่งสินค้ามีได้หลายไซซ์และหลายรูป และหนึ่งคำสั่งซื้อมีได้หลายรายการ ตาราง login_attempts ไม่ผูก Foreign Key กับผู้ใช้ เพราะอีเมลที่กรอกผิดอาจไม่ใช่บัญชีจริง
+
+### 6.2 สถาปัตยกรรมระบบ
+
+เบราว์เซอร์รับ HTML, CSS และ JavaScript จาก PHP ที่ทำงานหลัง Apache ทุกคำขอที่แก้ไขข้อมูลต้องผ่าน Session, CSRF Token และ Service ที่ตรวจความเป็นเจ้าของ ก่อนใช้ PDO ติดต่อกับ MySQL ดังภาพที่ 3
+
+![ภาพที่ 3 สถาปัตยกรรมของระบบ](diagrams/architecture.svg)
+
+โค้ดแบ่งเป็นโฟลเดอร์ `public/` สำหรับหน้าเว็บที่เปิดได้จากภายนอก `app/` สำหรับ Service, การตรวจสิทธิ์ และ Template `database/` สำหรับ Schema และคำสั่ง SQL `scripts/` สำหรับเครื่องมือติดตั้ง และ `docs/` สำหรับรายงานและหลักฐาน ไฟล์ตั้งค่าที่มีรหัสผ่านอยู่นอกโฟลเดอร์สาธารณะ
+
+**ตารางที่ 5** เทคโนโลยีที่ใช้
+
+| ส่วน | เทคโนโลยี |
+| --- | --- |
+| ฝั่งเซิร์ฟเวอร์ | PHP และ PDO |
+| ฐานข้อมูล | MySQL 8.0.46 บน Angsila |
+| หน้าเว็บ | HTML, CSS และ JavaScript |
+| เว็บเซิร์ฟเวอร์ | Apache บน Angsila |
+| เครื่องมือจัดการ | phpMyAdmin และ FileZilla |
+| การจัดการเวอร์ชัน | Git และ GitHub |
+| การทดสอบ | สคริปต์ทดสอบ PHP, Playwright และ GitHub Actions |
+
+## 7. การทำงานของระบบ
+
+### 7.1 หน้าร้านและการค้นหา
+
+ผู้ใช้เปิดดูและค้นหาสินค้าได้โดยไม่ต้องเข้าสู่ระบบ หน้าเว็บปรับตามขนาดหน้าจอทั้งคอมพิวเตอร์และมือถือ ดังภาพที่ 4 และภาพที่ 5 ภาพสินค้าในรายงานเป็นภาพสาธิต ไม่ใช่สินค้าหรือลูกค้าจริง
+
+![ภาพที่ 4 หน้าร้านบนคอมพิวเตอร์](evidence/catalog-desktop.png)
+
+![ภาพที่ 5 หน้าร้านบนมือถือ](evidence/catalog-mobile.png)
+
+### 7.2 การเข้าสู่ระบบและการจัดการสินค้า
+
+ผู้ขายต้องเข้าสู่ระบบก่อนจึงจะจัดการสินค้าได้ ดังภาพที่ 6 และเพิ่มสินค้าพร้อมหลายไซซ์ ราคา และสต็อกผ่านแบบฟอร์มในภาพที่ 7
+
+![ภาพที่ 6 หน้าเข้าสู่ระบบ](evidence/login.png)
+
+![ภาพที่ 7 แบบฟอร์มเพิ่มสินค้า](evidence/product-create.png)
+
+### 7.3 การสั่งซื้อและสถานะคำสั่งซื้อ
+
+ผู้ซื้อเลือกนัดรับหรือจัดส่งแล้วกรอกรายละเอียด ดังภาพที่ 8 จากนั้นร้านเปลี่ยนสถานะตามลำดับที่ระบบอนุญาต ดังภาพที่ 9 และภาพที่ 10 ข้อมูลนัดรับในภาพเป็นข้อมูลสมมติ
+
+![ภาพที่ 8 หน้าสั่งซื้อแบบนัดรับ](evidence/checkout-pickup.png)
+
+![ภาพที่ 9 คำสั่งซื้อที่เสร็จสิ้นในมุมมองของร้าน](evidence/seller-order-completed.png)
+
+![ภาพที่ 10 ลำดับสถานะคำสั่งซื้อ](diagrams/order-status.svg)
+
+ร้านยกเลิกคำสั่งซื้อได้ก่อนถึงขั้นพร้อมรับหรือออกจัดส่ง และระบบจะคืนสต็อกเพียงครั้งเดียว คำสั่งซื้อที่เสร็จสิ้นหรือยกเลิกแล้วจะเปลี่ยนสถานะอีกไม่ได้
+
+### 7.4 แชทระหว่างผู้ซื้อกับร้าน
+
+ผู้ซื้อเริ่มแชทจากหน้าสินค้าเพื่อถามไซซ์หรือสภาพสินค้า ดังภาพที่ 11 ข้อความเห็นได้เฉพาะคู่สนทนา แสดงล่าสุด 100 ข้อความ และต้องรีเฟรชหน้าเพื่อดูข้อความใหม่
+
+![ภาพที่ 11 แชทระหว่างผู้ซื้อกับร้าน](evidence/chat.png)
+
+### 7.5 รูปสินค้าและรายละเอียดเสื้อผ้า
+
+ผู้ขายอัปโหลดรูป JPG, PNG หรือ WebP ได้สูงสุด 4 รูป เลือกภาพหลักและลบภาพได้ และเพิ่มแบรนด์ รอบอก ความยาว และตำหนิได้ ดังภาพที่ 12 เบราว์เซอร์จะย่อรูปและแปลงเป็น PNG ไม่เกิน 1,600 พิกเซลและ 1.5 MiB จากนั้น PHP ตรวจไฟล์อีกครั้งก่อนบันทึกลงฐานข้อมูล
+
+เนื่องจาก PHP บน Angsila ไม่มี GD และเขียนไฟล์ลงพื้นที่ส่วนตัวไม่ได้ ระบบจึงเก็บรูปในคอลัมน์ MEDIUMBLOB แทนการเก็บเป็นไฟล์
+
+![ภาพที่ 12 หน้าสินค้าพร้อมรูปบน Angsila (ข้อมูลทดสอบสมมติ)](evidence/database-product-photos/live-gallery-desktop.png)
+
+## 8. CRUD และการรักษาความถูกต้องของข้อมูล
+
+### 8.1 CRUD ในระบบ
+
+**ตารางที่ 6** การทำ CRUD ของสินค้า
+
+| การทำงาน | SQL | การทำงานในระบบ |
+| --- | --- | --- |
+| Create | INSERT | เพิ่มสินค้าและไซซ์ใน Transaction เดียวกัน โดยใช้ร้านของผู้ที่เข้าสู่ระบบ |
+| Read | SELECT | แสดงสินค้าในหน้าร้าน หน้ารายละเอียด และหน้าจัดการร้าน |
+| Update | UPDATE | แก้ไขสินค้าและไซซ์ได้เฉพาะของร้านตนเอง โดยตรวจเลขรุ่นเพื่อกันการแก้สต็อกทับกัน |
+| Delete | DELETE | ลบได้เฉพาะสินค้าที่ไม่มีประวัติการซื้อ ถ้ามีประวัติจะปฏิเสธและให้ปิดขายแทน |
+
+### 8.2 การสั่งซื้อใน Transaction
+
+ฟังก์ชันสั่งซื้อล็อกข้อมูลตามลำดับ ผู้ซื้อ ร้าน สินค้า และไซซ์ ตรวจสต็อกอีกครั้ง แล้วจึงสร้างคำสั่งซื้อและตัดสต็อกพร้อมกัน เงินคำนวณเป็นจำนวนเต็มหน่วยสตางค์เพื่อเลี่ยงความคลาดเคลื่อนของทศนิยม ตัวอย่างโค้ดจาก `app/services/OrderService.php` มีดังนี้
+
+```php
+$v=query('SELECT * FROM {{product_variants}} WHERE variant_id=? FOR UPDATE',[$id])->fetch();
+...
+$changed=query('UPDATE {{product_variants}} SET stock_quantity=stock_quantity-?,version=version+1 WHERE variant_id=? AND stock_quantity>=?',[$qty,$id,$qty])->rowCount();
+if($changed!==1) throw new ValidationException('สต็อกเปลี่ยนแล้ว กรุณาลองใหม่');
+```
+
+ระบบใช้รหัสกันคำขอซ้ำ หากผู้ซื้อกดส่งซ้ำด้วยข้อมูลเดิมจะได้คำสั่งซื้อเดิมและไม่ตัดสต็อกซ้ำ นอกจากนี้ ตาราง order_items ยังเก็บชื่อ ไซซ์ และราคา ณ วันที่สั่ง ประวัติการซื้อจึงไม่เปลี่ยนเมื่อร้านแก้ไขสินค้าภายหลัง
+
+## 9. SQL JOIN
+
+ไฟล์ `database/demo-joins.sql` เก็บตัวอย่างคำสั่ง และผลลัพธ์ด้านล่างมาจากฐานข้อมูลทดสอบที่มีเฉพาะข้อมูลสมมติ
+
+### 9.1 INNER JOIN
+
+คำสั่งนี้รวมคำสั่งซื้อกับผู้ซื้อ ร้าน และรายการสินค้า จึงแสดงเฉพาะแถวที่จับคู่ได้ครบ
+
+```sql
+SELECT o.order_id,u.full_name AS buyer,s.shop_name,oi.product_name_snapshot,
+       oi.size_label_snapshot,oi.quantity,oi.unit_price,o.status
+FROM orders o
+INNER JOIN users u ON u.user_id=o.buyer_user_id
+INNER JOIN shops s ON s.shop_id=o.shop_id
+INNER JOIN order_items oi ON oi.order_id=o.order_id
+ORDER BY o.order_id,oi.order_item_id;
+```
+
+**ตารางที่ 7** ตัวอย่างผล INNER JOIN (บางส่วน)
+
+| คำสั่งซื้อ | ผู้ซื้อ | ร้าน | สินค้า | จำนวน | ราคาต่อหน่วย |
+| --- | --- | --- | --- | --- | --- |
+| 1 | Demo buyer | Browser Demo Wardrobe mvuqxv5p | Browser linen mvuqxv5p | 2 | 290.00 |
+| 2 | Demo buyer | Browser Demo Wardrobe mvuqypuh | Browser linen mvuqypuh | 2 | 290.00 |
+| 3 | Demo buyer | Browser Demo Wardrobe mvuqypuh | Browser linen mvuqypuh | 1 | 290.00 |
+
+### 9.2 LEFT JOIN
+
+คำสั่งนี้แสดงทุกร้าน รวมถึงร้านที่ยังไม่มีคำสั่งซื้อ และใช้ COUNT(o.order_id) เพราะ COUNT(\*) จะนับแถว NULL ของร้านที่ไม่มีคำสั่งซื้อเป็น 1
+
+```sql
+SELECT s.shop_id,s.shop_name,COUNT(o.order_id) AS order_count
+FROM shops s LEFT JOIN orders o ON o.shop_id=s.shop_id
+GROUP BY s.shop_id,s.shop_name ORDER BY s.shop_id;
+```
+
+**ตารางที่ 8** ตัวอย่างผล LEFT JOIN (บางส่วน)
+
+| รหัสร้าน | ร้าน | จำนวนคำสั่งซื้อ |
+| --- | --- | --- |
+| 1 | Bangsaen Closet | 0 |
+| 2 | BUU Rewear | 0 |
+| 3 | The Next Wardrobe | 0 |
+| 4 | Browser Demo Wardrobe mvuqxv5p | 1 |
+| 5 | Browser Demo Wardrobe mvuqypuh | 2 |
+
+เนื่องจากหนึ่งคำสั่งซื้อมีได้หลายรายการ การรวม total_amount หลัง JOIN กับ order_items จะทำให้ยอดซ้ำ ระบบจึงไม่รวมยอดจากผลลัพธ์แบบนั้น
+
+## 10. การเข้าสู่ระบบและความปลอดภัย
+
+### 10.1 การเข้าสู่ระบบและออกจากระบบ
+
+ตอนสมัครสมาชิก ระบบเก็บรหัสผ่านด้วย password_hash และตอนเข้าสู่ระบบตรวจด้วย password_verify เมื่อสำเร็จจะเปลี่ยน Session ID ด้วย session_regenerate_id(true) เพื่อป้องกัน Session Fixation ตัวอย่างโค้ดจาก `app/auth/session.php` มีดังนี้
+
+```php
+$row=query('SELECT user_id,full_name,password_hash FROM {{users}} WHERE email=?',[$email])->fetch();
+...
+if (!password_verify($password,$row['password_hash']??$dummy)||!$row) {
+```
+
+การออกจากระบบใช้ POST พร้อม CSRF Token จากนั้นล้างข้อมูล Session ลบ Cookie และทำลาย Session และหากไม่มีการใช้งานเกิน 30 นาที Session จะถูกล้าง
+
+### 10.2 มาตรการด้านความปลอดภัย
+
+**ตารางที่ 9** ความเสี่ยงและวิธีป้องกัน
+
+| ความเสี่ยง | วิธีป้องกัน |
+| --- | --- |
+| รหัสผ่านรั่ว | เก็บเฉพาะ Hash และไม่เก็บรหัสผ่านฐานข้อมูลใน GitHub |
+| SQL Injection | ใช้ Prepared Statement ทุกคำสั่ง |
+| XSS | Escape ข้อมูลด้วย htmlspecialchars และกำหนด Content Security Policy |
+| CSRF | ทุกฟอร์มที่แก้ไขข้อมูลใช้ POST พร้อม Token |
+| แก้ไขข้อมูลของผู้อื่น | ตรวจความเป็นเจ้าของจากผู้ใช้ใน Session |
+| เดารหัสผ่าน | จำกัด 5 ครั้งต่อบัญชีและ IP และ 40 ครั้งต่อ IP ภายใน 15 นาที โดยเก็บเป็น Hash |
+| ขโมย Session | Cookie ใช้ HttpOnly, SameSite=Lax และ Secure บน HTTPS |
+| ไฟล์รูปปลอม | PHP ตรวจโครงสร้าง PNG ก่อนบันทึก และส่งรูปพร้อม nosniff |
+
+## 11. การติดตั้งบน Angsila และการจัดการเวอร์ชัน
+
+### 11.1 การติดตั้ง
+
+การติดตั้งทำผ่าน VPN มหาวิทยาลัยด้วย phpMyAdmin และ FileZilla โดยตรวจปลายทางและแผน SQL ก่อนเขียนจริง ไฟล์หน้าเว็บอยู่ใน `public_html/clozee` ส่วนโค้ดภายในและไฟล์ตั้งค่าอยู่นอกเว็บ เนื่องจากฐานข้อมูลเดิมมีตาราง `users` ของงาน Lab อยู่แล้ว ตารางของ CLOZEE จึงใช้คำนำหน้า `clozee_` และตาราง Lab เดิมทั้งห้าตารางยังอยู่ครบ
+
+ก่อนเพิ่มระบบรูปสินค้าเมื่อวันที่ 4 พฤศจิกายน 2569 ได้สำรอง 10 ตารางและไฟล์เดิม 52 ไฟล์ หลังติดตั้งตรวจแล้วว่าข้อมูลเดิมไม่เปลี่ยน และไฟล์รุ่นใหม่ตรงกันทั้ง 47 ไฟล์ ดังภาพที่ 13 และภาพที่ 14
+
+![ภาพที่ 13 เว็บบน Angsila จากเบราว์เซอร์ใหม่ที่ยังไม่ได้เข้าสู่ระบบ](evidence/angsila-catalog-desktop.png)
+
+![ภาพที่ 14 เว็บบน Angsila ขนาดมือถือ](evidence/angsila-catalog-mobile.png)
+
+### 11.2 การจัดการเวอร์ชัน
+
+ซอร์สโค้ด README และประวัติการแก้ไขอยู่บน GitHub ฟีเจอร์รูปสินค้าพัฒนาบน Branch แยกแล้วรวมผ่าน Pull Request และ GitHub Actions ทดสอบโค้ดกับ MySQL โดยอัตโนมัติ ไฟล์ตั้งค่าส่วนตัวและรหัสผ่านถูกยกเว้นด้วย `.gitignore`
+
+## 12. ผลการทดสอบ
+
+ผลด้านล่างแยกตามสภาพแวดล้อม เพราะการทดสอบในเครื่องไม่ได้ยืนยันผลบนเซิร์ฟเวอร์จริง
+
+**ตารางที่ 10** สรุปผลการทดสอบ
 
 | ชุดทดสอบ | สภาพแวดล้อม | ผล |
 | --- | --- | --- |
-| Domain/DB/concurrency รุ่นปัจจุบัน | Local: PHP 8.5.12, MariaDB 11.4.9 | 57/57 ในแต่ละ namespace (หลักและ `clozee_`) |
-| ตรวจไฟล์รูปภาพ | Local: เปิด GD และปิด GD/EXIF | 23/23 ทั้งสองแบบ |
-| Browser ระบบเดิม | Local: Chrome ผ่าน Playwright, ปิด GD/EXIF | 24/24 |
-| Browser รูปสินค้า | Local: เปิด GD และปิด GD/EXIF | 23/23 ทั้งสองแบบ |
-| อัปเกรด schema จาก 10 ตารางที่มีข้อมูลอยู่แล้ว | Local | 14/14 |
-| รวมทุกชุดบน CI | PHP 8.3.36, MySQL 8.4.13, Chromium | 198/198 ต่อ runtime (เปิด GD และปิด GD/EXIF) |
-| Live: รูปสินค้า | Angsila ผ่าน VPN (PHP 8.4.27, MySQL 8.0.46) | 13/13 |
-| Live: HTTP/security รุ่นปัจจุบัน | Angsila ผ่าน VPN | 17/17 |
-| Live: ฟังก์ชันระบบหลัก (รอบ 30 ต.ค. 2569) | Angsila ผ่าน VPN | 30/30 |
+| ระบบ ฐานข้อมูล และการทำงานพร้อมกัน | เครื่องพัฒนา PHP 8.5.12, MariaDB 11.4.9 | ผ่าน 57/57 ในแต่ละชุดชื่อตาราง |
+| ตรวจไฟล์รูปภาพ | เครื่องพัฒนา ทั้งเปิดและปิด GD/EXIF | ผ่าน 23/23 ทั้งสองแบบ |
+| เบราว์เซอร์ ระบบเดิม | เครื่องพัฒนา ปิด GD/EXIF | ผ่าน 24/24 |
+| เบราว์เซอร์ รูปสินค้า | เครื่องพัฒนา ทั้งเปิดและปิด GD/EXIF | ผ่าน 23/23 ทั้งสองแบบ |
+| อัปเกรดฐานข้อมูลจาก 10 ตาราง | เครื่องพัฒนา | ผ่าน 14/14 |
+| รวมทุกชุดบน GitHub Actions | PHP 8.3.36, MySQL 8.4.13 | ผ่าน 198/198 ต่อรูปแบบการรัน |
+| ฟังก์ชันระบบหลักบนเว็บจริง (30 ต.ค. 2569) | Angsila ผ่าน VPN | ผ่าน 30/30 |
+| รูปสินค้าบนเว็บจริง (4 พ.ย. 2569) | Angsila ผ่าน VPN | ผ่าน 13/13 |
+| HTTP และความปลอดภัยบนเว็บจริง (4 พ.ย. 2569) | Angsila ผ่าน VPN | ผ่าน 17/17 |
 
-CI ของโค้ดรุ่นที่ติดตั้ง: [run 41119656814](https://github.com/Skyce38/CLOZEE/actions/runs/41119656814) (commit `fc45793`) และ CI ของ commit ที่รวมเข้า main: [run 41857503966](https://github.com/Skyce38/CLOZEE/actions/runs/41857503966) (`13a5e73`) ทดสอบหน้าจอ desktop และ 390×844
+ผล GitHub Actions ดูได้ที่ [run 41119656814](https://github.com/Skyce38/CLOZEE/actions/runs/41119656814) ของ commit `fc45793` ซึ่งเป็นรุ่นที่ติดตั้ง และ [run 41857503966](https://github.com/Skyce38/CLOZEE/actions/runs/41857503966) ของ commit `13a5e73` ที่รวมเข้า main ส่วนรายละเอียดแต่ละข้ออยู่ใน `docs/test-results.md`
 
-Concurrency test ใช้สอง PHP processes เชื่อม DB อิสระแย่งซื้อ item ชิ้นสุดท้าย ผลสำเร็จเพียงหนึ่งคำขอ stock เหลือศูนย์ ส่วนสองคำขอ key เดียวได้ order เดียว stock ลดครั้งเดียว ทดสอบ rollback, stale edit, cancel คืน stock, snapshot, ownership, CSRF, SQL injection และ XSS chat เพิ่มด้วย
+การทดสอบบนเว็บจริงใช้ข้อมูลสมมติทั้งหมด ครอบคลุมการสมัครสมาชิก การจัดการสินค้า นัดรับ จัดส่ง การยกเลิกพร้อมคืนสต็อก แชท และการปฏิเสธผู้ใช้ที่ไม่มีสิทธิ์ เมื่อทดสอบเสร็จได้ปิดร้านและสินค้าทดสอบของรอบรูปสินค้าแล้ว
 
-ผลบน Angsila: นัดรับ Order #1 สำเร็จ ยกเลิกจัดส่ง Order #2 คืนสต็อก และจัดส่ง Order #3 สำเร็จ ทดสอบสิทธิ์ข้ามบัญชี แชท และ snapshot ด้วยข้อมูล QA สมมติ รายละเอียดใน test-results.md และ JSON evidence/ การทดสอบนี้ไม่ใช่ penetration/load test; concurrency และ physical DELETE ผ่านใน isolated DB/CI แต่ไม่ได้ทำซ้ำบน live
+การทดสอบการทำงานพร้อมกันใช้ PHP สองโปรเซสแย่งซื้อสินค้าชิ้นสุดท้าย ผลคือสำเร็จเพียงคำขอเดียวและสต็อกเหลือศูนย์ ส่วนการส่งคำขอซ้ำด้วยรหัสเดียวกันได้คำสั่งซื้อเดียวและตัดสต็อกครั้งเดียว
 
-## 11 Deployment และ URL
+## 13. การวิเคราะห์ผลและข้อจำกัด
 
-Repository: [Skyce38/CLOZEE](https://github.com/Skyce38/CLOZEE)  
-Angsila URL: **https://angsila.informatics.buu.ac.th/~68160207/clozee/** (ต้องเชื่อมต่อ VPN มหาวิทยาลัย)
+### 13.1 การวิเคราะห์ผล
 
-การติดตั้งทำผ่าน VPN มหาวิทยาลัยด้วย phpMyAdmin และ FileZilla โดยตรวจปลายทางและแผน SQL ก่อนเขียนจริง แยก public_html/clozee ออกจาก clozee-private นอกเว็บ ใช้ฐาน s68160207 โดยสร้างเฉพาะตาราง clozee_ เดิม 10 ตาราง และเพิ่ม product_images เป็นตารางที่ 11 เมื่อ 4 พฤศจิกายน 2569 เก็บตาราง Lab เดิมทั้งห้าไว้ครบ รหัสผ่านฐานข้อมูลอยู่ในไฟล์ส่วนตัวที่ Git ไม่ติดตามและไม่อยู่ใน public_html
+- การล็อกแถวร่วมกับการตรวจสต็อกใน Transaction ป้องกันการขายเกินจำนวนได้ตามผลทดสอบ
+- การเก็บข้อมูล ณ วันที่สั่งซื้อทำให้ประวัติไม่เปลี่ยน โดยหลังแก้ราคาจาก 290 เป็น 295 บาทบนเว็บจริง คำสั่งซื้อเดิมยังแสดงราคาเดิม
+- ข้อจำกัดของเซิร์ฟเวอร์จริงมีผลต่อการออกแบบ เพราะ Angsila ไม่มี GD จึงต้องเปลี่ยนจากการเก็บรูปเป็นไฟล์มาเก็บในฐานข้อมูล ซึ่งแลกกับการที่ฐานข้อมูลและไฟล์สำรองใหญ่ขึ้น
+- การทดสอบช่วยพบข้อบกพร่องจริง เช่น ค่าคีย์ในฟอร์มไซซ์ที่ถูกแก้อาจแทรก HTML ลงในหน้าแสดงข้อผิดพลาด จึงแก้ไขและเพิ่มชุดทดสอบไว้
+- รอบทดสอบรูปสินค้าบนเว็บจริงต้องแก้สคริปต์ทดสอบสามจุดก่อนรันผ่านครบ โดยไม่ต้องแก้โค้ดของเว็บ
 
-หลังอัปเดตรูปสินค้า ตรวจ schema จริงได้ 89 คอลัมน์, 15 Foreign Keys, 9 enforced CHECK; หน้าเว็บ PHP/PDO เชื่อมต่อและทำงานกับ MySQL 8.0.46 ได้จริง HTTP protection ผ่านและเว็บ Lab เดิมยังเปิดได้ ดู deployment-verification.md สำหรับหลักฐานและขอบเขตการตรวจ การเปิดด้วยเบราว์เซอร์ใหม่ผ่านในเครือข่าย/VPN เดียวกัน ไม่อ้างว่าทดสอบจากอินเทอร์เน็ตภายนอก VPN แล้ว
+### 13.2 ข้อจำกัดของระบบ
 
-![Angsila desktop — เปิดจากเบราว์เซอร์ใหม่ที่ยังไม่ได้เข้าสู่ระบบ](evidence/angsila-catalog-desktop.png)
+- ปัญหาที่ตั้งไว้ยังเป็นสมมติฐาน เพราะยังไม่ได้สำรวจผู้ใช้จริง
+- ยังไม่ได้ทดสอบการเข้าเว็บนอก VPN, Safari, Firefox, มือถือจริง, การกู้คืนข้อมูลสำรอง, penetration test และ load test
+- การแย่งซื้อพร้อมกันและการลบสินค้าจริงทดสอบเฉพาะบนฐานข้อมูลแยก ไม่ได้ทำซ้ำบนเว็บจริง
+- ยังไม่ทราบโควตาฐานข้อมูลบน Angsila ซึ่งรูปครบ 4 รูปอาจใช้พื้นที่ประมาณ 6 MiB ต่อสินค้า
+- แชทไม่เป็นแบบเรียลไทม์ และรายการคำสั่งซื้อ แชท และร้านแสดงล่าสุดไม่เกิน 100 รายการ
+- ระบบไม่มีสรุปยอดขาย การชำระเงินออนไลน์ การจัดส่งจริง การคืนเงิน และการเข้าสู่ระบบด้วยบัญชีมหาวิทยาลัย
 
-![Angsila mobile — เปิดจากเบราว์เซอร์ใหม่ที่ยังไม่ได้เข้าสู่ระบบ](evidence/angsila-catalog-mobile.png)
+## 14. สรุปผลและแนวทางพัฒนาต่อ
 
-## 12 ข้อจำกัดของระบบ
+### 14.1 สรุปผล
 
-- **การทดสอบ:** ยังไม่ได้ทดสอบการเข้าเว็บนอก VPN, Safari/Firefox, มือถือจริง, การ restore backup, penetration test และ load test ส่วน concurrency กับ physical DELETE ทดสอบเฉพาะบนฐานข้อมูลแยก ไม่ได้ทำซ้ำบนเว็บจริง
-- **ฟังก์ชันที่ไม่มี:** ไม่มี analytics dashboard, payment, courier, GPS, refund และ BUU SSO
-- **พฤติกรรมปัจจุบัน:** chat ไม่ realtime และรายการ order/thread/shop แสดงล่าสุดไม่เกิน 100 รายการ
-- **ฐานข้อมูล:** ยังไม่ทราบ quota ของฐานข้อมูลบน Angsila
-- **ข้อมูลและสมมติฐาน:** pain point ยังเป็นสมมติฐาน ไม่ได้มาจากการวิจัยจริง และบัญชี ร้าน สินค้า และคำสั่งซื้อที่ใช้ทดสอบเป็นข้อมูลสมมติ มิใช่การซื้อขายจริง
+**ตารางที่ 11** ผลเทียบกับวัตถุประสงค์
 
-## 13 แหล่งอ้างอิง
+| วัตถุประสงค์ | ผลที่ได้ |
+| --- | --- |
+| ออกแบบฐานข้อมูลเชิงสัมพันธ์ | ทำได้ 11 ตาราง พร้อม Foreign Key, UNIQUE และ CHECK |
+| เข้าสู่ระบบและตรวจสิทธิ์ | ทำได้ และทดสอบการปฏิเสธผู้ใช้ที่ไม่มีสิทธิ์แล้ว |
+| CRUD กับ MySQL | ทำได้ ส่วนการลบจริงทดสอบบนฐานข้อมูลแยก |
+| สั่งซื้อและติดตามสถานะ | ทำได้ ทั้งนัดรับและจัดส่ง |
+| ติดตั้งบน Angsila | ทำได้ และทดสอบผ่าน VPN มหาวิทยาลัยแล้ว |
 
-- Database-authen.pdf หน้า 31–36: Final Project; หน้า 5–18: CRUD/Auth/Security
-- CRUD-and-VERSION-CONTROL.pdf หน้า 3–17, 22–36: PHP/MySQL/Git/Angsila
-- Data-base-join.pdf หน้า 4–5, 8–30: relational keys/JOIN/debug
-- CLOZEE-round2-kit.zip: round2-build-brief, project-spec, functional-requirements, use-cases, final-report-outline
-- [PHP PDO prepared statements](https://www.php.net/manual/en/pdo.prepared-statements.php)
-- [MySQL InnoDB locking reads](https://dev.mysql.com/doc/refman/8.0/en/innodb-locking-reads.html)
-- GitHub source/CI และหลักฐานที่รันจริงใน docs/evidence; ไม่มีการคัดลอกโปรเจกต์ Resume/อาหารเป็น CLOZEE
+CLOZEE ทำงานได้ตามขอบเขตที่กำหนด และแสดงให้เห็นว่าการออกแบบฐานข้อมูลที่ดีช่วยรักษาความถูกต้องของสต็อกและประวัติการซื้อได้จริง
 
-<div class="page-break"></div>
+### 14.2 แนวทางพัฒนาต่อ
 
-## ภาคผนวก Data Dictionary
+- **ระยะสั้น:** สำรวจความเห็นนิสิตเพื่อตรวจสอบปัญหาที่ตั้งไว้ ทดสอบบนมือถือจริงและเบราว์เซอร์อื่น และซ้อมกู้คืนข้อมูลสำรอง
+- **ระยะกลาง:** เพิ่มสรุปยอดขายของร้าน การให้คะแนนร้าน และหน้าเว็บสองภาษา
+- **ระยะยาว:** เชื่อมระบบชำระเงินและบริการจัดส่ง และขยายพื้นที่ให้บริการโดยแสดงร้านตามตำแหน่งที่ใกล้ผู้ซื้อ
+
+## 15. ลิงก์ของโครงงาน
+
+**ตารางที่ 12** ลิงก์ที่ใช้ตรวจงาน
+
+| รายการ | ลิงก์ |
+| --- | --- |
+| เว็บไซต์บน Angsila (ต้องเชื่อมต่อ VPN มหาวิทยาลัย) | https://angsila.informatics.buu.ac.th/~68160207/clozee/ |
+| GitHub Repository | https://github.com/Skyce38/CLOZEE |
+
+## อ้างอิง
+
+- Database-authen.pdf. เอกสารประกอบการสอนวิชา 89022167 Database Management: CRUD, Authentication, Git และข้อกำหนด Project
+- CRUD-and-VERSION-CONTROL.pdf. เอกสารประกอบการสอนวิชา 89022167 Database Management
+- Data-base-join.pdf. เอกสารประกอบการสอนวิชา 89022167 Database Management
+- The Nation. (2568, 10 กุมภาพันธ์). Inside Thailand's luxury second-hand fashion boom. https://www.nationthailand.com/sustaination/40046112
+- MySQL. InnoDB Locking Reads. https://dev.mysql.com/doc/refman/8.0/en/innodb-locking-reads.html
+- MySQL. JOIN Clause. https://dev.mysql.com/doc/refman/8.0/en/join.html
+- PHP Manual. Prepared statements and stored procedures. https://www.php.net/manual/en/pdo.prepared-statements.php
+- PHP Manual. password_hash. https://www.php.net/manual/en/function.password-hash.php
+- PHP Manual. session_regenerate_id. https://www.php.net/manual/en/function.session-regenerate-id.php
+- OWASP. Cross-Site Request Forgery Prevention Cheat Sheet. https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html
+- W3C. Portable Network Graphics (PNG) Specification. https://www.w3.org/TR/png/
+
+<div class="appendix">
+
+## ภาคผนวก: พจนานุกรมข้อมูล (Data Dictionary)
 
 ฐานเดิมอ้าง information_schema บน MariaDB 11.4.9 และปรับตาม migration 002 ที่ติดตั้งจริงบน Angsila วันที่ 4 พฤศจิกายน 2569 รวม 11 ตาราง 89 คอลัมน์ 15 Foreign Keys และ 9 CHECK ชนิดตัวเลขอาจแสดง display width ต่างกันระหว่าง MariaDB/MySQL เวลาในฐานข้อมูลเป็น UTC ส่วน UI ระบุ UTC ไว้ชัดเจน
 
-## conversations
+### conversations
+
+**ตารางที่ 13** พจนานุกรมข้อมูลตาราง conversations
 
 | Column | Type | NULL? | Default | Key / rule | Meaning |
 | --- | --- | --- | --- | --- | --- |
@@ -235,7 +461,9 @@ Angsila URL: **https://angsila.informatics.buu.ac.th/~68160207/clozee/** (ต้
 | created_at | timestamp | NO | current_timestamp() | - | เวลาสร้าง (UTC) |
 | last_message_at | timestamp | YES | NULL | - | เวลาข้อความล่าสุด ใช้เรียง thread |
 
-## login_attempts
+### login_attempts
+
+**ตารางที่ 14** พจนานุกรมข้อมูลตาราง login_attempts
 
 | Column | Type | NULL? | Default | Key / rule | Meaning |
 | --- | --- | --- | --- | --- | --- |
@@ -244,7 +472,9 @@ Angsila URL: **https://angsila.informatics.buu.ac.th/~68160207/clozee/** (ต้
 | ip_bucket | char(64) | NO | NULL | MUL | SHA-256 ของ IP เพื่อจำกัดการลองรวม |
 | attempted_at | timestamp | NO | current_timestamp() | - | เวลา login ผิด เก็บชั่วคราว |
 
-## messages
+### messages
+
+**ตารางที่ 15** พจนานุกรมข้อมูลตาราง messages
 
 | Column | Type | NULL? | Default | Key / rule | Meaning |
 | --- | --- | --- | --- | --- | --- |
@@ -254,7 +484,9 @@ Angsila URL: **https://angsila.informatics.buu.ac.th/~68160207/clozee/** (ต้
 | message_text | text | NO | NULL | - | ข้อความล้วน 1–2000 ตัวอักษร Escape เมื่อแสดงผล |
 | created_at | timestamp | NO | current_timestamp() | - | เวลาสร้าง (UTC) |
 
-## orders
+### orders
+
+**ตารางที่ 16** พจนานุกรมข้อมูลตาราง orders
 
 | Column | Type | NULL? | Default | Key / rule | Meaning |
 | --- | --- | --- | --- | --- | --- |
@@ -272,7 +504,9 @@ Angsila URL: **https://angsila.informatics.buu.ac.th/~68160207/clozee/** (ต้
 | created_at | timestamp | NO | current_timestamp() | - | เวลาสร้าง (UTC) |
 | updated_at | timestamp | NO | current_timestamp() | -; on update current_timestamp() | เวลาแก้ไขล่าสุด (UTC) |
 
-## order_items
+### order_items
+
+**ตารางที่ 17** พจนานุกรมข้อมูลตาราง order_items
 
 | Column | Type | NULL? | Default | Key / rule | Meaning |
 | --- | --- | --- | --- | --- | --- |
@@ -284,7 +518,9 @@ Angsila URL: **https://angsila.informatics.buu.ac.th/~68160207/clozee/** (ต้
 | quantity | int(10) unsigned | NO | NULL | - | จำนวน 1–99 |
 | unit_price | decimal(10,2) | NO | NULL | - | ราคาต่อหน่วย ณ วันที่สั่ง |
 
-## order_status_history
+### order_status_history
+
+**ตารางที่ 18** พจนานุกรมข้อมูลตาราง order_status_history
 
 | Column | Type | NULL? | Default | Key / rule | Meaning |
 | --- | --- | --- | --- | --- | --- |
@@ -295,7 +531,9 @@ Angsila URL: **https://angsila.informatics.buu.ac.th/~68160207/clozee/** (ต้
 | to_status | varchar(30) | NO | NULL | - | สถานะใหม่ |
 | created_at | timestamp | NO | current_timestamp() | - | เวลาสร้าง (UTC) |
 
-## products
+### products
+
+**ตารางที่ 19** พจนานุกรมข้อมูลตาราง products
 
 | Column | Type | NULL? | Default | Key / rule | Meaning |
 | --- | --- | --- | --- | --- | --- |
@@ -314,7 +552,9 @@ Angsila URL: **https://angsila.informatics.buu.ac.th/~68160207/clozee/** (ต้
 | length_cm | decimal(4,1) | YES | NULL | CHECK > 0 และ <= 300 | ความยาว ซม. |
 | condition_notes | varchar(1000) | YES | NULL | - | สภาพและตำหนิ |
 
-## product_images
+### product_images
+
+**ตารางที่ 20** พจนานุกรมข้อมูลตาราง product_images
 
 | Column | Type | NULL? | Default | Key / rule | Meaning |
 | --- | --- | --- | --- | --- | --- |
@@ -329,7 +569,9 @@ Angsila URL: **https://angsila.informatics.buu.ac.th/~68160207/clozee/** (ต้
 | sort_order | tinyint unsigned | NO | 0 | composite index product_id,sort_order,image_id | ลำดับภาพ; ลำดับแรกเป็นปก |
 | created_at | timestamp | NO | CURRENT_TIMESTAMP | - | เวลาสร้าง UTC |
 
-## product_variants
+### product_variants
+
+**ตารางที่ 21** พจนานุกรมข้อมูลตาราง product_variants
 
 | Column | Type | NULL? | Default | Key / rule | Meaning |
 | --- | --- | --- | --- | --- | --- |
@@ -343,7 +585,9 @@ Angsila URL: **https://angsila.informatics.buu.ac.th/~68160207/clozee/** (ต้
 | created_at | timestamp | NO | current_timestamp() | - | เวลาสร้าง (UTC) |
 | updated_at | timestamp | NO | current_timestamp() | -; on update current_timestamp() | เวลาแก้ไขล่าสุด (UTC) |
 
-## shops
+### shops
+
+**ตารางที่ 22** พจนานุกรมข้อมูลตาราง shops
 
 | Column | Type | NULL? | Default | Key / rule | Meaning |
 | --- | --- | --- | --- | --- | --- |
@@ -356,7 +600,9 @@ Angsila URL: **https://angsila.informatics.buu.ac.th/~68160207/clozee/** (ต้
 | created_at | timestamp | NO | current_timestamp() | - | เวลาสร้าง (UTC) |
 | updated_at | timestamp | NO | current_timestamp() | -; on update current_timestamp() | เวลาแก้ไขล่าสุด (UTC) |
 
-## users
+### users
+
+**ตารางที่ 23** พจนานุกรมข้อมูลตาราง users
 
 | Column | Type | NULL? | Default | Key / rule | Meaning |
 | --- | --- | --- | --- | --- | --- |
@@ -368,7 +614,9 @@ Angsila URL: **https://angsila.informatics.buu.ac.th/~68160207/clozee/** (ต้
 | created_at | timestamp | NO | current_timestamp() | - | เวลาสร้าง (UTC) |
 | updated_at | timestamp | NO | current_timestamp() | -; on update current_timestamp() | เวลาแก้ไขล่าสุด (UTC) |
 
-## Unique constraints
+### Unique constraints
+
+**ตารางที่ 24** ข้อจำกัดความไม่ซ้ำของข้อมูล
 
 | Table | Index | Columns |
 | --- | --- | --- |
@@ -390,8 +638,10 @@ Angsila URL: **https://angsila.informatics.buu.ac.th/~68160207/clozee/** (ต้
 | users | PRIMARY | user_id |
 | users | uq_users_email | email |
 
-## กติกาที่ต้องตรวจใน PHP
+### กติกาที่ต้องตรวจใน PHP
 
 ทุก order item ต้องอยู่ในร้านของ order, ผู้ส่งแชทต้องเป็นผู้ร่วมสนทนา, สินค้าต้องมีอย่างน้อยหนึ่ง variant, order ต้องมีอย่างน้อยหนึ่ง item, สต็อกต้องไม่ถูกขายเกิน, state transition ต้องตรงวิธีรับสินค้า และราคาต้องมาจาก server ดู implementation-decisions.md สำหรับ CHECK และ business rules ฉบับเต็ม
 
 รูปสินค้าไม่เกิน 4 รูปต่อสินค้า บังคับใน service ภายใต้ row lock ของสินค้า; image endpoint ตรวจสถานะสินค้า/ร้านและสิทธิ์เจ้าของก่อนส่ง bytes ไม่ดึง BLOB ในรายการสินค้าทุกแถว
+
+</div>

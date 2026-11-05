@@ -12,7 +12,7 @@ Audit date: 5 November 2026 (documents only; live site last verified 4 November 
 - [x] GitHub repository/source/README/history prepared at https://github.com/Skyce38/CLOZEE (verify latest pushed revision below before handoff).
 - [x] Report includes architecture, actual app screenshots, CRUD/auth/security, tests and limitations.
 - [x] Angsila website deployed after exact-target approval and independently browser-verified through university VPN: https://angsila.informatics.buu.ac.th/~68160207/clozee/
-- [ ] Final cover: author's full name, other members/solo confirmation and instructor name — explicit placeholders remain. The official slides do not state group or solo; only the student's exam-review summary says "งานกลุ่ม", so confirm with the instructor.
+- [ ] Final cover: other members/solo confirmation and instructor name — explicit placeholders remain. Author's name is filled from the student's own report for another course; confirm the spelling, faculty major and semester. The official slides do not state group or solo; only the student's exam-review summary says "งานกลุ่ม", so confirm with the instructor.
 - [ ] Final Angsila URL and round-2 submission/reservation details confirmed by author/instructor.
 
 Registration and detailed JOIN evidence below are CLOZEE kit requirements; do not mislabel every kit item as an explicit p.33 lecturer instruction. No final-score rubric or minimum table/JOIN/commit count was found in the slides.
