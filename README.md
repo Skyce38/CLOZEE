@@ -9,11 +9,13 @@
 
 ฐาน Angsila ใช้ `table_prefix = clozee_` แยกจากตาราง Lab เดิม ดู [ผลทดสอบฐานข้อมูลร่วม](docs/shared-database-tests.md) และ [ผลตรวจการติดตั้ง](docs/deployment-verification.md) รุ่นปัจจุบันผ่าน CI 198 ข้อต่อ runtime; Angsila ผ่าน 30 functional checkpoints ระบบหลัก, 13 ข้อรูปสินค้า และ 17 anonymous HTTP/security checks พร้อมภาพ desktop/mobile จากเบราว์เซอร์ใหม่ ขอบเขต local/CI/live แยกกันชัดเจนในรายงาน
 
-**ลิงก์สำคัญ:** [ซอร์สโค้ด CLOZEE](https://github.com/Skyce38/CLOZEE) · [ผลทดสอบ MySQL บน GitHub Actions](https://github.com/Skyce38/CLOZEE/actions/runs/41119656814) · [ข้อกำหนดรายวิชา](docs/course-requirements.md) · [รายงานรอบ 2 (PDF)](docs/CLOZEE-Final-Report-Round2.pdf)
+**ลิงก์สำคัญ:** [ซอร์สโค้ด CLOZEE](https://github.com/Skyce38/CLOZEE) · [ผลทดสอบ MySQL บน GitHub Actions](https://github.com/Skyce38/CLOZEE/actions/runs/42103903945) · [ข้อกำหนดรายวิชา](docs/course-requirements.md) · [รายงานรอบ 2 (PDF)](docs/CLOZEE-Final-Report-Round2.pdf)
 
 ![CLOZEE บน Angsila จากเบราว์เซอร์ใหม่](docs/evidence/angsila-catalog-desktop.png)
 
 > **รูปสินค้าในฐานข้อมูล:** ติดตั้งบน Angsila แล้ว 4 พฤศจิกายน 2569 ใช้ BLOB โดยไม่ต้องมี GD หรือโฟลเดอร์อัปโหลดที่ PHP เขียนได้ ทดสอบ live browser 13/13 และ HTTP/security 17/17 พร้อมสำรองข้อมูล ตรวจไฟล์ 47/47 และเก็บ Lab เดิม ดู [ผลติดตั้งและข้อจำกัด](docs/database-product-photos.md)
+
+> **รุ่นล่าสุด:** ติดตั้งบน Angsila แล้ว 6 พฤศจิกายน 2569 เพิ่มหน้าเว็บภาษาไทย, แชทลอย, แจ้งเตือนชัดเจน และการลบร้าน HTTP/security ผ่าน 17/17 และทดสอบด้วยตนเองบนเว็บจริงผ่าน
 
 ## ฟังก์ชันหลักของระบบ
 

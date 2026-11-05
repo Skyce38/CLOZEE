@@ -1,6 +1,6 @@
 # CLOZEE Final Submission Audit — 10 November 2026
 
-Audit date: 5 November 2026 (documents only; live site last verified 4 November 2026). **Technical core deployed and verified; report cover complete; submission details remain unconfirmed.** Angsila was tested directly via university VPN; off-VPN reachability and backup restoration remain unverified. Confirm final submission/reservation details before declaring the complete submission ready.
+Audit date: 6 November 2026 (live site verified the same day). **Technical core deployed and verified; report cover complete; submission details remain unconfirmed.** Angsila was tested directly via university VPN; off-VPN reachability and backup restoration remain unverified. Confirm final submission/reservation details before declaring the complete submission ready.
 
 ## Lecturer requirements (Database-authen.pdf pp.33–36)
 
@@ -27,8 +27,8 @@ Registration and detailed JOIN evidence below are CLOZEE kit requirements; do no
 - [x] Stale seller stock update rejected; historical snapshots preserved after edits.
 - [x] Seller transitions/status history; buyer sees updates; cancellation returns stock once.
 - [x] Another user cannot edit/delete product, read order or change status.
-- [x] Participant-only floating chat without manual refresh, seller reply, newest/oldest sorting, unrelated-user denial and escaped HTML text (local; pending Angsila deployment).
-- [x] Thai interface, Second hand label, clear success notifications and owner shop deletion without order history (local; pending Angsila deployment).
+- [x] Participant-only floating chat without manual refresh, seller reply, newest/oldest sorting, unrelated-user denial and escaped HTML text (local and Angsila).
+- [x] Thai interface, Second hand label, clear success notifications and owner shop deletion without order history (local and Angsila).
 - [x] Desktop/mobile screenshots and asset/console/page health checks.
 - [x] Seller upload of up to 4 product images — deployed on Angsila, see the product-photo update below.
 - [ ] Sales analytics — deferred optional P1, not claimed complete.
@@ -44,7 +44,7 @@ Registration and detailed JOIN evidence below are CLOZEE kit requirements; do no
 
 ## Actual results and remaining proof
 
-Latest local suite (6 November, not yet deployed): 62 domain/DB/concurrency/install-guard tests per table namespace, plus 23 image-validation, 26 browser and 23 photo browser tests. The earlier release passed 198 CI tests per runtime. Angsila passed 30 core functional checkpoints (30 October), 13 photo browser checks and 17 anonymous HTTP/security checks (4 November); a fresh browser independently captured desktop/mobile views. Physical DELETE and concurrent races were tested in isolated local/MySQL CI databases, not repeated on live. Exact times, scope and cases are in test-results.md and evidence JSON. Final report PDF is CLOZEE-Final-Report-Round2.pdf, with HTML/Markdown source. Screenshots show actual PHP pages; design/concept.png is not test proof.
+Latest local suite (6 November, deployed): 62 domain/DB/concurrency/install-guard tests per table namespace, plus 23 image-validation, 26 browser and 23 photo browser tests. The earlier release passed 198 CI tests per runtime. Angsila passed 30 core functional checkpoints (30 October), 13 photo browser checks and 17 anonymous HTTP/security checks (4 November); a fresh browser independently captured desktop/mobile views. Physical DELETE and concurrent races were tested in isolated local/MySQL CI databases, not repeated on live. Exact times, scope and cases are in test-results.md and evidence JSON. Final report PDF is CLOZEE-Final-Report-Round2.pdf, with HTML/Markdown source. Screenshots show actual PHP pages; design/concept.png is not test proof.
 
 Before final submission: confirm the final submission/reservation details and recheck the live URL via VPN. Do not export private configuration/passwords or claim unperformed penetration/load/restore/off-VPN tests. Actual live checks, rather than localhost or CI, support the checked Angsila gate above.
 
