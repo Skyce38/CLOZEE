@@ -7,9 +7,9 @@
 
 **เว็บไซต์:** [เปิด CLOZEE บน Angsila](https://angsila.informatics.buu.ac.th/~68160207/clozee/) — ทดสอบผ่าน VPN มหาวิทยาลัยแล้ว สมัครบัญชีใหม่เพื่อทดลองใช้งานได้ สินค้าและบัญชีที่มีชื่อ QA เป็นข้อมูลทดสอบสมมติ
 
-ฐาน Angsila ใช้ `table_prefix = clozee_` แยกจากตาราง Lab เดิม ดู [ผลทดสอบฐานข้อมูลร่วม](docs/shared-database-tests.md) และ [ผลตรวจการติดตั้ง](docs/deployment-verification.md) Local ผ่าน 51 ข้อด้านระบบ/ฐานข้อมูลและ 24 ข้อผ่านเบราว์เซอร์ทั้งสอง namespace; Angsila ผ่าน 30 functional checkpoints และ 17 anonymous HTTP/security checks พร้อมภาพ desktop/mobile จากเบราว์เซอร์ใหม่ ขอบเขต local/CI/live แยกกันชัดเจนในรายงาน
+ฐาน Angsila ใช้ `table_prefix = clozee_` แยกจากตาราง Lab เดิม ดู [ผลทดสอบฐานข้อมูลร่วม](docs/shared-database-tests.md) และ [ผลตรวจการติดตั้ง](docs/deployment-verification.md) รุ่นปัจจุบันผ่าน CI 198 ข้อต่อ runtime; Angsila ผ่าน 30 functional checkpoints ระบบหลัก, 13 ข้อรูปสินค้า และ 17 anonymous HTTP/security checks พร้อมภาพ desktop/mobile จากเบราว์เซอร์ใหม่ ขอบเขต local/CI/live แยกกันชัดเจนในรายงาน
 
-**ลิงก์สำคัญ:** [ซอร์สโค้ด CLOZEE](https://github.com/Skyce38/CLOZEE) · [ผลทดสอบ MySQL บน GitHub Actions](https://github.com/Skyce38/CLOZEE/actions/runs/41109199837) · [ข้อกำหนดรายวิชา](docs/course-requirements.md) · [รายงานรอบ 2 (PDF)](docs/CLOZEE-Final-Report-Round2.pdf)
+**ลิงก์สำคัญ:** [ซอร์สโค้ด CLOZEE](https://github.com/Skyce38/CLOZEE) · [ผลทดสอบ MySQL บน GitHub Actions](https://github.com/Skyce38/CLOZEE/actions/runs/41119656814) · [ข้อกำหนดรายวิชา](docs/course-requirements.md) · [รายงานรอบ 2 (PDF)](docs/CLOZEE-Final-Report-Round2.pdf)
 
 ![CLOZEE บน Angsila จากเบราว์เซอร์ใหม่](docs/evidence/angsila-catalog-desktop.png)
 
@@ -125,7 +125,7 @@ CLOZEE_TEST_DB=clozee_test php tests/run.php
 
 ชุดทดสอบนี้นำเข้า Schema เฉพาะเมื่อฐานข้อมูลทดสอบยังไม่มีตาราง และตรวจสอบการทำงานจริงของ PDO, Foreign Key, Transaction รวมถึงการจำลองคำขอพร้อมกันจาก PHP 2 Process เพื่อทดสอบสต็อกและการป้องกันคำสั่งซื้อซ้ำ
 
-**ผลทดสอบ Local ที่บันทึกไว้: 51 ผ่าน / 0 ไม่ผ่านต่อ namespace**
+**ผลทดสอบ Local รุ่นปัจจุบันที่บันทึกไว้: 57 ผ่าน / 0 ไม่ผ่านต่อ namespace**
 
 ### ทดสอบผ่านเบราว์เซอร์
 
@@ -140,9 +140,9 @@ npm run test:browser
 
 ตัวแปร `CLOZEE_URL` มีค่าเริ่มต้นเป็น `http://127.0.0.1:8088` และชุดทดสอบปฏิเสธ URL ที่ไม่ใช่ Loopback
 
-**ผลทดสอบผ่านเบราว์เซอร์ที่บันทึกไว้: 24 ผ่าน / 0 ไม่ผ่าน** โดยทดสอบหน้าจอ 1536×1024, 1440×1000 และ 390×844
+**ผลทดสอบผ่านเบราว์เซอร์ที่บันทึกไว้: ระบบเดิม 24 ผ่าน / 0 ไม่ผ่าน และรูปสินค้า 23 ผ่าน / 0 ไม่ผ่าน** โดยชุดระบบเดิมทดสอบหน้าจอ 1536×1024, 1440×1000 และ 390×844
 
-**ผลทดสอบระบบหลักรอบเดิม: 75 รายการผ่านต่อ namespace** (51 ด้านระบบ/ฐานข้อมูล + 24 ผ่านเบราว์เซอร์) ดู [ผลทดสอบและข้อจำกัด](docs/test-results.md) Angsila แยกเป็น 30 functional checkpoints และ 17 anonymous HTTP/security checks ไม่รวมการทดสอบ race หรือ physical DELETE บนระบบจริง
+ดู [ผลทดสอบและข้อจำกัด](docs/test-results.md) Angsila แยกเป็น 30 functional checkpoints, 13 ข้อรูปสินค้า และ 17 anonymous HTTP/security checks ไม่รวมการทดสอบ race หรือ physical DELETE บนระบบจริง
 
 GitHub Actions ใช้ PHP 8.3, MySQL 8.4 และ Chromium บน CI ที่แยกจากฐานข้อมูลจริง การตั้งค่า Root แบบไม่มีรหัสผ่านที่ใช้ใน CI จำกัดอยู่เฉพาะฐานข้อมูลชั่วคราวสำหรับทดสอบเท่านั้น ไม่ใช่ Production ควรตรวจเวอร์ชันและ Commit ของ Workflow รวมถึงสถานะการทดสอบล่าสุดก่อนส่งงาน หลักฐานที่อัปโหลดไม่รวมไฟล์ตั้งค่าส่วนตัวและรหัสผ่าน Demo
 
@@ -155,16 +155,13 @@ GitHub Actions ใช้ PHP 8.3, MySQL 8.4 และ Chromium บน CI ที�
 - [ตัวอย่าง SQL JOIN ที่รันได้จริง](database/demo-joins.sql) · [ผลลัพธ์ SQL JOIN](docs/sql-join-evidence.md)
 - [คู่มือ Deploy บน Angsila](docs/deployment.md) · [บันทึกการตรวจสอบ Deployment](docs/deployment-verification.md) · [เช็กลิสต์ก่อนส่งงาน](docs/final-submission-checklist.md)
 
-หากต้องสร้างเอกสารใหม่หลังทดสอบบนฐานข้อมูล Local ที่มีแต่ข้อมูลสมมติ ให้ใช้คำสั่ง:
+รายงานรุ่นปัจจุบันแก้ที่ `docs/final-report.md` โดยตรง แล้วสร้าง HTML และ PDF ใหม่ด้วยคำสั่ง:
 
 ```sh
-php scripts/export-metadata.php
-python scripts/build-docs.py
-node scripts/render-diagrams.cjs
 node scripts/print-report.cjs
 ```
 
-รายงานจะอ้างอิง Schema, JSON ผลทดสอบ และภาพหน้าจอจริง **ห้ามสร้างรายงานด้วยผลลัพธ์ที่คาดเดา** หน้าปกยังมีช่องข้อมูลที่ต้องกรอก ได้แก่ ชื่อ-นามสกุลผู้จัดทำ สมาชิกอื่น (ถ้ามี) และชื่ออาจารย์ผู้สอน ส่วนรหัสนิสิต 68160207 และข้อมูลรายวิชาเป็นข้อมูลที่ผู้จัดทำให้ไว้ เอกสารวางแผนฉบับเก่าเป็นประวัติแนวทางการออกแบบ ไม่ใช่หลักฐานสถานะความพร้อมส่งล่าสุด
+**อย่ารัน `scripts/build-docs.py`** เพราะยังเป็นแม่แบบรุ่น 10 ตาราง และจะเขียนทับรายงานกับ Data Dictionary ปัจจุบัน **ห้ามใส่ผลลัพธ์ที่คาดเดาลงในรายงาน** หน้าปกยังมีช่องข้อมูลที่ต้องกรอก ได้แก่ ชื่อ-นามสกุลผู้จัดทำ สมาชิกอื่น (ถ้ามี) และชื่ออาจารย์ผู้สอน ส่วนรหัสนิสิต 68160207 และข้อมูลรายวิชาเป็นข้อมูลที่ผู้จัดทำให้ไว้ เอกสารวางแผนฉบับเก่าเป็นประวัติแนวทางการออกแบบ ไม่ใช่หลักฐานสถานะความพร้อมส่งล่าสุด
 
 ## การนำเว็บไซต์ขึ้น Angsila และความเป็นส่วนตัว
 

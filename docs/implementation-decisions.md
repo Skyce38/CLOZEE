@@ -2,8 +2,8 @@
 
 These resolve draft v0.3 ambiguities; they are implementation choices, not additional lecturer requirements.
 
-1. PHP 8.1+ and native PDO MySQL prepared statements, without a server build framework. Local verification: PHP 8.5.12 / MariaDB 11.4.9. MySQL 8.0.16+ is the target for enforced CHECK constraints; Angsila compatibility is still unverified.
-2. Preserve the original schema in `reference/schema-v0.3.sql`. Reviewed schema adds variant version/active flags, checkout idempotency key and request hash, quantity/money checks, a status history table and transient login throttling table: 10 tables total.
+1. PHP 8.1+ and native PDO MySQL prepared statements, without a server build framework. Local verification: PHP 8.5.12 / MariaDB 11.4.9. MySQL 8.0.16+ is the target for enforced CHECK constraints; Angsila was later verified on PHP 8.4.27 / MySQL 8.0.46.
+2. Preserve the original schema in `reference/schema-v0.3.sql`. Reviewed schema adds variant version/active flags, checkout idempotency key and request hash, quantity/money checks, a status history table and transient login throttling table: 10 tables total. The later product photo update added `product_images`, making 11.
 3. One shop per user, one shop per checkout, up to 20 variant lines, 1–99 units per line. A shop owner cannot buy from their own shop. A product supports up to 12 stable size labels; existing labels are not renamed or removed, but may be deactivated. Creating a replacement size is explicit.
 4. Cart is server-side session state. Price and delivery fee are taken from server-side data at final checkout, never from posted totals. Monetary calculations use integer satang. Per-unit prices and order totals are capped at 9,999,999.99 THB at the application layer.
 5. Local delivery is a recorded fulfillment choice, with a configurable 30.00 THB fee per order. Pickup is free. No geographical validation, payment processing, driver allocation or shipping API. Buyers include only the contact/location details they choose to share with the shop.

@@ -2,6 +2,23 @@
 
 ข้อมูลจากการรันจริง ไม่ใช่รายการคาดหวัง
 
+## ผลรุ่นปัจจุบัน (รวมรูปสินค้า)
+
+| Suite | Environment | Actual result |
+| --- | --- | --- |
+| Domain / real DB / concurrency | Local, ต่อ namespace | 57 PASS, 0 FAIL |
+| Image validation | Local, เปิด GD และปิด GD/EXIF | 23 PASS, 0 FAIL ต่อแบบ |
+| Browser regression / browser photos | Local, Chrome ผ่าน Playwright | 24 และ 23 PASS, 0 FAIL |
+| Schema upgrade fixture | Local | 14 PASS, 0 FAIL |
+| GitHub CI [41119656814](https://github.com/Skyce38/CLOZEE/actions/runs/41119656814) | PHP 8.3.36 + MySQL 8.4.13, commit `fc45793` | 198 PASS, 0 FAIL ต่อ runtime |
+| Angsila live photo flows / HTTP-security | PHP 8.4.27 + MySQL 8.0.46 ผ่าน VPN, 4 พ.ย. 2569 | 13 และ 17 PASS, 0 FAIL |
+
+รายละเอียดอยู่ใน [database-product-photos.md](database-product-photos.md) และ `evidence/database-product-photos/`; commit `13a5e73` บน main ผ่าน CI [41857503966](https://github.com/Skyce38/CLOZEE/actions/runs/41857503966)
+
+## ผลรอบระบบหลัก (30 ตุลาคม 2569)
+
+ตารางและรายการทดสอบด้านล่างเป็นบันทึกของรอบนี้ ก่อนเพิ่มรูปสินค้า
+
 | Suite | Environment | Actual result | Executed (UTC) |
 | --- | --- | --- | --- |
 | Domain / real DB / multiprocess concurrency | PHP 8.5.12, 11.4.9-MariaDB | 51 PASS, 0 FAIL | 2026-10-30T13:34:51+00:00 |
@@ -150,4 +167,4 @@ Independent fresh-browser desktop/mobile screenshots: evidence/angsila-catalog-d
 
 ## Remaining verification
 
-Angsila mapping, live core flows, HTTPS Secure/HttpOnly/SameSite cookies, blocked private URLs and fresh-browser desktop/mobile rendering were tested. Off-VPN access, actual mobile hardware, penetration/load testing and restoration from backup were not verified. App has no customer image upload or real payment/delivery integration. See deployment-verification.md and manual-tests.md.
+Angsila mapping, live core flows, HTTPS Secure/HttpOnly/SameSite cookies, blocked private URLs and fresh-browser desktop/mobile rendering were tested. Off-VPN access, actual mobile hardware, penetration/load testing and restoration from backup were not verified. App has no real payment/delivery integration. See deployment-verification.md and manual-tests.md.

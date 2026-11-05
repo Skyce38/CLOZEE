@@ -8,20 +8,19 @@
 รายวิชา 89022167 Database Management  
 มหาวิทยาลัยบูรพา คณะวิทยาการสารสนเทศ  
 รหัสนิสิต: **68160207**  
-ผู้จัดทำ: **[ยังไม่ได้รับชื่อ–นามสกุล]**  
-สมาชิกเพิ่มเติม: **[ยังไม่ได้รับข้อมูลสมาชิกอื่น หรือการยืนยันว่าทำเดี่ยว]**  
-อาจารย์ผู้สอน: **[ยังไม่ได้รับชื่ออาจารย์]**  
-กำหนดส่ง: **10 พฤศจิกายน 2569**  
-จัดทำหลักฐานการพัฒนา: 30 ตุลาคม 2569<br>
-ปรับปรุงรายงานและชุดส่งงาน: 4 พฤศจิกายน 2569
+ผู้จัดทำ: **[กรอกชื่อ–นามสกุล]**  
+สมาชิกเพิ่มเติม: **[กรอกชื่อสมาชิก หรือลบบรรทัดนี้หากทำเดี่ยว]**  
+อาจารย์ผู้สอน: **[กรอกชื่ออาจารย์]**  
+กำหนดส่ง: 10 พฤศจิกายน 2569
 
-**สถานะ: ระบบ Local, MySQL CI และระบบหลักบน Angsila ผ่านการตรวจแล้ว; ยังต้องเติมข้อมูลหน้าปกและยืนยันรายละเอียดการส่งก่อนส่งฉบับสมบูรณ์ การเข้าถึงนอก VPN ยังไม่ยืนยัน**
+เว็บไซต์: https://angsila.informatics.buu.ac.th/~68160207/clozee/ (ต้องเชื่อมต่อ VPN มหาวิทยาลัย)  
+GitHub: https://github.com/Skyce38/CLOZEE
 
 <div class="page-break"></div>
 
 ## 1 บทนำและ Problem Statement
 
-นิสิต BUU และคนในบางแสนอาจซื้อขายเสื้อผ้าใหม่/มือสองผ่านหลายช่องทาง ทำให้ข้อมูลไซซ์ สภาพ สต็อก และจุดนัดรับกระจัดกระจาย CLOZEE เสนอพื้นที่เดียวสำหรับค้นหาเสื้อผ้าท้องถิ่น เปิดร้าน จัดการตัวเลือกไซซ์ สั่งซื้อ และบันทึกวิธีรับสินค้า แนวปัญหานี้เป็นสมมติฐานของโครงการจาก project-spec มิใช่ผลสำรวจหรือข้อมูลสัมภาษณ์ที่ได้ทำจริง
+นิสิต BUU และคนในบางแสนอาจซื้อขายเสื้อผ้าใหม่/มือสองผ่านหลายช่องทาง ทำให้ข้อมูลไซซ์ สภาพ สต็อก และจุดนัดรับกระจัดกระจาย CLOZEE เสนอพื้นที่เดียวสำหรับค้นหาเสื้อผ้าท้องถิ่น เปิดร้าน จัดการตัวเลือกไซซ์ สั่งซื้อ และบันทึกวิธีรับสินค้า แนวปัญหานี้เป็นสมมติฐานของโครงการ ยังไม่ได้สำรวจหรือสัมภาษณ์กลุ่มเป้าหมายจริง
 
 วัตถุประสงค์คือประยุกต์ PHP และฐานข้อมูลเชิงสัมพันธ์ให้ผู้ซื้อเลือกเสื้อผ้าและเห็นสถานะ ส่วนผู้ขายควบคุมข้อมูลและสต็อกของร้านตนเอง พร้อมแสดงหลักฐาน CRUD, Authentication, Authorization, JOIN และ transaction ตามเนื้อหารายวิชา
 
@@ -29,7 +28,7 @@
 
 ## 2 ขอบเขตและ Requirements
 
-P0 ประกอบด้วยบัญชีผู้ใช้ ร้านค้า สินค้าใหม่/มือสอง ไซซ์ ราคา สต็อก ค้นหา/กรอง ตะกร้าร้านเดียว คำสั่งซื้อ นัดรับ/จัดส่ง ประวัติและการเปลี่ยนสถานะ P1 ที่ทำเพิ่มหลังทดสอบระบบหลักคือแชทข้อความ รูปสินค้าสูงสุด 4 รูปติดตั้งบน Angsila แล้ว ส่วนรายงานยอดขายยังไม่ได้ทำ
+P0 ประกอบด้วยบัญชีผู้ใช้ ร้านค้า สินค้าใหม่/มือสอง ไซซ์ ราคา สต็อก ค้นหา/กรอง ตะกร้าร้านเดียว คำสั่งซื้อ นัดรับ/จัดส่ง ประวัติและการเปลี่ยนสถานะ P1 ที่ทำเพิ่มหลังทดสอบระบบหลักคือแชทข้อความและรูปสินค้าสูงสุด 4 รูปต่อสินค้า ส่วนรายงานยอดขายยังไม่ได้ทำ
 
 การจัดส่งเป็นการบันทึกตัวเลือกและรายละเอียดเพื่อให้ร้านดำเนินการโดยตรง ค่าจัดส่งตัวอย่างตั้งที่ server 30 บาทต่อ order; นัดรับฟรี ไม่มีระบบรับเงินออนไลน์ rider dispatch, GPS, shipping API, refund/dispute, rating หรือ checkout หลายร้าน
 
@@ -75,13 +74,13 @@ ER แสดง cardinality ที่ schema อนุญาต (0..N) แต่
 
 ![Architecture](diagrams/architecture.svg)
 
-Browser ได้ HTML/CSS/vanilla JS จาก PHP หลัง Apache ประมวลผล route ใน public/ ทุก mutation ผ่าน session/CSRF และ service ที่ตรวจ ownership แล้วใช้ PDO native prepared statements ติดต่อ MySQL/MariaDB config และ storage อยู่ภายนอก webroot ไม่มี password บน browser หรือ repo
+Browser ได้ HTML/CSS/vanilla JS จาก PHP หลัง Apache ประมวลผล route ใน public/ ทุก mutation ผ่าน session/CSRF และ service ที่ตรวจ ownership แล้วใช้ PDO native prepared statements ติดต่อ MySQL/MariaDB config และ storage อยู่ภายนอก webroot ไม่มี password บน browser หรือ repo สไลด์รายวิชาสอนด้วย mysqli ส่วนโครงการนี้ใช้ PDO แต่หลักการ prepared statement เหมือนกัน
 
 public/ แยก route สำหรับ catalog/auth/shop/product/cart/checkout/orders/messages และ seller ส่วน app/ มี bootstrap, validation, auth, services และ templates; database/ เก็บ schema/seed/JOIN; scripts/ ใช้ CLI ติดตั้งและตรวจ; docs/ เก็บรายงานและหลักฐาน Node/Python ใช้เฉพาะ test/document tooling ไม่ต้องใช้ขณะเสิร์ฟ PHP
 
 ## 6 การทำงานจริงและ UI
 
-หน้าร้านใช้สีขาว/เขียว สไตล์ editorial ภาพสินค้าเป็นภาพสาธิตสร้างใหม่ มิใช่สินค้า/ลูกค้าจริง รูปด้านล่างเป็น screenshot จากเว็บ PHP ที่รันจริง แยกจาก design concept ซึ่งไม่ใช้เป็นหลักฐานทดสอบ
+หน้าร้านใช้สีขาว/เขียว สไตล์ editorial ภาพสินค้าเป็นภาพสาธิต มิใช่สินค้า/ลูกค้าจริง รูปด้านล่างเป็น screenshot จากเว็บ PHP ที่รันจริง
 
 ### 6.1 หน้าร้านและมือถือ
 
@@ -111,7 +110,7 @@ Create/Read/Update persist ลง DB จริง ส่วน DELETE สิน�
 
 เริ่มจากหน้าสินค้า ใช้ thread เดิมของ buyer/product คู่เดิม ส่งได้เฉพาะ buyer หรือเจ้าของร้าน แสดงล่าสุด 100 ข้อความและ refresh ด้วยตนเอง ไม่มีการอ้างว่า realtime
 
-### 6.5 รูปสินค้าและรายละเอียดเสื้อผ้า - Angsila 4 พฤศจิกายน 2569
+### 6.5 รูปสินค้าและรายละเอียดเสื้อผ้า
 
 ผู้ขายอัปโหลด JPG/PNG/WebP ได้สูงสุด 4 รูป เลือกภาพหลักและลบภาพได้ Browser ย่อและแปลงเป็น PNG ไม่เกิน 1600 พิกเซล/1.5 MiB แล้ว PHP ตรวจ PNG signature/chunk CRC/ขนาดและข้อมูลก่อนบันทึก MEDIUMBLOB ใน transaction เดียวกับสินค้า เพิ่มแบรนด์ รอบอก ความยาว และตำหนิที่ไม่บังคับกรอก
 
@@ -123,11 +122,11 @@ Angsila ไม่มี GD และ PHP เขียน private storage ไม�
 
 ผล live browser ผ่าน 13/13 และ HTTP/security 17/17 บน PHP 8.4.27 / MySQL 8.0.46 ผ่าน VPN: อัปโหลดและแสดงรูป, thumbnail, ปก/ลบภาพ, invalid PNG/CSRF, สิทธิ์ผู้ขาย, pickup checkout และ stock 5 → 4, mobile overflow, ปิดขาย/owner-only image, logout/login และ runtime errors ไม่มี
 
-ตัวทดสอบรอบแรกแก้ locator ชื่อสินค้า การนับ gallery รูปเดียว และสร้างร้านให้บัญชีที่สองก่อนตรวจ ownership แล้วรันครบผ่าน หลักฐาน JSON แยกใน evidence/database-product-photos/live-results.json ส่วน Local/CI ของรูปสินค้าอยู่ใน database-product-photos.md: CI PHP 8.3.36/MySQL 8.4.13 ผ่าน 198 ข้อต่อ runtime ทั้งเปิด GD และปิด GD/EXIF
+รอบแรกต้องแก้สคริปต์ทดสอบสามจุด ซึ่งไม่ใช่โค้ดของเว็บ แล้วรันใหม่จนผ่านครบ หลักฐานอยู่ใน evidence/database-product-photos/live-results.json และผล Local/CI สรุปไว้ในบทที่ 10
 
-สำรอง 10 ตารางและไฟล์เดิม 52 ไฟล์ก่อน migration ตรวจค่าแถวเดิมและ Lab ไม่เปลี่ยน ตรวจ hash รุ่นใหม่ 47/47 ไฟล์ ย้ายตัวติดตั้งออกนอก webroot แล้วตรวจ 404 ปิด QA ทั้ง 5 ร้าน/3 สินค้าหลังทดสอบ เก็บบัญชีและ order สมมติไว้เป็นประวัติ ไม่เกิดการจัดส่งจริง
+ก่อน migration สำรอง 10 ตารางและไฟล์เดิม 52 ไฟล์ หลังติดตั้งตรวจแล้วว่าค่าแถวเดิมและตาราง Lab ไม่เปลี่ยน hash รุ่นใหม่ตรง 47/47 ไฟล์ และตัวติดตั้งถูกย้ายออกนอก webroot (URL เดิมตอบ 404) ร้าน QA 5 ร้านและสินค้า QA 3 รายการถูกปิดขายหลังทดสอบ ส่วนบัญชีและ order สมมติเก็บไว้เป็นประวัติ ไม่เกิดการจัดส่งจริง
 
-ข้อจำกัด: ยังไม่ทราบ quota DB, ยังไม่ซ้อม restore, ไม่ทดสอบนอก VPN, Safari/Firefox หรือมือถือจริง รูปเต็ม 4 รูปอาจใช้ DB สูงสุดประมาณ 6 MiB ต่อสินค้า โครงสร้างใหม่ทดสอบในเครื่อง/CI ก่อนติดตั้ง; ตัวเลขผลระบบหลักในบทต่อไปเป็นหลักฐานรอบเดิม ไม่ใช่การรันซ้ำทั้งหมดในวันที่ 4 พฤศจิกายน
+ข้อจำกัด: ยังไม่ทราบ quota DB และรูปครบ 4 รูปอาจใช้พื้นที่สูงสุดประมาณ 6 MiB ต่อสินค้า ข้อจำกัดอื่นสรุปไว้ในบทที่ 12
 
 ## 7 CRUD และ Data Integrity
 
@@ -141,7 +140,7 @@ Seller เปลี่ยนสถานะตามวิธีรับสิ�
 
 ## 8 SQL JOIN และผลจริง
 
-ตัวอย่าง SQL อยู่ใน database/demo-joins.sql และผลรันอยู่ sql-join-evidence.md / evidence/join-results.json INNER JOIN เชื่อมผู้ซื้อ–order–ร้าน–snapshot items ส่วน LEFT JOIN คงร้านที่ไม่มี order โดยใช้ COUNT(o.order_id) ไม่ใช่ COUNT(*)
+ตัวอย่าง SQL อยู่ใน database/demo-joins.sql และผลรันอยู่ sql-join-evidence.md / evidence/join-results.json INNER JOIN เชื่อมผู้ซื้อ–order–ร้าน–snapshot items ส่วน LEFT JOIN คงร้านที่ไม่มี order โดยใช้ COUNT(o.order_id) ไม่ใช่ COUNT(*) ตารางด้านล่างเป็นผลจากฐานข้อมูลทดสอบที่มีเฉพาะข้อมูลสมมติ
 
 | Order | Buyer | Shop | Item | Qty |
 | --- | --- | --- | --- | --- |
@@ -166,37 +165,48 @@ JOIN หนึ่งต่อหลายเพิ่มจำนวนแถว
 
 ทุก form เปลี่ยนข้อมูลรวม logout ใช้ POST+CSRF ทุกคำสั่ง SQL รับค่าผ่าน prepared statements Escape output ด้วย htmlspecialchars CSP จำกัด source ของ asset/form และห้าม framing DB errors ไม่เผยต่อผู้ใช้ ผู้ใช้ A ถูกตรวจทั้ง URL และ POST ว่าแก้ข้อมูล B ไม่ได้
 
-จำกัด login ผิดจาก bucket account+IP และ IP ในช่วง 15 นาที เก็บ hash ไม่เก็บรหัสผ่าน/IP ดิบ private config และ demo passwords ถูก gitignore และอยู่นอก public การทดสอบใช้บัญชี example.test ที่สร้างขึ้นเท่านั้น ไม่อ่านหรือใช้ชีต User/Password
+จำกัด login ผิดจาก bucket account+IP และ IP ในช่วง 15 นาที เก็บ hash ไม่เก็บรหัสผ่าน/IP ดิบ private config และ demo passwords ถูก gitignore และอยู่นอก public การทดสอบใช้เฉพาะบัญชีสมมติ ไม่ใช้บัญชีจริงของบุคคลอื่นหรือข้อมูลบัญชีจาก Google Sheets
 
 ## 10 Testing และผลที่ได้
 
-Local: **51 / 51 domain/database/concurrency tests ผ่าน**, **24 / 24 browser tests ผ่าน** Environment PHP 8.5.12, 11.4.9-MariaDB, installed Chrome via Playwright ที่ desktop และ 390×844
+| ชุดทดสอบ | สภาพแวดล้อม | ผล |
+| --- | --- | --- |
+| Domain/DB/concurrency รุ่นปัจจุบัน | Local: PHP 8.5.12, MariaDB 11.4.9 | 57/57 ในแต่ละ namespace (หลักและ `clozee_`) |
+| ตรวจไฟล์รูปภาพ | Local: เปิด GD และปิด GD/EXIF | 23/23 ทั้งสองแบบ |
+| Browser ระบบเดิม | Local: Chrome ผ่าน Playwright, ปิด GD/EXIF | 24/24 |
+| Browser รูปสินค้า | Local: เปิด GD และปิด GD/EXIF | 23/23 ทั้งสองแบบ |
+| อัปเกรด schema จาก 10 ตารางที่มีข้อมูลอยู่แล้ว | Local | 14/14 |
+| รวมทุกชุดบน CI | PHP 8.3.36, MySQL 8.4.13, Chromium | 198/198 ต่อ runtime (เปิด GD และปิด GD/EXIF) |
+| Live: รูปสินค้า | Angsila ผ่าน VPN (PHP 8.4.27, MySQL 8.0.46) | 13/13 |
+| Live: HTTP/security รุ่นปัจจุบัน | Angsila ผ่าน VPN | 17/17 |
+| Live: ฟังก์ชันระบบหลัก (รอบ 30 ต.ค. 2569) | Angsila ผ่าน VPN | 30/30 |
 
-CI: [GitHub Actions run 41109199837](https://github.com/Skyce38/CLOZEE/actions/runs/41109199837) ยืนยัน PHP 8.3.36 + MySQL 8.4.13 และ Chromium ขั้น syntax/schema/seed, domain/concurrency และ browser ผ่านสำหรับ commit `dd60169` หลักฐานแยก revision ชัดเจน ไม่ใช้ CI เก่าอ้างว่า commit ใหม่ผ่านอัตโนมัติ
+CI ของโค้ดรุ่นที่ติดตั้ง: [run 41119656814](https://github.com/Skyce38/CLOZEE/actions/runs/41119656814) (commit `fc45793`) และ CI ของ commit ที่รวมเข้า main: [run 41857503966](https://github.com/Skyce38/CLOZEE/actions/runs/41857503966) (`13a5e73`) ทดสอบหน้าจอ desktop และ 390×844
 
 Concurrency test ใช้สอง PHP processes เชื่อม DB อิสระแย่งซื้อ item ชิ้นสุดท้าย ผลสำเร็จเพียงหนึ่งคำขอ stock เหลือศูนย์ ส่วนสองคำขอ key เดียวได้ order เดียว stock ลดครั้งเดียว ทดสอบ rollback, stale edit, cancel คืน stock, snapshot, ownership, CSRF, SQL injection และ XSS chat เพิ่มด้วย
 
-Angsila: ตรวจผ่าน 30 functional checkpoints และ 17 anonymous HTTP/security checks พร้อม fresh-browser desktop/mobile capture ระบบนัดรับ Order #1 สำเร็จ ยกเลิกจัดส่ง Order #2 คืนสต็อก และจัดส่ง Order #3 สำเร็จ ทดสอบสิทธิ์ข้ามบัญชี แชท และ snapshot ด้วยข้อมูล QA สมมติ รายละเอียดใน test-results.md และ JSON evidence/ การทดสอบนี้ไม่ใช่ penetration/load test; concurrency และ physical DELETE ผ่านใน isolated DB/CI แต่ไม่ได้ทำซ้ำบน live
+ผลบน Angsila: นัดรับ Order #1 สำเร็จ ยกเลิกจัดส่ง Order #2 คืนสต็อก และจัดส่ง Order #3 สำเร็จ ทดสอบสิทธิ์ข้ามบัญชี แชท และ snapshot ด้วยข้อมูล QA สมมติ รายละเอียดใน test-results.md และ JSON evidence/ การทดสอบนี้ไม่ใช่ penetration/load test; concurrency และ physical DELETE ผ่านใน isolated DB/CI แต่ไม่ได้ทำซ้ำบน live
 
-## 11 Deployment และสถานะส่งงาน
+## 11 Deployment และ URL
 
 Repository: [Skyce38/CLOZEE](https://github.com/Skyce38/CLOZEE)  
-Local URL: http://127.0.0.1:8088 (เฉพาะเครื่องพัฒนา ไม่ใช่ URL ส่งงาน)  
-Angsila URL: **https://angsila.informatics.buu.ac.th/~68160207/clozee/**
+Angsila URL: **https://angsila.informatics.buu.ac.th/~68160207/clozee/** (ต้องเชื่อมต่อ VPN มหาวิทยาลัย)
 
-ผู้ใช้ยืนยันว่าต้องเปิด VPN มหาวิทยาลัย และล็อกอิน phpMyAdmin/FileZilla ด้วยตนเอง จากนั้นอนุมัติปลายทางและแผน SQL ก่อนเขียนจริง แยก public_html/clozee ออกจาก clozee-private นอกเว็บ ใช้ฐาน s68160207 โดยสร้างเฉพาะตาราง clozee_ เดิม 10 ตาราง และเพิ่ม product_images เป็นตารางที่ 11 เมื่อ 4 พฤศจิกายน เก็บตาราง Lab เดิมทั้งห้าไว้ครบ รหัสผ่านกรอกโดยผู้ใช้ในไฟล์ส่วนตัวที่ Git ไม่ติดตามและไม่อยู่ใน public_html ไม่อ่านหรือใช้รหัสผ่านจาก Google Sheets
+การติดตั้งทำผ่าน VPN มหาวิทยาลัยด้วย phpMyAdmin และ FileZilla โดยตรวจปลายทางและแผน SQL ก่อนเขียนจริง แยก public_html/clozee ออกจาก clozee-private นอกเว็บ ใช้ฐาน s68160207 โดยสร้างเฉพาะตาราง clozee_ เดิม 10 ตาราง และเพิ่ม product_images เป็นตารางที่ 11 เมื่อ 4 พฤศจิกายน 2569 เก็บตาราง Lab เดิมทั้งห้าไว้ครบ รหัสผ่านฐานข้อมูลอยู่ในไฟล์ส่วนตัวที่ Git ไม่ติดตามและไม่อยู่ใน public_html
 
 หลังอัปเดตรูปสินค้า ตรวจ schema จริงได้ 89 คอลัมน์, 15 Foreign Keys, 9 enforced CHECK; หน้าเว็บ PHP/PDO เชื่อมต่อและทำงานกับ MySQL 8.0.46 ได้จริง HTTP protection ผ่านและเว็บ Lab เดิมยังเปิดได้ ดู deployment-verification.md สำหรับหลักฐานและขอบเขตการตรวจ การเปิดด้วยเบราว์เซอร์ใหม่ผ่านในเครือข่าย/VPN เดียวกัน ไม่อ้างว่าทดสอบจากอินเทอร์เน็ตภายนอก VPN แล้ว
 
-![Angsila desktop — actual fresh anonymous browser](evidence/angsila-catalog-desktop.png)
+![Angsila desktop — เปิดจากเบราว์เซอร์ใหม่ที่ยังไม่ได้เข้าสู่ระบบ](evidence/angsila-catalog-desktop.png)
 
-![Angsila mobile — actual fresh anonymous browser](evidence/angsila-catalog-mobile.png)
+![Angsila mobile — เปิดจากเบราว์เซอร์ใหม่ที่ยังไม่ได้เข้าสู่ระบบ](evidence/angsila-catalog-mobile.png)
 
-## 12 ข้อจำกัดและงานที่ยังต้องทำ
+## 12 ข้อจำกัดของระบบ
 
-ต้องเติมข้อมูลหน้าปกที่ยังไม่ทราบและยืนยันช่องทางส่ง/slot นำเสนอ; ไม่ยืนยัน off-VPN reachability หรือ restore backup; รูปสินค้าเป็นชุดภาพสาธิต ไม่มี customer upload/multiple images; chat ไม่ realtime; order/thread/shop listing จำกัดล่าสุดไม่เกิน 100; ไม่มี analytics dashboard, payment, courier, GPS, refunds หรือ BUU SSO; pain point ยังเป็นสมมติฐาน ไม่อ้างการวิจัยจริง
-
-ก่อนส่งจริงต้องเติมชื่อผู้จัดทำ/สมาชิก/อาจารย์ ตรวจ URL ผ่าน VPN อีกครั้ง และยืนยันช่องทางส่ง/slot นำเสนอกับอาจารย์ เพราะสไลด์ที่ให้ไม่ได้กำหนดรายละเอียดเหล่านี้ ห้ามส่งไฟล์ config หรือรหัสผ่านใน ZIP/GitHub บัญชี ร้าน สินค้า และคำสั่งซื้อ QA เป็นข้อมูลสมมติ มิใช่การซื้อขายจริง
+- **การทดสอบ:** ยังไม่ได้ทดสอบการเข้าเว็บนอก VPN, Safari/Firefox, มือถือจริง, การ restore backup, penetration test และ load test ส่วน concurrency กับ physical DELETE ทดสอบเฉพาะบนฐานข้อมูลแยก ไม่ได้ทำซ้ำบนเว็บจริง
+- **ฟังก์ชันที่ไม่มี:** ไม่มี analytics dashboard, payment, courier, GPS, refund และ BUU SSO
+- **พฤติกรรมปัจจุบัน:** chat ไม่ realtime และรายการ order/thread/shop แสดงล่าสุดไม่เกิน 100 รายการ
+- **ฐานข้อมูล:** ยังไม่ทราบ quota ของฐานข้อมูลบน Angsila
+- **ข้อมูลและสมมติฐาน:** pain point ยังเป็นสมมติฐาน ไม่ได้มาจากการวิจัยจริง และบัญชี ร้าน สินค้า และคำสั่งซื้อที่ใช้ทดสอบเป็นข้อมูลสมมติ มิใช่การซื้อขายจริง
 
 ## 13 แหล่งอ้างอิง
 
