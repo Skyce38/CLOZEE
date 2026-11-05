@@ -11,7 +11,7 @@ graph UseCases {
   auth [label="UC-01 Register / Login"];
   browse [label="UC-02 Browse / Search / Filter"];
   detail [label="UC-03 Product details"];
-  shop [label="UC-04 Create / Edit shop"];
+  shop [label="UC-04 Create / Edit / Delete shop"];
   product [label="UC-05 Product / Variant CRUD"];
   checkout [label="UC-06 Single-shop checkout\nPickup or Delivery"];
   history [label="UC-07 Own order history"];

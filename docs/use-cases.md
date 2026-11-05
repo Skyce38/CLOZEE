@@ -12,7 +12,7 @@
 | UC-01 | Visitor | Register / Login | Unique email and valid password; establish session. |
 | UC-02 | Visitor / Buyer | Browse/filter new or secondhand products | List active products, optionally by size/category. |
 | UC-03 | Buyer | View product details | Show shop, condition, size, price, stock. |
-| UC-04 | Seller | Create/edit shop | Must be logged in; one shop per account. |
+| UC-04 | Seller | Create/edit/delete shop | Must be logged in; one shop per account; a shop with order history cannot be deleted. |
 | UC-05 | Seller | Add/edit/deactivate products | Must own shop; changes persist in DB. |
 | UC-06 | Buyer | Place order and select pickup/delivery | Authenticated; available stock; order created atomically. |
 | UC-07 | Buyer | View order and status | Orders are scoped to buyer. |
