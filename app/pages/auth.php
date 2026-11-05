@@ -16,7 +16,7 @@ if($_SERVER['REQUEST_METHOD']==='POST') {
     } catch(ValidationException $e) { $error=$e->getMessage();http_response_code(422); }
 }
 require ROOT.'/app/templates/header.php'; ?>
-<section class="auth-layout"><div class="auth-art"><img src="<?=h(url('assets/images/hero.jpg'))?>" alt="เสื้อผ้าตัวโปรดสำหรับทุกวัน"><div><h1>Your next<br>favorite find.</h1><p>เสื้อผ้าที่ใช่ ใกล้กว่าที่คิด</p></div></div><div class="auth-form"><a class="back-link" href="<?=h(url())?>">← กลับหน้าร้าน</a><h2><?=$register?'เริ่มต้นตู้เสื้อผ้าใหม่':'ยินดีต้อนรับกลับมา'?></h2><p class="muted"><?=$register?'ซื้อหรือเปิดร้านได้ในบัญชีเดียว':'เข้าสู่ระบบเพื่อซื้อสินค้าและจัดการร้านของคุณ'?></p>
+<section class="auth-layout"><div class="auth-art"><img src="<?=h(url('assets/images/hero.jpg'))?>" alt="เสื้อผ้าตัวโปรดสำหรับทุกวัน"><div><h1>เสื้อผ้าตัวโปรด<br>ตัวต่อไปของคุณ</h1><p>เสื้อผ้าที่ใช่ ใกล้กว่าที่คิด</p></div></div><div class="auth-form"><a class="back-link" href="<?=h(url())?>">← กลับหน้าร้าน</a><h2><?=$register?'เริ่มต้นตู้เสื้อผ้าใหม่':'ยินดีต้อนรับกลับมา'?></h2><p class="muted"><?=$register?'ซื้อหรือเปิดร้านได้ในบัญชีเดียว':'เข้าสู่ระบบเพื่อซื้อสินค้าและจัดการร้านของคุณ'?></p>
 <?php if($error): ?><div class="error" role="alert"><?=h($error)?></div><?php endif; ?>
 <form method="post" class="stack"><?=csrf_field()?>
 <?php if($register): ?><label>ชื่อที่แสดง<input name="full_name" autocomplete="name" minlength="2" maxlength="120" required value="<?=h(is_string($_POST['full_name']??null)?$_POST['full_name']:'')?>"></label><?php endif; ?>

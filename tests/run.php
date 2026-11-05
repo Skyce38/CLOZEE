@@ -115,6 +115,49 @@ test('unrelated user cannot read or send to conversation',function()use($buyerTw
 test('shop owner replies to authorized conversation',function()use($otherSeller,$conversation){send_message($otherSeller,$conversation,'Fictional seller reply');check((int)query('SELECT COUNT(*) FROM {{messages}} WHERE conversation_id=?',[$conversation])->fetchColumn()===2);});
 test('empty or oversized chat text rejected',function()use($buyer,$conversation){rejects(fn()=>send_message($buyer,$conversation,''));rejects(fn()=>send_message($buyer,$conversation,str_repeat('x',2001)));});
 
+test('chat thread list shows latest activity first and hides empty threads from sellers',function(){
+    $owner=fixture_user('chatowner');save_shop($owner,['shop_name'=>'Chat Sort Shop','description'=>'','pickup_location'=>'Fictional meetup','is_active'=>1]);
+    $product=save_product($owner,null,product_input('Chat sort shirt'));
+    $first=fixture_user('chatfirst');$second=fixture_user('chatsecond');$stranger=fixture_user('chatstranger');
+    $a=start_conversation($first,$product);$b=start_conversation($second,$product);
+    check(chat_threads($owner)===[],'Seller saw an empty thread');check(count(chat_threads($first))===1);
+    send_message($first,$a,'First');send_message($second,$b,'Second');
+    query('UPDATE {{conversations}} SET last_message_at=UTC_TIMESTAMP()-INTERVAL 1 HOUR WHERE conversation_id=?',[$a]);
+    $rows=chat_threads($owner);check(array_column($rows,'id')===[$b,$a],'Newest thread must be first');check($rows[0]['name']==='Test chatsecond'&&$rows[0]['snippet']==='Second'&&$rows[0]['last_mine']===false);
+    send_message($first,$a,'Newest now');check(array_column(chat_threads($owner),'id')===[$a,$b],'New message must move thread up');
+    check(chat_threads($stranger)===[]);
+});
+test('chat messages return only new rows and only to participants',function(){
+    $owner=fixture_user('chatmsgowner');save_shop($owner,['shop_name'=>'Chat Message Shop','description'=>'','pickup_location'=>'Fictional meetup','is_active'=>1]);
+    $product=save_product($owner,null,product_input('Chat message shirt'));$asker=fixture_user('chatasker');$stranger=fixture_user('chatoutsider');
+    $id=start_conversation($asker,$product);send_message($asker,$id,'One');send_message($owner,$id,'Two');
+    $all=chat_messages($owner,$id);check(count($all)===2&&$all[0]['mine']===false&&$all[1]['mine']===true&&str_ends_with($all[0]['at'],'Z'));
+    check(array_column(chat_messages($asker,$id,$all[0]['id']),'text')===['Two']);check(chat_messages($asker,$id,$all[1]['id'])===[]);
+    rejects(fn()=>chat_messages($stranger,$id));
+});
+test('shop delete requires the exact shop name',function(){
+    $owner=fixture_user('shopname');save_shop($owner,['shop_name'=>'Exact Name Shop','description'=>'','pickup_location'=>'Fictional meetup','is_active'=>1]);
+    rejects(fn()=>delete_shop($owner,'Wrong Shop'));rejects(fn()=>delete_shop($owner,''));check(own_shop($owner)!==null);
+});
+test('shop with order history cannot be deleted and keeps its data',function(){
+    $owner=fixture_user('shoporder');$shopId=save_shop($owner,['shop_name'=>'Order History Shop','description'=>'','pickup_location'=>'Fictional meetup','is_active'=>1]);
+    $product=save_product($owner,null,product_input('Ordered shirt'));$variant=(int)query('SELECT variant_id FROM {{product_variants}} WHERE product_id=?',[$product])->fetchColumn();
+    $orderBuyer=fixture_user('shopbuyer');$orderId=place_order($orderBuyer,[$variant=>1],['fulfillment_method'=>'pickup','fulfillment_details'=>'Fictional meetup point','buyer_note'=>''],bin2hex(random_bytes(32)));
+    rejects(fn()=>delete_shop($owner,'Order History Shop'));
+    check((int)query('SELECT shop_id FROM {{orders}} WHERE order_id=?',[$orderId])->fetchColumn()===$shopId);check((int)query('SELECT COUNT(*) FROM {{products}} WHERE product_id=?',[$product])->fetchColumn()===1);
+});
+test('shop delete removes its products images and chats but no other shop',function(){
+    $owner=fixture_user('shopdelete');$shopId=save_shop($owner,['shop_name'=>'Delete Me Shop','description'=>'','pickup_location'=>'Fictional meetup','is_active'=>1]);
+    $product=save_product($owner,null,product_input('Doomed shirt'));
+    query('INSERT INTO {{product_images}}(product_id,storage_name,mime_type,byte_size,width,height,image_data) VALUES(?,?,?,?,?,?,?)',[$product,bin2hex(random_bytes(16)).'.png','image/png',1,1,1,'x']);
+    $asker=fixture_user('shopasker');$thread=start_conversation($asker,$product);send_message($asker,$thread,'Doomed question');
+    $keeper=fixture_user('shopkeeper');$keptShop=save_shop($keeper,['shop_name'=>'Delete Me Shop','description'=>'','pickup_location'=>'Fictional meetup','is_active'=>1]);$keptProduct=save_product($keeper,null,product_input('Kept shirt'));$keptThread=start_conversation($asker,$keptProduct);send_message($asker,$keptThread,'Kept question');
+    check(delete_shop($owner,'Delete Me Shop')==='Delete Me Shop');check(own_shop($owner)===null);
+    foreach([['products','shop_id',$shopId],['product_variants','product_id',$product],['product_images','product_id',$product],['conversations','shop_id',$shopId],['messages','conversation_id',$thread]] as [$table,$column,$value])check((int)query('SELECT COUNT(*) FROM {{'.$table.'}} WHERE '.$column.'=?',[$value])->fetchColumn()===0,$table.' row remained');
+    check((int)own_shop($keeper)['shop_id']===$keptShop);check((int)query('SELECT COUNT(*) FROM {{products}} WHERE product_id=?',[$keptProduct])->fetchColumn()===1);check(count(chat_messages($asker,$keptThread))===1);
+    check(save_shop($owner,['shop_name'=>'Second Shop','description'=>'','pickup_location'=>'Fictional meetup','is_active'=>1])>0,'Owner should be able to open a new shop');
+});
+
 test('schema installer refuses nonempty database without changes',function(){
     $before=count(query('SHOW TABLES')->fetchAll());
     $proc=proc_open([PHP_BINARY,ROOT.'/scripts/migrate.php','--empty-database'],[1=>['pipe','w'],2=>['pipe','w']],$pipes);

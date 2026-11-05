@@ -9,7 +9,8 @@ function start_session(): void {
     if (isset($_SESSION['last_active']) && time() - $_SESSION['last_active'] > 1800) {
         $_SESSION = []; session_regenerate_id(true);
     }
-    $_SESSION['last_active'] = time();
+    // Background chat polling must not keep an idle session alive.
+    if (!defined('CLOZEE_PASSIVE_REQUEST') || !isset($_SESSION['last_active'])) $_SESSION['last_active'] = time();
 }
 function csrf_token(): string { return $_SESSION['csrf'] ??= bin2hex(random_bytes(32)); }
 function user(): ?array { return $_SESSION['user'] ?? null; }

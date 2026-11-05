@@ -21,7 +21,7 @@ if($_SERVER['REQUEST_METHOD']==='POST') {
             if(!isset($_SESSION['cart'][$variant])&&count($_SESSION['cart'])>=20) throw new ValidationException('ตะกร้ารองรับไม่เกิน 20 รายการ');
             $_SESSION['cart'][$variant]=$new;
         }
-        unset($_SESSION['checkout_key']);flash('อัปเดตตะกร้าแล้ว');redirect('cart.php');
+        unset($_SESSION['checkout_key']);flash($action==='add'?'เพิ่มสินค้าลงตะกร้าเรียบร้อยแล้ว':($action==='remove'?'นำสินค้าออกจากตะกร้าแล้ว':'อัปเดตตะกร้าเรียบร้อยแล้ว'));redirect('cart.php');
     } catch(ValidationException $e) { $error=$e->getMessage();http_response_code(422); }
 }
 $cartRows=[];$subtotal=0;
@@ -30,7 +30,7 @@ foreach($_SESSION['cart'] as $id=>$qty) {
     if($row) { $row['quantity']=$qty;$row['line_cents']=cents((string)$row['price'])*$qty;$subtotal+=$row['line_cents'];$cartRows[]=$row; }
 }
 require ROOT.'/app/templates/header.php'; ?>
-<section class="page-heading"><div><h1>Your good finds.</h1><p class="muted">หนึ่งร้านต่อหนึ่งคำสั่งซื้อ เลือกนัดรับหรือจัดส่งในขั้นตอนถัดไป</p></div></section>
+<section class="page-heading"><div><h1>ตะกร้าของคุณ</h1><p class="muted">หนึ่งร้านต่อหนึ่งคำสั่งซื้อ เลือกนัดรับหรือจัดส่งในขั้นตอนถัดไป</p></div></section>
 <?php if($error): ?><div class="error" role="alert"><?=h($error)?></div><?php endif; ?>
 <?php if(!$cartRows): ?><section class="empty"><h2>ตะกร้าของคุณยังว่าง</h2><p>เสื้อผ้าตัวโปรดอาจอยู่ใกล้แค่นี้</p><a class="button" href="<?=h(url('products.php'))?>">เลือกเสื้อผ้า</a></section><?php else: ?>
 <section class="checkout-layout"><div class="table-wrap"><table><thead><tr><th>สินค้า</th><th>จำนวน</th><th>รวม</th><th>จัดการ</th></tr></thead><tbody><?php foreach($cartRows as $row): ?><tr><td><div class="table-product"><img src="<?=h(url('assets/images/'.(in_array($row['image_path'],IMAGES,true)?$row['image_path']:'linen.jpg')))?>" alt=""><div><?=h($row['product_name'])?><small><?=h($row['shop_name'])?> · <?=h($row['size_label'])?></small><small><?=money($row['price'])?></small></div></div></td><td><form method="post" class="stack"><?=csrf_field()?><input type="hidden" name="action" value="update"><input type="hidden" name="variant_id" value="<?=$row['variant_id']?>"><label><span class="sr-only">จำนวน <?=h($row['product_name'])?></span><input class="cart-qty" name="quantity" type="number" min="1" max="99" value="<?=$row['quantity']?>" required></label><button class="text-button" type="submit">อัปเดต</button></form></td><td><?=money(decimal($row['line_cents']))?></td><td><form method="post"><?=csrf_field()?><input type="hidden" name="variant_id" value="<?=$row['variant_id']?>"><input type="hidden" name="action" value="remove"><button class="text-button" type="submit">ลบ</button></form></td></tr><?php endforeach; ?></tbody></table></div><aside class="summary"><h2>สรุปตะกร้า</h2><div class="summary-line"><span>ยอดสินค้า</span><span><?=money(decimal($subtotal))?></span></div><p class="field-help">ค่าจัดส่งคิดตามวิธีรับสินค้า นัดรับไม่มีค่าจัดส่ง</p><div class="summary-line total"><span>ยอดสินค้า</span><span><?=money(decimal($subtotal))?></span></div><a class="button" href="<?=h(url('checkout.php'))?>">ดำเนินการสั่งซื้อ</a></aside></section><?php endif; ?>

@@ -63,9 +63,11 @@ async function checkout(page,productId,variant,quantity,method) {
     assert.equal(r.headers()['x-content-type-options'],'nosniff');
     await shot(p,'catalog-desktop');
   });
-  await test('new/preloved filter and empty search update results',async()=>{
+  await test('Second hand and new filters and empty search update results',async()=>{
+    await p.locator('input[name=condition][value=secondhand]').check({force:true});await p.getByRole('button',{name:'ค้นหา',exact:true}).click();
+    assert.equal(await p.locator('.product-card .condition').first().textContent(),'Second hand');assert.ok(!(await p.locator('body').innerText()).includes('Preloved'));
     await p.locator('input[name=condition][value=new]').check({force:true});await p.getByRole('button',{name:'ค้นหา',exact:true}).click();
-    assert.equal(await p.locator('.product-card .condition').first().textContent(),'New');
+    assert.equal(await p.locator('.product-card .condition').first().textContent(),'มือหนึ่ง');
     await p.getByRole('searchbox').fill('not-a-product-'+suffix);await p.getByRole('button',{name:'ค้นหา',exact:true}).click();assert.equal(await p.locator('.product-card').count(),0);assert.ok(await p.getByText('ยังไม่พบเสื้อผ้าที่ค้นหา').isVisible());
   });
   await test('mobile catalog has no horizontal page overflow',async()=>{
@@ -84,7 +86,7 @@ async function checkout(page,productId,variant,quantity,method) {
     await register(seller,'seller');const cookies=await sellerContext.cookies();const session=cookies.find(x=>x.name==='clozee_session');assert.ok(session&&session.httpOnly&&session.sameSite==='Lax');
   });
   await test('seller creates and edits own shop',async()=>{
-    await seller.goto(base+'/seller/shop.php');await seller.getByLabel('ชื่อร้าน',{exact:true}).fill('Browser Demo Wardrobe '+suffix);await seller.getByLabel('แนะนำร้าน').fill('Fictional local test shop');await seller.getByLabel('จุดนัดรับ',{exact:true}).fill('Fictional Bangsaen meetup');await seller.getByRole('button',{name:'บันทึกข้อมูลร้าน'}).click();await seller.waitForURL('**/seller/shop.php');assert.equal(await seller.getByLabel('ชื่อร้าน',{exact:true}).inputValue(),'Browser Demo Wardrobe '+suffix);
+    await seller.goto(base+'/seller/shop.php');await seller.getByLabel('ชื่อร้าน',{exact:true}).fill('Browser Demo Wardrobe '+suffix);await seller.getByLabel('แนะนำร้าน').fill('Fictional local test shop');await seller.getByLabel('จุดนัดรับ',{exact:true}).fill('Fictional Bangsaen meetup');await seller.getByRole('button',{name:'บันทึกข้อมูลร้าน'}).click();await seller.waitForURL('**/seller/shop.php');assert.equal(await seller.getByLabel('ชื่อร้าน',{exact:true}).inputValue(),'Browser Demo Wardrobe '+suffix);assert.match(await seller.locator('[data-toast]').innerText(),/เปิดร้าน .*เรียบร้อยแล้ว/);
     await seller.getByLabel('แนะนำร้าน').fill('Edited fictional test shop');await seller.getByRole('button',{name:'บันทึกข้อมูลร้าน'}).click();await shot(seller,'shop-edit');
   });
   let productId,variantId;
@@ -92,7 +94,7 @@ async function checkout(page,productId,variant,quantity,method) {
     await seller.goto(base+'/seller/product-edit.php');await seller.getByLabel('ชื่อสินค้า',{exact:true}).fill('Browser linen '+suffix);await seller.getByLabel('รายละเอียด',{exact:true}).fill('Original demo garment — no customer information.');
     await seller.locator('[name="variants[0][price]"]').fill('290.00');await seller.locator('[name="variants[0][stock_quantity]"]').fill('5');
     await seller.getByRole('button',{name:'+ เพิ่มไซซ์'}).click();await seller.locator('[name="variants[1][size_label]"]').fill('L');await seller.locator('[name="variants[1][price]"]').fill('310.00');await seller.locator('[name="variants[1][stock_quantity]"]').fill('2');
-    await shot(seller,'product-create');await seller.getByRole('button',{name:'บันทึกสินค้า',exact:true}).click();await seller.waitForURL('**/seller/products.php');
+    await shot(seller,'product-create');await seller.getByRole('button',{name:'บันทึกสินค้า',exact:true}).click();await seller.waitForURL('**/seller/products.php');assert.ok(await seller.locator('[data-toast]').isVisible());assert.match(await seller.locator('[data-toast]').innerText(),/เพิ่มสินค้า .*เรียบร้อยแล้ว/);await seller.locator('[data-toast-close]').click();assert.equal(await seller.locator('[data-toast]').count(),0);
     const href=await seller.getByRole('link',{name:'แก้ไข',exact:true}).first().getAttribute('href');productId=new URL(href,base).searchParams.get('id');
     await seller.goto(base+'/product.php?id='+productId);variantId=await seller.locator('select[name=variant_id] option').nth(1).getAttribute('value');assert.ok(variantId);await shot(seller,'product-detail');
   });
@@ -112,16 +114,32 @@ async function checkout(page,productId,variant,quantity,method) {
   await test('delivery checkout records fee and cancellation returns stock',async()=>{deliveryOrder=await checkout(buyer,productId,variantId,1,'delivery');assert.ok(await buyer.getByText('320.00 ฿',{exact:true}).isVisible());await seller.goto(base+'/order.php?id='+deliveryOrder);await seller.getByLabel('สถานะถัดไป').selectOption('cancelled');await seller.getByRole('button',{name:'บันทึกสถานะ',exact:true}).click();await seller.waitForURL('**/order.php?id='+deliveryOrder);await buyer.reload();assert.ok(await buyer.locator('.status.cancelled').isVisible());await buyer.goto(base+'/product.php?id='+productId);assert.match(await buyer.locator('select[name=variant_id]').textContent(),/คงเหลือ 3/);});
   await test('seller edit persists while historical price/name stay unchanged',async()=>{await seller.goto(base+'/seller/product-edit.php?id='+productId);await seller.getByLabel('ชื่อสินค้า',{exact:true}).fill('Edited browser linen '+suffix);await seller.locator('[name="variants[0][price]"]').fill('999.00');await seller.getByRole('button',{name:'บันทึกสินค้า',exact:true}).click();await seller.waitForURL('**/seller/products.php');await buyer.goto(base+'/order.php?id='+pickupOrder);assert.ok((await buyer.locator('tbody td').first().textContent()).includes('Browser linen '+suffix));assert.ok(!(await buyer.locator('tbody td').first().textContent()).includes('Edited browser linen'));assert.ok(await buyer.getByText('290.00 ฿',{exact:true}).isVisible());});
   let threadId;
-  await test('buyer asks a size question and seller replies in private chat',async()=>{
-    await buyer.goto(base+'/product.php?id='+productId);await buyer.getByRole('button',{name:'สอบถามไซซ์กับร้าน',exact:true}).click();await buyer.waitForURL('**/messages.php?id=*');threadId=new URL(buyer.url()).searchParams.get('id');
-    await buyer.getByLabel('ข้อความถึงคู่สนทนา').fill('ไซซ์ M รอบอกเท่าไรครับ — Fictional demo question');await buyer.getByRole('button',{name:'ส่งข้อความ',exact:true}).click();await buyer.waitForURL('**/messages.php?id='+threadId);
-    await seller.goto(base+'/messages.php?id='+threadId);assert.ok(await seller.getByText('ไซซ์ M รอบอกเท่าไรครับ',{exact:false}).isVisible());await seller.getByLabel('ข้อความถึงคู่สนทนา').fill('รอบอกประมาณ 40 นิ้ว — Fictional demo reply');await seller.getByRole('button',{name:'ส่งข้อความ',exact:true}).click();await seller.waitForURL('**/messages.php?id='+threadId);await buyer.reload();assert.ok(await buyer.getByText('รอบอกประมาณ 40 นิ้ว',{exact:false}).isVisible());await shot(buyer,'chat');
+  async function sendInWidget(page,text){await page.locator('[data-chat-input]').fill(text);await page.locator('[data-chat-form] button[type=submit]').click();}
+  await test('chat opens from the floating icon and new messages appear without refresh',async()=>{
+    await buyer.goto(base+'/product.php?id='+productId);await buyer.getByRole('button',{name:'สอบถามไซซ์กับร้าน',exact:true}).click();
+    await buyer.locator('[data-chat-log]').waitFor();await buyer.waitForFunction(()=>Number(document.querySelector('[data-chat-widget]').dataset.threadId)>0);threadId=await buyer.locator('[data-chat-widget]').getAttribute('data-thread-id');
+    await seller.goto(base+'/seller/products.php');assert.ok(await seller.locator('[data-chat-toggle]').isVisible());assert.ok(await seller.locator('[data-chat-panel]').isHidden());
+    await sendInWidget(buyer,'ไซซ์ M รอบอกเท่าไรครับ — Fictional demo question');await buyer.locator('[data-chat-log]').getByText('ไซซ์ M รอบอกเท่าไรครับ',{exact:false}).waitFor();
+    await seller.locator('[data-chat-badge]').waitFor({timeout:15000});assert.equal(await seller.locator('[data-chat-badge]').textContent(),'1');
+    await seller.locator('[data-chat-toggle]').click();await seller.locator(`[data-thread-id="${threadId}"]`).click();await seller.locator('[data-chat-log]').getByText('ไซซ์ M รอบอกเท่าไรครับ',{exact:false}).waitFor();assert.ok(await seller.locator('[data-chat-badge]').isHidden());
+    const before=buyer.url();await sendInWidget(seller,'รอบอกประมาณ 40 นิ้ว — Fictional demo reply');await buyer.locator('[data-chat-log]').getByText('รอบอกประมาณ 40 นิ้ว',{exact:false}).waitFor({timeout:8000});assert.equal(buyer.url(),before);await buyer.screenshot({path:path.join(evidence,'chat.png')});
+    await buyer.locator('[data-chat-close]').click();assert.ok(await buyer.locator('[data-chat-panel]').isHidden());await buyer.locator('[data-chat-toggle]').click();assert.ok(await buyer.locator('[data-chat-panel]').isVisible());
+  });
+  await test('seller can sort chats by newest or oldest',async()=>{
+    await outsider.goto(base+'/product.php?id='+productId);await outsider.getByRole('button',{name:'สอบถามไซซ์กับร้าน',exact:true}).click();await outsider.locator('[data-chat-log]').waitFor();await outsider.waitForFunction(()=>Number(document.querySelector('[data-chat-widget]').dataset.threadId)>0);
+    const second=await outsider.locator('[data-chat-widget]').getAttribute('data-thread-id');await outsider.waitForTimeout(1100);await sendInWidget(outsider,'Fictional newer question');await outsider.locator('[data-chat-log]').getByText('Fictional newer question').waitFor();
+    await seller.goto(base+'/seller/products.php');await seller.locator('[data-chat-toggle]').click();await seller.locator(`[data-thread-id="${second}"]`).waitFor();
+    assert.equal(await seller.locator('.chat-thread').first().getAttribute('data-thread-id'),second);
+    await seller.locator('[data-chat-sort]').selectOption('oldest');assert.equal(await seller.locator('.chat-thread').first().getAttribute('data-thread-id'),threadId);
+    await seller.locator('[data-chat-sort]').selectOption('newest');assert.equal(await seller.locator('.chat-thread').first().getAttribute('data-thread-id'),second);await seller.locator('[data-chat-close]').click();
   });
   await test('unrelated account cannot read or forge chat messages',async()=>{
-    const r=await outsider.goto(base+'/messages.php?id='+threadId);assert.equal(r.status(),404);await outsider.goto(base+'/messages.php');const res=await outsider.request.post(base+'/messages.php',{form:{csrf:await csrf(outsider),action:'send',conversation_id:threadId,message_text:'forged'}});assert.equal(res.status(),422);
+    const third=await browser.newContext();const other=await third.newPage();await register(other,'chatstranger');
+    const r=await other.goto(base+'/messages.php?id='+threadId);assert.equal(r.status(),404);await other.goto(base+'/messages.php');const res=await other.request.post(base+'/chat-api.php',{form:{csrf:await csrf(other),action:'send',conversation_id:threadId,message_text:'forged'}});assert.equal(res.status(),422);const read=await other.request.get(base+'/chat-api.php?action=messages&id='+threadId);assert.equal(read.status(),404);assert.ok(!(await other.request.get(base+'/chat-api.php?action=threads').then(x=>x.text())).includes('รอบอกประมาณ'));
+    assert.equal((await p.request.get(base+'/chat-api.php?action=threads')).status(),401);await third.close();
   });
   await test('chat content is escaped instead of executing HTML',async()=>{
-    await buyer.getByLabel('ข้อความถึงคู่สนทนา').fill('<script>window.clozeeXss=1</script>');await buyer.getByRole('button',{name:'ส่งข้อความ',exact:true}).click();await buyer.waitForURL('**/messages.php?id='+threadId);assert.equal(await buyer.evaluate(()=>window.clozeeXss),undefined);assert.ok(await buyer.getByText('<script>window.clozeeXss=1</script>',{exact:false}).isVisible());
+    await buyer.goto(base+'/messages.php?id='+threadId);await buyer.locator('[data-chat-log] .message').first().waitFor();await sendInWidget(buyer,'<img src=x onerror="window.clozeeXss=1"><script>window.clozeeXss=1</script>');await buyer.locator('[data-chat-log]').getByText('window.clozeeXss=1',{exact:false}).waitFor();assert.equal(await buyer.evaluate(()=>window.clozeeXss),undefined);assert.equal(await buyer.locator('[data-chat-log] img').count(),0);
   });
   await test('referenced product cannot be deleted; deactivation hides public item',async()=>{await seller.goto(base+'/seller/products.php');let token=await csrf(seller);let r=await seller.request.post(base+'/seller/products.php',{form:{csrf:token,product_id:productId,action:'delete'}});assert.equal(r.status(),422);r=await seller.request.post(base+'/seller/products.php',{form:{csrf:token,product_id:productId,action:'deactivate'}});assert.equal(r.status(),200);r=await p.goto(base+'/product.php?id='+productId);assert.equal(r.status(),404);});
   await test('mobile seller table does not overflow the page',async()=>{await seller.setViewportSize({width:390,height:844});await seller.goto(base+'/seller/orders.php');await shot(seller,'seller-orders-mobile');assert.ok(await seller.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth));});
@@ -130,6 +148,10 @@ async function checkout(page,productId,variant,quantity,method) {
     await buyer.goto(base+'/login.php');await buyer.getByLabel('อีเมล',{exact:true}).fill('buyer.'+suffix+'@example.test');await buyer.getByLabel('รหัสผ่าน',{exact:true}).fill('wrong-demo-value');await buyer.getByRole('button',{name:'เข้าสู่ระบบ',exact:true}).click();assert.ok(await buyer.getByRole('alert').isVisible());await buyer.getByLabel('รหัสผ่าน',{exact:true}).fill(password);await buyer.getByRole('button',{name:'เข้าสู่ระบบ',exact:true}).click();await buyer.waitForURL('**/products.php');
   });
   await test('SQL injection string cannot bypass login',async()=>{await p.goto(base+'/login.php');const r=await p.request.post(base+'/login.php',{form:{csrf:await csrf(p),email:"' OR 1=1 -- "+suffix,password:'incorrect-test-value'}});assert.equal(r.status(),422);assert.match(await r.text(),/อีเมลหรือรหัสผ่านไม่ถูกต้อง/);});
+  await test('seller deletes own unused shop; shop with orders is refused',async()=>{
+    await seller.goto(base+'/seller/shop.php');const shopName=await seller.getByLabel('ชื่อร้าน',{exact:true}).inputValue();seller.once('dialog',d=>d.accept());await seller.locator('[name=confirm_shop_name]').fill(shopName);await seller.getByRole('button',{name:'ลบร้านถาวร',exact:true}).click();await seller.locator('.error[role=alert]').waitFor();assert.match(await seller.locator('.error[role=alert]').innerText(),/ประวัติคำสั่งซื้อ/);assert.equal(await seller.getByLabel('ชื่อร้าน',{exact:true}).inputValue(),shopName);
+    await outsider.goto(base+'/seller/shop.php');outsider.once('dialog',d=>d.accept());await outsider.locator('[name=confirm_shop_name]').fill('Outsider Demo Shop');await outsider.getByRole('button',{name:'ลบร้านถาวร',exact:true}).click();await outsider.waitForURL('**/seller/dashboard.php');assert.match(await outsider.locator('[data-toast]').innerText(),/ลบร้าน .*เรียบร้อยแล้ว/);assert.ok(await outsider.getByRole('link',{name:'เปิดร้านของคุณ'}).isVisible());
+  });
   await test('no unexpected console, asset or page errors',async()=>assert.deepEqual(errors,[]));
   await shot(seller,'seller-orders-mobile');
 })().catch(e=>{console.error(e.stack);process.exitCode=1;}).finally(async()=>{

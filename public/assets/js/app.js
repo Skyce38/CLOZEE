@@ -83,3 +83,160 @@ document.querySelectorAll('[data-product-gallery]').forEach(gallery=>{
     gallery.querySelectorAll('[data-gallery-thumbnail]').forEach(item=>item.setAttribute('aria-pressed',String(item===button)));
   }));
 });
+
+document.querySelectorAll('[data-toast]').forEach(toast=>{
+  const close=()=>toast.remove();
+  toast.querySelector('[data-toast-close]')?.addEventListener('click',close);
+  setTimeout(close,8000);
+});
+document.querySelector('.error[role="alert"]')?.scrollIntoView({block:'center'});
+
+(function chatWidget(){
+  const root=document.querySelector('[data-chat-widget]');
+  if(!root)return;
+  root.hidden=false;
+  const $=selector=>root.querySelector(selector);
+  const api=root.dataset.api;
+  const panel=$('[data-chat-panel]'),toggle=$('[data-chat-toggle]'),badge=$('[data-chat-badge]');
+  const listView=$('[data-chat-list-view]'),threadView=$('[data-chat-thread-view]');
+  const threadList=$('[data-chat-threads]'),emptyNote=$('[data-chat-empty]'),sortSelect=$('[data-chat-sort]');
+  const title=$('[data-chat-title]'),subtitle=$('[data-chat-subtitle]'),backButton=$('[data-chat-back]');
+  const log=$('[data-chat-log]'),form=$('[data-chat-form]'),input=$('[data-chat-input]'),errorNote=$('[data-chat-error]');
+  const storageKey=`clozee.chat.${root.dataset.user}`;
+  let saved={};
+  try{saved=JSON.parse(localStorage.getItem(storageKey))||{};}catch{saved={};}
+  const seen=saved.seen&&typeof saved.seen==='object'?saved.seen:{};
+  sortSelect.value=saved.sort==='oldest'?'oldest':'newest';
+  const persist=()=>{try{localStorage.setItem(storageKey,JSON.stringify({seen,sort:sortSelect.value}));}catch{}};
+  let threads=[],openId=0,lastId=0,stopped=false,timer=0,sending=false;
+  const clock=new Intl.DateTimeFormat('th-TH',{timeZone:'Asia/Bangkok',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+  const when=value=>{const date=new Date(value);return Number.isNaN(date.getTime())?'':clock.format(date);};
+  const isOpen=()=>!panel.hidden;
+
+  async function call(params,body){
+    const response=await fetch(`${api}?${new URLSearchParams(params)}`,body?{method:'POST',body:new URLSearchParams({...body,csrf:root.dataset.csrf}),credentials:'same-origin'}:{credentials:'same-origin'});
+    if(response.status===401){stopped=true;root.hidden=true;throw Error('กรุณาเข้าสู่ระบบ');}
+    const data=await response.json();
+    if(!response.ok){const error=Error(data.error||'ระบบแชทขัดข้อง กรุณาลองอีกครั้ง');error.status=response.status;throw error;}
+    return data;
+  }
+  function renderBadge(){
+    const unread=threads.filter(t=>t.last_id>0&&!t.last_mine&&t.last_id>(seen[t.id]||0)&&t.id!==openId).length;
+    badge.hidden=unread===0;badge.textContent=unread>9?'9+':String(unread);
+    toggle.setAttribute('aria-label',unread?`เปิดแชท มี ${unread} แชทที่ยังไม่ได้อ่าน`:(isOpen()?'ปิดแชท':'เปิดแชท'));
+  }
+  function renderThreads(){
+    const ordered=[...threads].sort((a,b)=>(a.at===b.at?(a.last_id-b.last_id||a.id-b.id):a.at<b.at?-1:1)*(sortSelect.value==='oldest'?1:-1));
+    threadList.replaceChildren(...ordered.map(thread=>{
+      const item=document.createElement('li');const button=document.createElement('button');
+      button.type='button';button.className='chat-thread';button.dataset.threadId=thread.id;
+      if(!thread.last_mine&&thread.last_id>(seen[thread.id]||0))button.classList.add('unread');
+      const name=document.createElement('strong');name.textContent=thread.name;
+      const time=document.createElement('time');time.textContent=when(thread.at);
+      const product=document.createElement('small');product.textContent=thread.product;
+      const snippet=document.createElement('span');snippet.textContent=thread.snippet?(thread.last_mine?'คุณ: ':'')+thread.snippet:'ยังไม่มีข้อความ';
+      button.append(name,time,product,snippet);button.addEventListener('click',()=>openThread(thread.id));
+      item.append(button);return item;
+    }));
+    emptyNote.hidden=threads.length>0;
+    renderBadge();
+  }
+  async function refreshThreads(){threads=(await call({action:'threads'})).threads;if(!openId)renderThreads();else renderBadge();}
+  function addMessages(messages){
+    if(!messages.length)return;
+    const nearBottom=log.scrollHeight-log.scrollTop-log.clientHeight<80;
+    messages.forEach(message=>{
+      if(message.id<=lastId)return;
+      const bubble=document.createElement('div');bubble.className=message.mine?'message mine':'message';bubble.textContent=message.text;
+      const meta=document.createElement('small');meta.textContent=`${message.mine?'คุณ':'คู่สนทนา'} · ${when(message.at)} น.`;
+      bubble.append(meta);log.append(bubble);lastId=message.id;
+    });
+    if(nearBottom||messages.some(message=>message.mine))log.scrollTop=log.scrollHeight;
+    seen[openId]=Math.max(seen[openId]||0,lastId);persist();
+  }
+  function showList(){
+    openId=0;lastId=0;log.replaceChildren();root.dataset.threadId='';
+    listView.hidden=false;threadView.hidden=true;backButton.hidden=true;errorNote.hidden=true;
+    title.textContent='แชท';subtitle.textContent='';
+    renderThreads();
+  }
+  function showError(message){errorNote.textContent=message;errorNote.hidden=false;}
+  function setPanel(open){
+    panel.hidden=!open;toggle.setAttribute('aria-expanded',String(open));root.classList.toggle('open',open);
+    if(!open){openId=0;lastId=0;root.dataset.threadId='';}
+    renderBadge();schedule();
+  }
+  async function openThread(id){
+    setPanel(true);
+    openId=id;lastId=0;log.replaceChildren();root.dataset.threadId=String(id);
+    listView.hidden=true;threadView.hidden=false;backButton.hidden=false;errorNote.hidden=true;
+    title.textContent='กำลังโหลด…';subtitle.textContent='';
+    try{
+      const data=await call({action:'messages',id,after:0});
+      if(openId!==id)return;
+      title.textContent=data.thread.name;subtitle.textContent=data.thread.product;
+      addMessages(data.messages);log.scrollTop=log.scrollHeight;renderBadge();input.focus();
+    }catch(error){if(error.status===404){await refreshThreads().catch(()=>{});showList();}else showError(error.message);}
+    schedule();
+  }
+  async function tick(){
+    if(stopped)return;
+    if(document.hidden)return schedule();
+    try{
+      if(openId&&!sending){
+        const id=openId,data=await call({action:'messages',id,after:lastId});
+        if(openId===id)addMessages(data.messages);
+      }
+      await refreshThreads();
+    }catch(error){if(error.status===404&&openId)showList();}
+    schedule();
+  }
+  function schedule(){clearTimeout(timer);if(!stopped)timer=setTimeout(tick,openId?3000:isOpen()?5000:10000);}
+
+  toggle.addEventListener('click',()=>{if(isOpen())setPanel(false);else{setPanel(true);showList();refreshThreads().catch(()=>{});}});
+  $('[data-chat-close]').addEventListener('click',()=>{setPanel(false);toggle.focus();});
+  backButton.addEventListener('click',()=>{showList();refreshThreads().catch(()=>{});schedule();});
+  sortSelect.addEventListener('change',()=>{persist();renderThreads();});
+  document.addEventListener('keydown',event=>{if(event.key==='Escape'&&isOpen()){setPanel(false);toggle.focus();}});
+  input.addEventListener('keydown',event=>{if(event.key==='Enter'&&!event.shiftKey&&!event.isComposing){event.preventDefault();form.requestSubmit();}});
+  form.addEventListener('submit',async event=>{
+    event.preventDefault();
+    const text=input.value.trim();
+    if(!text||sending||!openId)return;
+    sending=true;errorNote.hidden=true;const id=openId;
+    try{
+      await call({},{action:'send',conversation_id:id,message_text:text});
+      input.value='';
+      const data=await call({action:'messages',id,after:lastId});
+      if(openId===id)addMessages(data.messages);
+      await refreshThreads();
+    }catch(error){showError(error.message);}
+    finally{sending=false;input.focus();}
+  });
+  document.querySelectorAll('[data-chat-open]').forEach(link=>link.addEventListener('click',event=>{
+    event.preventDefault();setPanel(true);showList();refreshThreads().catch(()=>{});
+  }));
+  document.querySelectorAll('[data-chat-start]').forEach(start=>start.addEventListener('submit',async event=>{
+    event.preventDefault();
+    try{
+      const data=await call({},{action:'start',product_id:start.querySelector('[name="product_id"]').value});
+      await refreshThreads();await openThread(data.conversation_id);
+    }catch(error){setPanel(true);showList();emptyNote.hidden=false;emptyNote.textContent=error.message;}
+  }));
+  const page=document.querySelector('[data-chat-page]');
+  if(page){
+    document.querySelector('[data-chat-fallback]').hidden=true;
+    document.querySelector('[data-chat-page-note]').hidden=false;
+    const id=Number(page.dataset.thread);
+    if(id)openThread(id);else{setPanel(true);showList();}
+  }
+  refreshThreads().catch(()=>{}).finally(schedule);
+})();
+
+// Show that a form is being sent so a slow save is not clicked twice.
+document.querySelectorAll('form[method="post"]').forEach(form=>form.addEventListener('submit',event=>{
+  const button=event.submitter;
+  if(event.defaultPrevented||!button||!button.classList.contains('button'))return;
+  setTimeout(()=>{button.disabled=true;button.dataset.label=button.textContent;button.textContent='กำลังบันทึก…';},0);
+}));
+window.addEventListener('pageshow',()=>document.querySelectorAll('button[data-label]').forEach(button=>{button.disabled=false;button.textContent=button.dataset.label;delete button.dataset.label;}));

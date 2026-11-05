@@ -34,6 +34,11 @@ function option_value(mixed $value, array $allowed, string $label): string {
 }
 const CATEGORIES = ['Shirts','Denim','T-shirts','Knitwear','Dresses','Trousers','Other'];
 const IMAGES = ['linen.jpg','denim.jpg','tee.jpg','knit.jpg'];
+const CATEGORY_LABELS = ['Shirts'=>'เสื้อเชิ้ต','Denim'=>'ยีนส์','T-shirts'=>'เสื้อยืด','Knitwear'=>'เสื้อไหมพรม','Dresses'=>'เดรส','Trousers'=>'กางเกง','Other'=>'อื่น ๆ'];
+const IMAGE_LABELS = ['linen.jpg'=>'เสื้อเชิ้ตลินิน','denim.jpg'=>'กางเกงยีนส์','tee.jpg'=>'เสื้อยืด','knit.jpg'=>'เสื้อไหมพรม'];
+function condition_label(string $condition): string { return $condition==='new'?'มือหนึ่ง':'Second hand'; }
+function category_label(?string $category): string { return CATEGORY_LABELS[$category??'']??(string)$category; }
+function thai_time(string $utc): string { return (new DateTimeImmutable($utc,new DateTimeZone('UTC')))->setTimezone(new DateTimeZone('Asia/Bangkok'))->format('d/m/Y H:i'); }
 const STATUS_LABELS = ['pending'=>'รอยืนยัน','confirmed'=>'ยืนยันแล้ว','preparing'=>'กำลังเตรียม','ready_for_pickup'=>'พร้อมนัดรับ','out_for_delivery'=>'กำลังจัดส่ง','completed'=>'สำเร็จ','cancelled'=>'ยกเลิก'];
 function next_statuses(string $status, string $method): array {
     $map = ['pending'=>['confirmed','cancelled'],'confirmed'=>['preparing','cancelled'],

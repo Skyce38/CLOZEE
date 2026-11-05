@@ -51,7 +51,7 @@ if (PHP_SAPI !== 'cli') {
 function url(string $path = ''): string { return config()['base_path'] . '/' . ltrim($path, '/'); }
 function h(mixed $value): string { return htmlspecialchars((string)$value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
 function redirect(string $path): never { header('Location: ' . url($path), true, 303); exit; }
-function flash(string $message): void { $_SESSION['flash'] = $message; }
+function flash(string $message, string $type = 'success'): void { $_SESSION['flash'] = $message; $_SESSION['flash_type'] = $type; }
 function fail(int $code, string $message): never {
     http_response_code($code); $title = 'ไม่สามารถดำเนินการได้';
     require __DIR__ . '/templates/header.php';

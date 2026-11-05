@@ -43,4 +43,4 @@
 
 ## Implemented acceptance mapping
 
-FR-01–FR-12 are implemented in app/auth, ShopService, ProductService and OrderService, with actual domain/HTTP/browser evidence in test-results.md. FR-13 text chat is implemented in ChatService/messages.php after local core tests. FR-14 multiple-image upload and FR-15 sales analytics remain deferred P1. The basic seller dashboard is navigation for P0 management, not an analytics claim. Angsila-specific NFR-03 remains unverified even though PHP/MySQL and MariaDB passed on local/CI environments. See implementation-decisions.md for limits and state rules.
+FR-01–FR-12 are implemented in app/auth, ShopService, ProductService and OrderService, with actual domain/HTTP/browser evidence in test-results.md. FR-13 text chat is implemented in ChatService with a floating widget and chat-api.php. FR-14 multiple-image upload is implemented; FR-15 sales analytics remains deferred P1. The basic seller dashboard is navigation for P0 management, not an analytics claim. Angsila-specific NFR-03 remains unverified even though PHP/MySQL and MariaDB passed on local/CI environments. See implementation-decisions.md for limits and state rules.

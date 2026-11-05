@@ -1,1 +1,1 @@
-</main><footer class="site-footer"><a class="brand" href="<?=h(url())?>">CLOZEE</a><p>A local marketplace for BUU students and Bangsaen locals.</p><span>New. Preloved. Nearby.</span></footer></div></body></html>
+</main><footer class="site-footer"><a class="brand" href="<?=h(url())?>">CLOZEE</a><p>ตลาดเสื้อผ้าในพื้นที่สำหรับนิสิต BUU และคนบางแสน</p><span>มือหนึ่ง · Second hand · ใกล้คุณ</span></footer></div><?php if(user()) require ROOT.'/app/templates/chat-widget.php'; ?></body></html>
