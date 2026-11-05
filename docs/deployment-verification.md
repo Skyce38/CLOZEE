@@ -10,7 +10,7 @@
 | CRUD/Auth/stock/status/chat on Angsila | 30 real functional checkpoints PASS; physical DELETE/concurrency races not repeated on live (covered by isolated local/CI suites) |
 | Fresh unauthenticated browser reachability | PASS desktop/mobile from a fresh Chrome context via university VPN. Off-VPN access NOT VERIFIED |
 | Rollback/backup verified | New-directory isolation verified; actual backup restoration NOT TESTED |
-| Final submission readiness | Technical core deployed/verified; final cover metadata and submission details pending |
+| Final submission readiness | Technical core deployed/verified; submission details pending |
 
 Local runtime and browser results do not substitute for these checks. See `deployment.md` for the exact prerequisites and safe sequence.
 
@@ -41,7 +41,7 @@ Orders #1 and #3 reached completed via pickup and delivery respectively; order #
 
 `evidence/angsila-http-results.json` records 17 anonymous HTTP/security checks, including the existing Lab homepage, private paths and CSRF. `evidence/angsila-visual-results.json` and `angsila-catalog-desktop.png` / `angsila-catalog-mobile.png` come from an independent fresh Chrome context with no saved user session, using regular Playwright because the Browser plugin was not available. Manual authenticated flows used CUA/Chrome.
 
-No actual payment, courier delivery, penetration/load test, live concurrency race, live physical DELETE, backup restoration or off-VPN access is claimed. Technical core acceptance passed within the verified scope. Names on the report cover and final submission/reservation details still require the author's input.
+No actual payment, courier delivery, penetration/load test, live concurrency race, live physical DELETE, backup restoration or off-VPN access is claimed. Technical core acceptance passed within the verified scope. Final submission/reservation details still require confirmation.
 
 
 ## 4 November 2026: database product photos

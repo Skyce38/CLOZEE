@@ -2,7 +2,7 @@
 
 **Database product photos deployed 4 November 2026:** see `database-product-photos.md`. The approved additive migration upgraded the application namespace to 11 tables / 89 columns / 15 foreign keys / 9 checks. New code uses `/home/BUU/68160207/clozee-dbphotos-fc45793`; its private configuration bridge reuses the original private configuration. Backup integrity and all 47 release file hashes were verified. Live browser 13/13 and HTTP/security 17/17 passed. Temporary helpers are outside the webroot. Quota and backup restoration remain unverified. Do not re-import the migration on the upgraded database.
 
-**Status: DEPLOYED; CORE FLOWS VERIFIED VIA UNIVERSITY VPN.** The user approved exact targets and the schema plan. Public/private files, ten new tables and private configuration are installed. Thirty functional and seventeen anonymous HTTP/security checks passed. Never use Google Sheets account/password data. See `deployment-verification.md` for evidence, untested cases and remaining submission metadata.
+**Status: DEPLOYED; CORE FLOWS VERIFIED VIA UNIVERSITY VPN.** The user approved exact targets and the schema plan. Public/private files, ten new tables and private configuration are installed. Thirty functional and seventeen anonymous HTTP/security checks passed. Never use Google Sheets account/password data. See `deployment-verification.md` for evidence, untested cases and remaining submission details.
 
 Verified 30 October 2026: the portal works with the university VPN and reports PHP 8.4.27, Apache and MySQL 8.0.46. The app's PDO connection, private bootstrap and session work. The assigned database preserves five existing Lab tables, including `users`, alongside ten new `clozee_` tables. Do not import the unprefixed schema over the Lab database. SFTP, public/private mapping and the Lab URL are verified. See `angsila-install-plan.md` and `deployment-verification.md`.
 
@@ -60,4 +60,4 @@ If schema import fails on a new empty DB, stop and inspect errors privately; do 
 
 ## Approval boundary
 
-For future deployments, present the exact file mapping, SQL diff, backup/rollback and smoke-test plan before obtaining approval. The current Angsila release is deployed and verified; final submission still needs the missing cover metadata and confirmation of submission details.
+For future deployments, present the exact file mapping, SQL diff, backup/rollback and smoke-test plan before obtaining approval. The current Angsila release is deployed and verified; final submission still needs confirmation of submission details.
