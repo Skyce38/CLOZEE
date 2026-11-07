@@ -12,7 +12,7 @@
 | Rollback/backup verified | New-directory isolation verified; actual backup restoration NOT TESTED |
 | Final submission readiness | Technical core deployed/verified; submission details pending |
 
-Latest release: `d6999f3`, installed 6 November 2026; see the section at the end of this file. Local runtime and browser results do not substitute for these checks. See `deployment.md` for the exact prerequisites and safe sequence.
+Latest release: `cd08f6a` (its CI run shows the earlier hash `d6999f3`; only the commit message changed), installed 6 November 2026; see the section at the end of this file. Local runtime and browser results do not substitute for these checks. See `deployment.md` for the exact prerequisites and safe sequence.
 
 ## Read-only inspection — 30 October 2026
 
@@ -50,7 +50,7 @@ Approved migration and versioned private release installed. Schema is now 11 tab
 
 ## 6 November 2026: Thai interface, floating chat and shop deletion
 
-The student asked for this upload to the existing approved Angsila targets. Commit `d6999f3` passed CI run 42103903945. No SQL or database change. Private code was uploaded with FileZilla to the new directory `/home/BUU/68160207/clozee-thaichat-d6999f3`, using a bridge to the existing private configuration, then public files were overwritten in `public_html/clozee`.
+The student asked for this upload to the existing approved Angsila targets. Commit `cd08f6a` passed CI run 42103903945 under its earlier hash `d6999f3`. No SQL or database change. Private code was uploaded with FileZilla to the new directory `/home/BUU/68160207/clozee-thaichat-d6999f3`, using a bridge to the existing private configuration, then public files were overwritten in `public_html/clozee`.
 
 The first web upload had a wrong bootstrap path produced by Git Bash path conversion and returned HTTP 500 for about two minutes (roughly 03:47 to 03:49 local time). The previous web files were restored, the package was rebuilt from PowerShell, its paths were checked and the web files were uploaded again. The database and Lab files were not touched.
 
