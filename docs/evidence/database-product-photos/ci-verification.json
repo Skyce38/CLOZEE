@@ -2,7 +2,7 @@
   "scope": "Isolated MySQL CI for database product images; not an Angsila deployment",
   "head_sha": "fc45793d94cff57c79b70a183ed93a0a79d71977",
   "run_id": 41119656814,
-  "run_url": "https://github.com/Skyce38/CLOZEE/actions/runs/41119656814",
+  "run_url": "https://github.com/Skyce38/CLOZEE-old/actions/runs/41119656814",
   "status": "completed",
   "conclusion": "success",
   "completed_at": "2026-10-30T20:00:46Z",

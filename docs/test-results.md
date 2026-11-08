@@ -4,7 +4,7 @@
 
 ## ผลรุ่นล่าสุดในเครื่อง (6 พ.ย. 2569: หน้าเว็บภาษาไทย, Second hand, แจ้งเตือน, แชทลอย และลบร้าน)
 
-รันด้วย PHP 8.4.27 ที่ปิด GD/EXIF เหมือน Angsila และ MariaDB 11.4.9 CI ของ commit `cd08f6a` ผ่านที่ [run 42103903945](https://github.com/Skyce38/CLOZEE/actions/runs/42103903945) (หน้า CI แสดงรหัสเดิม `d6999f3` เพราะต่อมาแก้เฉพาะข้อความ commit โค้ดเหมือนเดิม)
+รันด้วย PHP 8.4.27 ที่ปิด GD/EXIF เหมือน Angsila และ MariaDB 11.4.9 CI ผ่านที่ [run 42506935627](https://github.com/Skyce38/CLOZEE/actions/runs/42506935627) บน commit `02e4518` ซึ่งมีโค้ดเหมือนรุ่นที่ติดตั้ง `cd08f6a` และเพิ่มเฉพาะการสั่งรัน workflow เอง ผลรันเดิมของรุ่นนี้อยู่ที่ [run 42103903945](https://github.com/Skyce38/CLOZEE-old/actions/runs/42103903945) ใน repository เดิมที่เปลี่ยนชื่อเป็น CLOZEE-old
 
 ติดตั้งบน Angsila แล้ววันที่ 6 พ.ย. 2569: HTTP/security ผ่าน 17/17 (`evidence/angsila-http-results.json`), ไฟล์ static ตรงกับชุดที่เตรียม 8/8 และ API แชทปฏิเสธผู้ที่ไม่ได้เข้าสู่ระบบด้วย 401 นิสิตทดสอบด้วยตนเองสองบัญชีบนเว็บจริงและแจ้งว่าผ่านทั้งหมด: แจ้งเตือนสำเร็จ, แชทเข้าโดยไม่รีเฟรช, ตอบแชท, เรียงแชท และลบร้าน
 
@@ -25,10 +25,10 @@
 | Image validation | Local, เปิด GD และปิด GD/EXIF | 23 PASS, 0 FAIL ต่อแบบ |
 | Browser regression / browser photos | Local, Chrome ผ่าน Playwright | 24 และ 23 PASS, 0 FAIL |
 | Schema upgrade fixture | Local | 14 PASS, 0 FAIL |
-| GitHub CI [41119656814](https://github.com/Skyce38/CLOZEE/actions/runs/41119656814) | PHP 8.3.36 + MySQL 8.4.13, commit `fc45793` | 198 PASS, 0 FAIL ต่อ runtime |
+| GitHub CI [41119656814](https://github.com/Skyce38/CLOZEE-old/actions/runs/41119656814) | PHP 8.3.36 + MySQL 8.4.13, commit `fc45793` | 198 PASS, 0 FAIL ต่อ runtime |
 | Angsila live photo flows / HTTP-security | PHP 8.4.27 + MySQL 8.0.46 ผ่าน VPN, 4 พ.ย. 2569 | 13 และ 17 PASS, 0 FAIL |
 
-รายละเอียดอยู่ใน [database-product-photos.md](database-product-photos.md) และ `evidence/database-product-photos/`; commit `13a5e73` บน main ผ่าน CI [41857503966](https://github.com/Skyce38/CLOZEE/actions/runs/41857503966)
+รายละเอียดอยู่ใน [database-product-photos.md](database-product-photos.md) และ `evidence/database-product-photos/`; commit `13a5e73` บน main ผ่าน CI [41857503966](https://github.com/Skyce38/CLOZEE-old/actions/runs/41857503966)
 
 ## ผลรอบระบบหลัก (30 ตุลาคม 2569)
 
@@ -42,7 +42,7 @@
 | Angsila real functional flows | Apache + PDO/MySQL 8.0.46, Chrome via university VPN | 30 PASS, 0 FAIL | 2026-10-30T14:42:08Z |
 | Angsila anonymous HTTP/security checks | HTTPS from local machine via VPN | 17 PASS, 0 FAIL | 2026-10-30T18:42:01.795710+00:00 |
 
-CI evidence: [41109199837](https://github.com/Skyce38/CLOZEE/actions/runs/41109199837); evidence/ci-verification.json records the verified commit and step results. Future commits need their own CI check before delivery; a passing older run does not prove a newer revision.
+CI evidence: [41109199837](https://github.com/Skyce38/CLOZEE-old/actions/runs/41109199837); evidence/ci-verification.json records the verified commit and step results. Future commits need their own CI check before delivery; a passing older run does not prove a newer revision.
 
 Commands: `php tests/run.php` with CLOZEE_TEST_DB set to a dedicated test DB; `npm ci` then `npm run test:browser` against the loopback demo server. PHP lint and scripts/doctor.php also executed. Database schema imported into a new isolated DB; migrate/seed scripts refuse existing data. Tests create only fake example.test accounts. Raw local logs remain in ignored storage; sanitized copies are in evidence/.
 

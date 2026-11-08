@@ -9,7 +9,7 @@
 
 ฐาน Angsila ใช้ `table_prefix = clozee_` แยกจากตาราง Lab เดิม ดู [ผลทดสอบฐานข้อมูลร่วม](docs/shared-database-tests.md) และ [ผลตรวจการติดตั้ง](docs/deployment-verification.md) รุ่นปัจจุบันผ่าน CI 198 ข้อต่อ runtime; Angsila ผ่าน 30 functional checkpoints ระบบหลัก, 13 ข้อรูปสินค้า และ 17 anonymous HTTP/security checks พร้อมภาพ desktop/mobile จากเบราว์เซอร์ใหม่ ขอบเขต local/CI/live แยกกันชัดเจนในรายงาน
 
-**ลิงก์สำคัญ:** [ซอร์สโค้ด CLOZEE](https://github.com/Skyce38/CLOZEE) · [ผลทดสอบ MySQL บน GitHub Actions](https://github.com/Skyce38/CLOZEE/actions/runs/42103903945) · [ข้อกำหนดรายวิชา](docs/course-requirements.md) · [รายงานรอบ 2 (PDF)](docs/CLOZEE-Final-Report-Round2.pdf)
+**ลิงก์สำคัญ:** [ซอร์สโค้ด CLOZEE](https://github.com/Skyce38/CLOZEE) · [ผลทดสอบ MySQL บน GitHub Actions](https://github.com/Skyce38/CLOZEE/actions/runs/42506935627) · [ข้อกำหนดรายวิชา](docs/course-requirements.md) · [รายงานรอบ 2 (PDF)](docs/CLOZEE-Final-Report-Round2.pdf)
 
 ![CLOZEE บน Angsila จากเบราว์เซอร์ใหม่](docs/evidence/angsila-catalog-desktop.png)
 
