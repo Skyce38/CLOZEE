@@ -4,6 +4,7 @@ on:
     paths-ignore: ['docs/**', 'README.md', '*.zip']
   pull_request:
     paths-ignore: ['docs/**', 'README.md', '*.zip']
+  workflow_dispatch:
 permissions:
   contents: read
 jobs:
